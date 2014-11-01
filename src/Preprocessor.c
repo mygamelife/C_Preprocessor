@@ -2,6 +2,8 @@
 #include <string.h>
 #include "Preprocessor.h"
 
+
+
 int searchDirective(String *str, char *directiveName) {
   int hashTag = 0 , found = 1;
   char *tempString;

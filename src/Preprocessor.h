@@ -5,6 +5,7 @@
 #include "ErrorCode.h"
 #include "CException.h"
 #include "LinkList.h"
+#include "Macro.h"
 
 int searchDirective(String *str, char *directiveName);
 LinkList *searchMacro(String *str);
