@@ -244,14 +244,21 @@ void stringSkip(String *str , int numOfCharToSkip)
  */
 char *stringSubStringInChars(String *str , int length)
 {
-	int i = 0 , j = str->startindex, k = 0;
+	int i = 0 , j = str->startindex;
 	char *charStr = malloc(sizeof(char) * length + 1); //malloc charStr in order to return
 	
 	for(i ; i < length ; i++)
-    charStr[k++] = str->string[j++];
-
-  charStr[k] = 0;
-
+	{
+		charStr[i] = str->string[j++];
+		str->startindex++;
+    
+		if(str->length != 0)  {
+			str->length--;
+    }
+    
+		charStr[i+1] = 0; //Create delimiter "\0" for the string
+	}	
+	
 	return charStr;
 }
 
