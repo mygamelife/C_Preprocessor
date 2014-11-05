@@ -6,8 +6,12 @@
 #include "CException.h"
 #include "LinkList.h"
 #include "Macro.h"
+#include "RedBlackTree.h"
+#include "Node.h"
+#include "Rotations.h"
+#include "InitNode.h"
 
 int searchDirective(String *str, char *directiveName);
-LinkList *searchMacro(String *str);
+Node *searchMacro(String *str);
 void testDefine();
 #endif // Preprocessor_H

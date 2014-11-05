@@ -1,9 +1,9 @@
 #ifndef ErrorCode_H
 #define ErrorCode_H
 
-typedef enum
-{
-	ERROR_INVALID_FORMAT,
-}ErrorCode;
+typedef enum {
+  ERR_NODE_UNAVAILABLE,
+  ERR_INVALID_FORMAT
+} ErrorCode;
 
-#endif // ErrorCode_H
+#endif //ErrorCode_H
