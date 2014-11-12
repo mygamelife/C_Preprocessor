@@ -47,7 +47,7 @@ Node *searchMacro(String *str) {
   printf("subString %s\n", tempValue);
 
   ptr = newMacro(tempName, tempValue);
-  printf("&ptr %p\n", &ptr);
+  printf("&ptr %p\n", ptr);
   printf("&macro %p\n", &macro); 
   
   printf("Before &root %p\n", root);
@@ -57,7 +57,7 @@ Node *searchMacro(String *str) {
   // printf("macro->name %s\n", macro->name->string);
   if(root == NULL)  {
     addRedBlackTree(&root, (Node*)ptr);
-    printf("After &root %p\n", root);
+    printf("After &root %p\n", *root);
     setNode(root, NULL, NULL, 'b');
   }
   else

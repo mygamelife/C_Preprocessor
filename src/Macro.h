@@ -10,6 +10,6 @@ struct Macro  {
 	String *content;
 };
 
-extern Macro *newMacro(char *macroName, char *macroContent);
+Macro *newMacro(char *macroName, char *macroContent);
 void macroDel(Macro *macro);
 #endif // Macro_H

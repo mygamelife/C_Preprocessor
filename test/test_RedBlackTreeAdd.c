@@ -4,6 +4,8 @@
 #include "Rotations.h"
 #include "RedBlackTree.h"
 #include "CustomAssertions.h"
+#include "StringObject.h"
+#include "Macro.h"
 
 Node node1, node4, node5, node6, node7, node8, node10, node13, node15,
      node20, node22, node30, node40, node60; //Share to all test
@@ -413,22 +415,3 @@ void test_addRedBlackTree_add_7_to_tree_with_root_20_and_left_child_4_right_chil
   TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node30);
   TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node60);
 }
-
-/* Remove RedBlackTree
- *
- * Root ->  1                 NULL
- *              ---->
- *            remove 1
- */
- void test_delRedBlackTree_remove_1_from_the_root(void) {
- 
- }
- 
- 
- 
- 
- 
- 
- 
- 
- 
