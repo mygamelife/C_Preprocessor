@@ -479,18 +479,18 @@ void _genericAddRedBlackTree(Node **rootPtr, Node *newNode)	{
     }
   }
 
-	// else if(root->data <= newNode->data)	{
-		// _genericAddRedBlackTree(&root->right, newNode);
+	else if(!compare(&(*rootPtr), newNode))	{
+		_genericAddRedBlackTree(&root->right, newNode);
 
-    // if(root->right != NULL)  {
-      // if(root->left != NULL)
-        // childColorViolatation(rootPtr);
+    if(root->right != NULL)  {
+      if(root->left != NULL)
+        childColorViolatation(rootPtr);
 
-      // if(root->right->right != NULL)
-        // checkRightRight(rootPtr);
+      if(root->right->right != NULL)
+        checkRightRight(rootPtr);
 
-      // else if(root->right->left != NULL)
-        // checkRightLeft(rootPtr);
-    // }
-   // }
+      else if(root->right->left != NULL)
+        checkRightLeft(rootPtr);
+    }
+   }
 }
