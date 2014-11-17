@@ -4,69 +4,104 @@
 
 Node *root = NULL;
 
-int searchDirective(String *str, char *directiveName) {
-  int hashTag = 0 , found = 1;
-  char *tempString;
-  String *directiveCheck;
+/* Find character hashTag at the first position of the string
+ * input :
+ *			*string is String type pointer
+ * output :
+ *			return 1 if hashTag found
+ *			return 0 if hashTag not found
+ */
+int isHashTag(String *string) {
 
-  stringTrim(str);
-  hashTag = stringCharAtInSet(str , str->startindex, "#");
+  if(string->string[string->startindex] == '#')
+    return 1;
 
-  if(hashTag == found) {
-    directiveCheck = stringRemoveWordContaining(str, directiveName);
-
-    tempString = stringSubStringInChars(directiveCheck, directiveCheck->length);
-
-    if(strcmp(tempString, directiveName) == 0)  {
-      subStringDel(tempString);
-      return 1;
-    }
-
-    else  {
-      subStringDel(tempString);
-      return -1;
-    }
-  }
-
-  else
-    Throw(ERR_INVALID_FORMAT);
+  else return 0;
 }
 
-Node *searchMacro(String *str) {
-  Macro *macro;
-  void *ptr;
-  char *tempName, *tempValue;
-  String *removedName, *removedValue; LinkList *link;
+/* Find directive inside the string
+ * input :
+ *			*string is String type pointer
+ *      *directiveName is directive name
+ * output :
+ *			return 1 if directive name found
+ *			return 0 if directive name not found
+ */
+int isDirective(String *string, char *directiveName) {
+  char *tempString;
+  String *directive;
 
-  removedName = stringRemoveWordContaining(str , alphaNumericSet);
-  tempName = stringSubStringInChars(removedName, removedName->length);
-  printf("subString %s\n", tempName);
+  //remove spaces
+  stringTrim(string);
 
-  removedValue = stringRemoveWordContaining(str , numSet);
-  tempValue = stringSubStringInChars(removedValue, removedValue->length);
-  printf("subString %s\n", tempValue);
+  if(!isHashTag(string))
+    Throw(ERR_INVALID_FORMAT);
 
-  ptr = newMacro(tempName, tempValue);
-  printf("&ptr %p\n", ptr);
-  printf("&macro %p\n", &macro); 
-  
-  printf("Before &root %p\n", root);
-  // if(ptr == NULL)
-    // printf("hi\n");
-  // macro = (Macro*)root;
-  // printf("macro->name %s\n", macro->name->string);
-  if(root == NULL)  {
-    addRedBlackTree(&root, (Node*)ptr);
-    printf("After &root %p\n", *root);
-    setNode(root, NULL, NULL, 'b');
+  //search for directive
+  directive = stringRemoveWordContaining(string, directiveName);
+  printf("directive startIndex %d, length %d\n", directive->startindex, directive->length);
+
+  tempString = stringSubStringInChars(directive, directive->length);
+
+  printf("tempString %s\n", tempString);
+
+  if(strcmp(directiveName, tempString) == 0)  {
+    subStringDel(tempString);
+    return 1;
   }
+
+  else  {
+    subStringDel(tempString);
+    return 0;
+  }
+}
+
+/* Looking for identifier
+ *
+ **Identifier valid format  :
+ * -nondigit
+ * -identifier nondigit
+ * -identifier digit
+ *
+ * input :
+ *			*string is String type pointer
+ * output :
+ *			return 1 if identifier found
+ *			return 0 if identifier not found
+ */
+int isIdentifier(String *string)  {
+  String *identifier = string;
+
+  stringTrim(identifier);
+  printf("Identifier startindex %d, length %d\n", identifier->startindex, identifier->length);
+
+  if(!stringCharAtInSet(identifier, identifier->startindex, numSet))
+    return 1;
+
+  else return 0;
+}
+
+Macro *getMacroInfo(String *string, char *directiveName) {
+  char *macroName, *macroContent;
+  String *name, *content;
+  Macro *macroInfo;
+
+  if(isDirective(string, directiveName))  {
+    if(isIdentifier(string))  {
+      name = stringRemoveWordContaining(string, alphaNumericSet);
+      macroName = stringSubStringInChars(name , name->length);
+      printf("macroName %s\n", macroName);
+
+      content = stringRemoveWordContaining(string, numSet);
+      macroContent = stringSubStringInChars(content , content->length);
+      printf("macroContent %s\n", macroContent);
+
+      printf("string startindex %d, length %d\n", string->startindex, string->length);
+      return macroInfo = newMacro(macroName, macroContent);
+    }
+  }
+
   else
-    addRedBlackTree(&root, (Node*)ptr);
-  
-  
-  // macro = (Macro*)root;
-  // printf("macro->name %s\n", macro->name->string);
-  
-  return root;
+    return NULL;
 }
 

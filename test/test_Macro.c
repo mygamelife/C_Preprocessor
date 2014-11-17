@@ -6,6 +6,11 @@ void setUp(void)  {}
 
 void tearDown(void) {}
 
+/** test newMacro given name "A" and content "123"
+ *
+ *    *macro  --> String *name    = "A"
+ *            --> String *content = "123"
+ */
 void test_newMacro_given_name_A_and_content_123(void)
 {
   Macro *macro = newMacro("A", "123");
@@ -21,5 +26,5 @@ void test_newMacro_given_name_A_and_content_123(void)
   TEST_ASSERT_EQUAL(3, macro->content->length);
 
   //free malloc
-  macroDel(macro);
+  delMacro(macro);
 }

@@ -11,5 +11,5 @@ struct Macro  {
 };
 
 Macro *newMacro(char *macroName, char *macroContent);
-void macroDel(Macro *macro);
+void delMacro(Macro *macro);
 #endif // Macro_H

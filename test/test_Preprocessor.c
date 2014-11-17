@@ -1,7 +1,6 @@
 #include "unity.h"
 #include "Preprocessor.h"
 #include "StringObject.h"
-#include "LinkList.h"
 #include "ErrorCode.h"
 #include "CException.h"
 #include "Macro.h"
@@ -15,15 +14,51 @@ void setUp(void)  {}
 
 void tearDown(void) {}
 
-/* Invalid if the character is not start with '#' */
-void test_searchDirective_should_throw_an_exception(void)
+/** test isHashTag given # should return 1 **/
+void test_isHashTag_given_hashtag_should_return_1(void)
+{
+  int result = 0;
+	String *str = stringNew("#");
+
+  result = isHashTag(str);
+
+  TEST_ASSERT_EQUAL(1, result);
+  stringDel(str);
+}
+
+/** test isHashTag given $ should return 1 **/
+void test_isHashTag_given_dollarSign_should_return_0(void)
+{
+  int result = 0;
+	String *str = stringNew("$");
+
+  result = isHashTag(str);
+
+  TEST_ASSERT_EQUAL(0, result);
+  stringDel(str);
+}
+
+/** test isDirective given #define should return 1 **/
+void test_isDirective_given_define_should_return_1(void)
+{
+  int result = 0;
+	String *str = stringNew("#define");
+
+  result = isDirective(str, "define");
+
+  TEST_ASSERT_EQUAL(1, result);
+  stringDel(str);
+}
+
+/** test isDirective given invalid symbol "!" should throw an error**/
+void test_isDirective_should_throw_an_exception(void)
 {
 	String *str;
   CEXCEPTION_T err;
 
   Try {
-    str = stringNew(" & ");
-    searchDirective(str, "define");
+    str = stringNew("!include");
+    isDirective(str, "include");
     TEST_FAIL_MESSAGE("Should throw ERROR_INVALID_FORMAT exception");
   }
   Catch(err) {
@@ -32,67 +67,72 @@ void test_searchDirective_should_throw_an_exception(void)
   stringDel(str);
 }
 
-/* if the string is #define should return 1*/
-void test_searchDirective_given_string_define_should_return_1(void)
+/** test isDirective given "     #   define" space between # and directive name should return 1 **/
+void test_isDirective_space_between_hashtag_and_directiveName_should_return_1(void)
 {
   int result = 0;
-	String *str;
-  str = stringNew(" #define");
+	String *str = stringNew("     #   define");
 
-  result = searchDirective(str, "define");
+  result = isDirective(str, "define");
 
   TEST_ASSERT_EQUAL(1, result);
   stringDel(str);
 }
 
-/* if the string is not #define should return -1*/
-void test_searchDirective_given_string_abcd_should_return_negative_1(void)
+/** test isDirective given "   # in  clude" space at # and inside directive name should return 0 **/
+void test_isDirective_space_between_hashtag_and_inside_directiveName_should_return_0(void)
 {
   int result = 0;
-	String *str;
-  str = stringNew(" # d e fine ");
+	String *str = stringNew("   # in  clude");
 
-  result = searchDirective(str, "define");
+  result = isDirective(str, "include");
 
-  TEST_ASSERT_EQUAL(-1, result);
+  TEST_ASSERT_EQUAL(0, result);
   stringDel(str);
 }
 
-/* if the string is #include should return 1*/
-void test_searchDirective_given_string_include_should_return_1(void)
+/** test isIdentifier given "_MAX_123" should return 1 **/
+void test_isIdentifier_given__MAX_123_should_return_1(void)
 {
   int result = 0;
-	String *str;
-  str = stringNew(" #  include  ");
+	String *str = stringNew("_MAX_123");
 
-  result = searchDirective(str, "include");
+  result = isIdentifier(str);
 
   TEST_ASSERT_EQUAL(1, result);
   stringDel(str);
 }
 
-/* "ABC 10" ABC should contain in linkList->name and 10 in RedBlackTree */
-void test_searchMacroName_given_define_ABC_macroName_should_contain_in_RedBlackTree(void)
+/** test isIdentifier given "123MAX" should return 0 **/
+void test_isIdentifier_given_123MAX_should_return_0(void)
 {
   int result = 0;
-	String *str;  Macro *macro; Node *root;
+	String *str = stringNew("123MAX");
 
-  str = stringNew("#define ABC 10");
+  result = isIdentifier(str);
 
-  result = searchDirective(str, "define");
-  TEST_ASSERT_EQUAL(1, result);
+  TEST_ASSERT_EQUAL(0, result);
+  stringDel(str);
+}
 
-  TEST_ASSERT_EQUAL(7, str->startindex);
-  TEST_ASSERT_EQUAL(7, str->length);
+/** test getMacroInfo() given
+ *  name = "MAX"
+ *  content = "100"
+ *  macro pointer should contain all these information
+ **/
+void test_getMacroInfo_given_name_MAX_content_100_should_return_macro_pointer_with_these_info(void)
+{
+  int result = 0;
+	String *str = stringNew("#define ABC 100");
 
-  root = searchMacro(str);
-  TEST_ASSERT_NOT_NULL(root);
-	TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', root);
+  printf("Start test_getMacroInfo_given_name_MAX_content_100_should_return_macro_pointer_with_these_info\n");
+  Macro *macro = getMacroInfo(str, "define");
+  printf("------------------------------------------------------------\n");
 
-  macro = (Macro*)root;
   TEST_ASSERT_NOT_NULL(macro);
-  // TEST_ASSERT_EQUAL_STRING("ABC", macro->name->string);
+  TEST_ASSERT_EQUAL_STRING("ABC", macro->name->string);
+  TEST_ASSERT_EQUAL_STRING("100", macro->content->string);
 
-
+  delMacro(macro);
   stringDel(str);
 }

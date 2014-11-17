@@ -4,14 +4,16 @@
 #include "StringObject.h"
 #include "ErrorCode.h"
 #include "CException.h"
-#include "LinkList.h"
 #include "Macro.h"
 #include "RedBlackTree.h"
 #include "Node.h"
 #include "Rotations.h"
 #include "InitNode.h"
 
-int searchDirective(String *str, char *directiveName);
-Node *searchMacro(String *str);
-void testDefine();
+int isDirective(String *string, char *directiveName);
+int isHashTag(String *string);
+int isIdentifier(String *string);
+Macro *getMacroInfo(String *string, char *directiveName);
+Node *searchMacro(String *string);
+
 #endif // Preprocessor_H

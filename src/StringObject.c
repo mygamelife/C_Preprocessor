@@ -21,7 +21,7 @@ String *stringNew(char *charString)
 	str->string = charString;
 	str->startindex = 0;
 	str->length = strlen(charString);
-	
+
 	return str;
 }
 
@@ -37,7 +37,7 @@ void stringTrimLeft(String *str)
 	{
 		str->startindex++;
 		str->length--;
-		
+
 		if(str->string[str->startindex] == 0)
 			str->length = 0;
 	}
@@ -52,15 +52,15 @@ void stringTrimLeft(String *str)
 void stringTrimRight(String *str)
 {
 	int i = strlen(str->string);
-		
+
 	if(str->string[i] == 0)
 		i--;
-		
+
 	while(isspace(str->string[i]))
 	{
 		if(str->length == 0)
 		break;
-		
+
 		i--;
 		str->length--;
 	}
@@ -87,10 +87,10 @@ void stringTrim(String *str)
 String *stringRemoveWordContaining(String *str , char *containSet)
 {
 	int i = str->startindex , j = 0 , firstFound = 0 , notInSet = 0;
-	
+
 	String *removedWord = stringNew(str->string); //create new String for removedWord
 	removedWord->length = 0;
-	
+
 	while(i < strlen(str->string))
 	{
 		while(j != strlen(containSet))
@@ -99,29 +99,29 @@ String *stringRemoveWordContaining(String *str , char *containSet)
 			{
 				if(!firstFound)
 				{
-					removedWord->startindex = i; //first character found	
+					removedWord->startindex = i; //first character found
 					firstFound = 1; //make sure this statement wont run again when the first character is found
 				}
 				removedWord->length++; //one word is detected in ContainSet
 				str->startindex = i+1;
 				notInSet = 0;
-					
+
 				goto jump;
 			}
-			
+
 			if(firstFound == 1)
 				notInSet = 1;
-				
+
 			j++;
 		}
-		
+
 		if(notInSet == 1)
 			goto end;
 
-jump:		
-		i++;		
+jump:
+		i++;
 		j = 0;
-	}	
+	}
 
 end:
 	str->length = strlen(str->string) - str->startindex;
@@ -137,10 +137,10 @@ end:
 String *stringRemoveWordNotContaining(String *str , char *notContainSet)
 {
 	int i = str->startindex , j = 0 , firstFound = 0 , notInSet = 0;
-	
+
 	String *notRemovedWord = stringNew(str->string); //create new String for notRemovedWord
-	notRemovedWord->length = 0; 
-	
+	notRemovedWord->length = 0;
+
 	while(i < strlen(str->string))
 	{
 		while(j != strlen(notContainSet))
@@ -149,32 +149,32 @@ String *stringRemoveWordNotContaining(String *str , char *notContainSet)
 			{
 				if(!firstFound)
 				{
-					notRemovedWord->startindex = i; //first character found	
+					notRemovedWord->startindex = i; //first character found
 					firstFound = 1;
 					if(i != 0)
 						str->length = str->length - i;
 				}
-				
+
 				notRemovedWord->length++; //one word is detected in ContainSet
 				str->startindex = i+1;
 				str->length--; //decrement once after one word removed
 				notInSet = 0;
-				
+
 				goto jump;
 			}
-			
+
 			if(firstFound == 1)
 				notInSet = 1;
-				
+
 			j++;
 		}
-		
+
 		if(notInSet == 1)
 			goto end;
-jump:		
-		i++;		
+jump:
+		i++;
 		j = 0;
-	}	
+	}
 
 end:
 	return notRemovedWord;
@@ -190,7 +190,7 @@ end:
 int stringCharAt(String *str ,  int relativePos)
 {
 	if((relativePos < 0 ) || relativePos > (strlen(str->string) - 1))
-		return -1;	
+		return -1;
 
 	return str->string[relativePos];
 }
@@ -222,13 +222,13 @@ void stringSkip(String *str , int numOfCharToSkip)
 {
 	if(numOfCharToSkip < 0)
 		str->startindex = 0;
-		
+
 	else if((str->length - 1) >= numOfCharToSkip)
 	{
 		str->startindex = numOfCharToSkip;
 		str->length = str->length - numOfCharToSkip;
 	}
-	
+
 	else
 	{
 		str->startindex = str->length;
@@ -246,19 +246,19 @@ char *stringSubStringInChars(String *str , int length)
 {
 	int i = 0 , j = str->startindex;
 	char *charStr = malloc(sizeof(char) * length + 1); //malloc charStr in order to return
-	
+
 	for(i ; i < length ; i++)
 	{
 		charStr[i] = str->string[j++];
 		str->startindex++;
-    
+
 		if(str->length != 0)  {
 			str->length--;
     }
-    
+
 		charStr[i+1] = 0; //Create delimiter "\0" for the string
-	}	
-	
+	}
+
 	return charStr;
 }
 
@@ -271,9 +271,9 @@ char *stringSubStringInChars(String *str , int length)
 int subStringToInteger(char *subString)
 {
 	int integer;
-	
+
 	integer = atoi(subString); //atoi ASCII to integer
-	
+
 	return integer;
 }
 
@@ -306,34 +306,34 @@ void subStringDel(char *subString)
 int stringCharAtInSet(String *str , int relativePos , char *containSet)
 {
 	int i = 0;
-	
+
 	while(i != strlen(containSet))
 	{
 		if(str->string[relativePos] == containSet[i++])
 			return 1;
 	}
-	
+
 	return 0;
 }
 
-/* Get the substring location out from the string 
+/* Get the substring location out from the string
  * input :
  *			start is the start location for the substring
  *			length is the total character of the substring
  * return :
- *		 	return the subString	
+ *		 	return the subString
  */
 String *stringSubString(String *str , int start , int length)
 {
 	String *subStr = stringNew(str->string);
-	
+
 	if(start >= strlen(subStr->string))
 	{
 		subStr->startindex = strlen(subStr->string);
 		subStr->length = 0;
 		return subStr;
 	}
-	
+
 	subStr->startindex = start;
 	subStr->length = length;
 	// printf("start = %d\n" , subStr->startindex);
@@ -344,10 +344,10 @@ String *stringSubString(String *str , int start , int length)
 String *stringRemoveOperator(String *str , char *containSet)
 {
 	int i = str->startindex , j = 0;
-	
+
 	String *removedWord = stringNew(str->string); //create new String for removedWord
 	removedWord->length = 0;
-	
+
 	while(i < strlen(str->string))
 	{
 		while(j != strlen(containSet))
@@ -364,10 +364,10 @@ String *stringRemoveOperator(String *str , char *containSet)
 						str->length -= 2;
 						str->length = strlen(str->string) - str->startindex;
 						return removedWord;
-					}					
+					}
 					goto jump;
 				}
-				
+
 				else if(str->string[i] == '|') //check "||" operator
 				{
 					if(str->string[i+1] == '|')
@@ -381,7 +381,7 @@ String *stringRemoveOperator(String *str , char *containSet)
 					}
 					goto jump;
 				}
-				
+
 				else if(str->string[i] == '<') //check "<<" operator
 				{
 					if(str->string[i+1] == '<')
@@ -395,7 +395,7 @@ String *stringRemoveOperator(String *str , char *containSet)
 					}
 					goto jump;
 				}
-				
+
 				else if(str->string[i] == '>') //check ">>" operator
 				{
 					if(str->string[i+1] == '>')
@@ -409,7 +409,7 @@ String *stringRemoveOperator(String *str , char *containSet)
 					}
 					goto jump;
 				}
-				
+
 				else if(str->string[i] == '=') //check "==" operator
 				{
 					if(str->string[i+1] == '=')
@@ -428,12 +428,12 @@ jump:
 				removedWord->length++;
 				str->startindex = i+1;
 				str->length = strlen(str->string) - str->startindex;
-				return removedWord;	
+				return removedWord;
 			}
-				
+
 			j++;
 		}
-		i++;		
+		i++;
 		j = 0;
 	}
 	return removedWord;
