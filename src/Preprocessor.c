@@ -26,7 +26,7 @@ int isHashTag(String *string) {
  *      *directiveName is directive name
  * output :
  *			return 1 if directive name found
- *			return 0 if directive name not found
+ *			throw ERR_INVALID_DIRECTIVE if directive name not found
  **/
 int isDirective(String *string, char *directiveName) {
   char *tempString;
@@ -35,18 +35,14 @@ int isDirective(String *string, char *directiveName) {
   //remove spaces
   stringTrim(string);
 
-  // if(!isHashTag(string))  {
-    // printf("str->string %c", string->string[string->startindex]);
-    // Throw(ERR_INVALID_FORMAT);
-  // }
-
   //search for directive
   directive = stringRemoveWordContaining(string, directiveName);
   printf("directive startIndex %d, length %d\n", directive->startindex, directive->length);
 
   tempString = stringSubStringInChars(directive, directive->length);
 
-  printf("tempString %s\n", tempString);
+  if(directive->startindex != 0)
+    printf("tempString %s\n", tempString);
 
   if(strcmp(directiveName, tempString) == 0)  {
     subStringDel(tempString);
@@ -55,7 +51,7 @@ int isDirective(String *string, char *directiveName) {
 
   else  {
     subStringDel(tempString);
-    return 0;
+    Throw(ERR_INVALID_DIRECTIVE);
   }
 }
 
@@ -70,7 +66,7 @@ int isDirective(String *string, char *directiveName) {
  *			*string is String type pointer
  * output :
  *			return 1 if identifier found
- *			return 0 if identifier not found
+ *			throw ERR_INVALID_IDENTIFIER if identifier not found
  **/
 int isIdentifier(String *string)  {
   String *identifier = string;
@@ -81,7 +77,7 @@ int isIdentifier(String *string)  {
   if(!stringCharAtInSet(identifier, identifier->startindex, numSet))
     return 1;
 
-  else return 0;
+  else Throw(ERR_INVALID_IDENTIFIER);
 }
 
 /** Extract the MacroInfo out from the given string
@@ -119,10 +115,12 @@ void directiveDefine(String *string, char *directiveName) {
 
   printf("str->startindex %d, str->length %d\n", string->startindex, string->length);
 
-  while(isDirective(string, directiveName)) {
-    if(isIdentifier(string))  {
-      macroNode = macroNodeNew(getMacroInfo(string));
-      addMacro(&root, macroNode);
+  while(isHashTag(string)) {
+    if(isDirective(string, directiveName))  {
+      if(isIdentifier(string))  {
+        macroNode = macroNodeNew(getMacroInfo(string));
+        addMacro(&root, macroNode);
+      }
     }
   }
 

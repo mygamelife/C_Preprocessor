@@ -38,25 +38,42 @@ void test_isHashTag_given_dollar_sign_should_return_0(void)
   stringDel(str);
 }
 
-/** test isDirective given invalid symbol "$" should throw an error**/
-void Xtest_isDirective_should_throw_an_exception(void)
+/** test isDirective given invalid directive name should throw an error**/
+void test_isDirective_should_throw_an_exception(void)
 {
 	String *str;
   CEXCEPTION_T err;
 
   Try {
-    str = stringNew("$include");
-    isDirective(str, "include");
-    TEST_FAIL_MESSAGE("Should throw ERROR_INVALID_FORMAT exception");
+    str = stringNew("HALELUYA");
+    int result = isDirective(str, "include");
+    TEST_FAIL_MESSAGE("Should throw ERR_INVALID_DIRECTIVE exception");
   }
   Catch(err) {
-    TEST_ASSERT_EQUAL_MESSAGE(ERR_INVALID_FORMAT, err, "Expect ERROR_INVALID_FORMAT exception");
+    TEST_ASSERT_EQUAL_MESSAGE(ERR_INVALID_DIRECTIVE, err, "Expect ERR_INVALID_DIRECTIVE exception");
+  }
+  stringDel(str);
+}
+
+/** test isDirective given "   # in  clude" space at # and inside directive name should throw an error **/
+void test_isDirective_space_between_hashtag_and_inside_directiveName_should_throw_error(void)
+{
+	String *str;
+  CEXCEPTION_T err;
+
+  Try {
+    str = stringNew("   # in  clude");
+    isDirective(str, "include");
+    TEST_FAIL_MESSAGE("Should throw ERR_INVALID_DIRECTIVE exception");
+  }
+  Catch(err) {
+    TEST_ASSERT_EQUAL_MESSAGE(ERR_INVALID_DIRECTIVE, err, "Expect ERR_INVALID_DIRECTIVE exception");
   }
   stringDel(str);
 }
 
 /** test isDirective given #define should return 1 **/
-void Xtest_isDirective_given_define_should_return_1(void)
+void test_isDirective_given_define_should_return_1(void)
 {
   int result = 0;
 	String *str = stringNew("#define");
@@ -68,7 +85,7 @@ void Xtest_isDirective_given_define_should_return_1(void)
 }
 
 /** test isDirective given "     #   define" space between # and directive name should return 1 **/
-void Xtest_isDirective_space_between_hashtag_and_directiveName_should_return_1(void)
+void test_isDirective_space_between_hashtag_and_directiveName_should_return_1(void)
 {
   int result = 0;
 	String *str = stringNew("     #   define");
@@ -79,20 +96,8 @@ void Xtest_isDirective_space_between_hashtag_and_directiveName_should_return_1(v
   stringDel(str);
 }
 
-/** test isDirective given "   # in  clude" space at # and inside directive name should return 0 **/
-void Xtest_isDirective_space_between_hashtag_and_inside_directiveName_should_return_0(void)
-{
-  int result = 0;
-	String *str = stringNew("   # in  clude");
-
-  result = isDirective(str, "include");
-
-  TEST_ASSERT_EQUAL(0, result);
-  stringDel(str);
-}
-
 /** test isIdentifier given "_MAX_123" should return 1 **/
-void Xtest_isIdentifier_given__MAX_123_should_return_1(void)
+void test_isIdentifier_given__MAX_123_should_return_1(void)
 {
   int result = 0;
 	String *str = stringNew("_MAX_123");
@@ -104,14 +109,20 @@ void Xtest_isIdentifier_given__MAX_123_should_return_1(void)
 }
 
 /** test isIdentifier given "123MAX" should return 0 **/
-void Xtest_isIdentifier_given_123MAX_should_return_0(void)
+void test_isIdentifier_given_123MAX_should_return_0(void)
 {
   int result = 0;
-	String *str = stringNew("123MAX");
+  String *str;
+  CEXCEPTION_T err;
 
-  result = isIdentifier(str);
-
-  TEST_ASSERT_EQUAL(0, result);
+  Try {
+    str = stringNew("123MAX");
+    result = isIdentifier(str);
+    TEST_FAIL_MESSAGE("Should throw ERR_INVALID_IDENTIFIER exception");
+  }
+  Catch(err) {
+    TEST_ASSERT_EQUAL_MESSAGE(ERR_INVALID_IDENTIFIER, err, "Expect ERR_INVALID_IDENTIFIER exception");
+  }
   stringDel(str);
 }
 
