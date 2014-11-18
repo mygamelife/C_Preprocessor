@@ -13,7 +13,7 @@
 int isDirective(String *string, char *directiveName);
 int isHashTag(String *string);
 int isIdentifier(String *string);
-Macro *getMacroInfo(String *string, char *directiveName);
-Node *searchMacro(String *string);
+Macro *getMacroInfo(String *string);
+void directiveDefine(String *string, char *directiveName);
 
 #endif // Preprocessor_H

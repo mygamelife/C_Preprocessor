@@ -27,7 +27,7 @@ void test_isHashTag_given_hashtag_should_return_1(void)
 }
 
 /** test isHashTag given $ should return 1 **/
-void test_isHashTag_given_dollarSign_should_return_0(void)
+void test_isHashTag_given_dollar_sign_should_return_0(void)
 {
   int result = 0;
 	String *str = stringNew("$");
@@ -38,8 +38,25 @@ void test_isHashTag_given_dollarSign_should_return_0(void)
   stringDel(str);
 }
 
+/** test isDirective given invalid symbol "$" should throw an error**/
+void Xtest_isDirective_should_throw_an_exception(void)
+{
+	String *str;
+  CEXCEPTION_T err;
+
+  Try {
+    str = stringNew("$include");
+    isDirective(str, "include");
+    TEST_FAIL_MESSAGE("Should throw ERROR_INVALID_FORMAT exception");
+  }
+  Catch(err) {
+    TEST_ASSERT_EQUAL_MESSAGE(ERR_INVALID_FORMAT, err, "Expect ERROR_INVALID_FORMAT exception");
+  }
+  stringDel(str);
+}
+
 /** test isDirective given #define should return 1 **/
-void test_isDirective_given_define_should_return_1(void)
+void Xtest_isDirective_given_define_should_return_1(void)
 {
   int result = 0;
 	String *str = stringNew("#define");
@@ -50,25 +67,8 @@ void test_isDirective_given_define_should_return_1(void)
   stringDel(str);
 }
 
-/** test isDirective given invalid symbol "!" should throw an error**/
-void test_isDirective_should_throw_an_exception(void)
-{
-	String *str;
-  CEXCEPTION_T err;
-
-  Try {
-    str = stringNew("!include");
-    isDirective(str, "include");
-    TEST_FAIL_MESSAGE("Should throw ERROR_INVALID_FORMAT exception");
-  }
-  Catch(err) {
-    TEST_ASSERT_EQUAL_MESSAGE(ERR_INVALID_FORMAT, err, "Expect ERROR_INVALID_FORMAT exception");
-  }
-  stringDel(str);
-}
-
 /** test isDirective given "     #   define" space between # and directive name should return 1 **/
-void test_isDirective_space_between_hashtag_and_directiveName_should_return_1(void)
+void Xtest_isDirective_space_between_hashtag_and_directiveName_should_return_1(void)
 {
   int result = 0;
 	String *str = stringNew("     #   define");
@@ -80,7 +80,7 @@ void test_isDirective_space_between_hashtag_and_directiveName_should_return_1(vo
 }
 
 /** test isDirective given "   # in  clude" space at # and inside directive name should return 0 **/
-void test_isDirective_space_between_hashtag_and_inside_directiveName_should_return_0(void)
+void Xtest_isDirective_space_between_hashtag_and_inside_directiveName_should_return_0(void)
 {
   int result = 0;
 	String *str = stringNew("   # in  clude");
@@ -92,7 +92,7 @@ void test_isDirective_space_between_hashtag_and_inside_directiveName_should_retu
 }
 
 /** test isIdentifier given "_MAX_123" should return 1 **/
-void test_isIdentifier_given__MAX_123_should_return_1(void)
+void Xtest_isIdentifier_given__MAX_123_should_return_1(void)
 {
   int result = 0;
 	String *str = stringNew("_MAX_123");
@@ -104,7 +104,7 @@ void test_isIdentifier_given__MAX_123_should_return_1(void)
 }
 
 /** test isIdentifier given "123MAX" should return 0 **/
-void test_isIdentifier_given_123MAX_should_return_0(void)
+void Xtest_isIdentifier_given_123MAX_should_return_0(void)
 {
   int result = 0;
 	String *str = stringNew("123MAX");
@@ -123,14 +123,14 @@ void test_isIdentifier_given_123MAX_should_return_0(void)
 void test_getMacroInfo_given_name_MAX_content_100_should_return_macro_pointer_with_these_info(void)
 {
   int result = 0;
-	String *str = stringNew("#define ABC 100");
+	String *str = stringNew("MAX 100");
 
   printf("Start test_getMacroInfo_given_name_MAX_content_100_should_return_macro_pointer_with_these_info\n");
-  Macro *macro = getMacroInfo(str, "define");
+  Macro *macro = getMacroInfo(str);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(macro);
-  TEST_ASSERT_EQUAL_STRING("ABC", macro->name->string);
+  TEST_ASSERT_EQUAL_STRING("MAX", macro->name->string);
   TEST_ASSERT_EQUAL_STRING("100", macro->content->string);
 
   delMacro(macro);
@@ -147,27 +147,41 @@ void test_getMacroInfo_given_name_MAX_content_100_should_return_macro_pointer_wi
 void test_getMacroInfo_given_name_MINUTE_50_and_SECOND_3000_should_return_macro_pointer_with_these_info(void)
 {
   int result = 0;
-	String *str = stringNew("#define MINUTE 50\n"
-                          "#define SECOND 3000\n");
+	String *str = stringNew("MINUTE 50\n"
+                          "SECOND 3000\n");
 
   printf("Start test_getMacroInfo_given_name_MINUTE_50_and_SECOND_3000_should_return_macro_pointer_with_these_info\n");
-  Macro *macro = getMacroInfo(str, "define");
+  Macro *macro = getMacroInfo(str);
+  macro = getMacroInfo(str);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(macro);
-  TEST_ASSERT_EQUAL_STRING("MINUTE", macro->name->string);
-  TEST_ASSERT_EQUAL_STRING("50", macro->content->string);
-  TEST_ASSERT_EQUAL(17, str->startindex);
-  TEST_ASSERT_EQUAL(21, str->length);
-
-  printf("String at position 17 %c\n", str->string[17]);
-  macro = getMacroInfo(str, "define");
   TEST_ASSERT_EQUAL_STRING("SECOND", macro->name->string);
   TEST_ASSERT_EQUAL_STRING("3000", macro->content->string);
-  TEST_ASSERT_EQUAL(37, str->startindex);
+  TEST_ASSERT_EQUAL(21, str->startindex);
   TEST_ASSERT_EQUAL(1, str->length);
 
-
   delMacro(macro);
+  stringDel(str);
+}
+
+/** test directiveDefine() given str pointer and directive name "define"
+ *  #define MAX 500
+ *  #define MIN 200
+ *
+ *  X = MAX + MIN;
+ *
+ ** result : X = 500 + 200
+ **/
+void test_directiveDefine_given_MAX_500_MIN_200_and_directive_name_define(void)
+{
+  int result = 0;
+	String *str = stringNew("#define MAX 500\n"
+                          "#define MIN 200\n");
+
+  printf("Start test_directiveDefine_given_MAX_500_MIN_200_and_directive_name_define\n");
+  directiveDefine(str, "define");
+  printf("------------------------------------------------------------\n");
+
   stringDel(str);
 }

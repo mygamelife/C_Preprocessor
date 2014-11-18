@@ -2,6 +2,7 @@
 #define Macro_H
 
 #include "StringObject.h"
+#include "Node.h"
 
 typedef struct Macro Macro;
 
@@ -12,4 +13,7 @@ struct Macro  {
 
 Macro *newMacro(char *macroName, char *macroContent);
 void delMacro(Macro *macro);
+Node *macroNodeNew(Macro *macroInfo);
+void delMacroNode(Node *node);
+
 #endif // Macro_H
