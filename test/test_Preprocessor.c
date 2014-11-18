@@ -115,7 +115,7 @@ void test_isIdentifier_given_123MAX_should_return_0(void)
   stringDel(str);
 }
 
-/** test getMacroInfo() given
+/** test getMacroInfo() given 1 info
  *  name = "MAX"
  *  content = "100"
  *  macro pointer should contain all these information
@@ -132,6 +132,41 @@ void test_getMacroInfo_given_name_MAX_content_100_should_return_macro_pointer_wi
   TEST_ASSERT_NOT_NULL(macro);
   TEST_ASSERT_EQUAL_STRING("ABC", macro->name->string);
   TEST_ASSERT_EQUAL_STRING("100", macro->content->string);
+
+  delMacro(macro);
+  stringDel(str);
+}
+
+/** test getMacroInfo() given 2 info
+ *  name = "MINUTE"
+ *  content = "50"
+ *  name = "SECOND"
+ *  content = "3000"
+ *  macro pointer should contain all these information
+ **/
+void test_getMacroInfo_given_name_MINUTE_50_and_SECOND_3000_should_return_macro_pointer_with_these_info(void)
+{
+  int result = 0;
+	String *str = stringNew("#define MINUTE 50\n"
+                          "#define SECOND 3000\n");
+
+  printf("Start test_getMacroInfo_given_name_MINUTE_50_and_SECOND_3000_should_return_macro_pointer_with_these_info\n");
+  Macro *macro = getMacroInfo(str, "define");
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(macro);
+  TEST_ASSERT_EQUAL_STRING("MINUTE", macro->name->string);
+  TEST_ASSERT_EQUAL_STRING("50", macro->content->string);
+  TEST_ASSERT_EQUAL(17, str->startindex);
+  TEST_ASSERT_EQUAL(21, str->length);
+
+  printf("String at position 17 %c\n", str->string[17]);
+  macro = getMacroInfo(str, "define");
+  TEST_ASSERT_EQUAL_STRING("SECOND", macro->name->string);
+  TEST_ASSERT_EQUAL_STRING("3000", macro->content->string);
+  TEST_ASSERT_EQUAL(37, str->startindex);
+  TEST_ASSERT_EQUAL(1, str->length);
+
 
   delMacro(macro);
   stringDel(str);

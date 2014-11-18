@@ -432,40 +432,49 @@ Node *_delRedBlackTree(Node **rootPtr, Node *removeNode) {
   }
 }
 
-/******************************************************************
- *                Generic AddRedBlackTree                         *
- *    input:  rootPtr and any type of data                        *
- *    output: add the data into redBlackTree                      *
- ******************************************************************/
-int compare(Node **rootPtr, Node *newNode)  {
-  Node *root = *rootPtr;
-  Macro *m1 = (Macro*)root->dataPtr;
-  Macro *m2 = (Macro*)newNode->dataPtr;
+/** compare 2 String type character
+ * input :
+ *			**rootPtr is a void pointer pointing to the root
+ *      *newNode is a void pointer pointing to the newNode
+ * output :
+ *			return 1 if root  > newNode
+ *			return 0 root  < newNode
+ **/
+int compare(void **rootPtr, void *newNode)  {
+  //type cast void pointer to Node type
+  Node *root = (Node*)*rootPtr;
+  Node *newNodePtr = (Node*)newNode;
 
-  if(m1->name->string[0] > m1->name->string[0])
+  //type cast void *dataPtr to Macro type
+  Macro* m1 = (Macro*)(root->dataPtr);
+  Macro* m2 = (Macro*)(newNodePtr->dataPtr);
+
+  printf("Macro1 %s\n", m1->name->string);
+  printf("Macro2 %s\n", m2->name->string);
+
+  if(m1->name->string[0] >= m2->name->string[0])
     return 1;
-  else if(m1->name->string[0] < m1->name->string[0])
+  else if(m1->name->string[0] <= m2->name->string[0])
     return 0;
-  else return -1;
 }
 
-void genericAddRedBlackTree(Node **rootPtr, Node *newNode)	{
-  _genericAddRedBlackTree(rootPtr, newNode);
+void genericAddRedBlackTree(Node **rootPtr, Node *newNode, int (*compare)(void **rootPtr, void *newNode))	{
+  _genericAddRedBlackTree(rootPtr, newNode, compare);
 
-  // Node *root = *rootPtr;
-  // root->color = 'b';
+  Node *root = *rootPtr;
+  root->color = 'b';
 }
 
-void _genericAddRedBlackTree(Node **rootPtr, Node *newNode)	{
+void _genericAddRedBlackTree(Node **rootPtr, Node *newNode, int (*comparePtr)(void **rootPtr, void *newNode))	{
 	Node *root = *rootPtr;
- 
+
 	if(*rootPtr == NULL)	{
 		(*rootPtr) = newNode;
 		return;
 	}
 
-	else if(compare(&(*rootPtr), newNode))	{
-		_genericAddRedBlackTree(&root->left, newNode);
+	else if(comparePtr((void*)rootPtr, newNode))	{
+		_genericAddRedBlackTree(&root->left, newNode, compare);
 
     if(root->left != NULL)  {
       if(root->right != NULL)
@@ -479,18 +488,18 @@ void _genericAddRedBlackTree(Node **rootPtr, Node *newNode)	{
     }
   }
 
-	// else if(root->data <= newNode->data)	{
-		// _genericAddRedBlackTree(&root->right, newNode);
+	else if(!comparePtr((void*)rootPtr, newNode))	{
+		_genericAddRedBlackTree(&root->right, newNode, compare);
 
-    // if(root->right != NULL)  {
-      // if(root->left != NULL)
-        // childColorViolatation(rootPtr);
+    if(root->right != NULL)  {
+      if(root->left != NULL)
+        childColorViolatation(rootPtr);
 
-      // if(root->right->right != NULL)
-        // checkRightRight(rootPtr);
+      if(root->right->right != NULL)
+        checkRightRight(rootPtr);
 
-      // else if(root->right->left != NULL)
-        // checkRightLeft(rootPtr);
-    // }
-   // }
+      else if(root->right->left != NULL)
+        checkRightLeft(rootPtr);
+    }
+   }
 }

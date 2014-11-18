@@ -4,13 +4,13 @@
 
 Node *root = NULL;
 
-/* Find character hashTag at the first position of the string
+/** Find character hashTag at the first position of the string
  * input :
  *			*string is String type pointer
  * output :
  *			return 1 if hashTag found
  *			return 0 if hashTag not found
- */
+ **/
 int isHashTag(String *string) {
 
   if(string->string[string->startindex] == '#')
@@ -19,14 +19,14 @@ int isHashTag(String *string) {
   else return 0;
 }
 
-/* Find directive inside the string
+/** Find directive inside the string
  * input :
  *			*string is String type pointer
  *      *directiveName is directive name
  * output :
  *			return 1 if directive name found
  *			return 0 if directive name not found
- */
+ **/
 int isDirective(String *string, char *directiveName) {
   char *tempString;
   String *directive;
@@ -56,7 +56,7 @@ int isDirective(String *string, char *directiveName) {
   }
 }
 
-/* Looking for identifier
+/** Looking for identifier
  *
  **Identifier valid format  :
  * -nondigit
@@ -68,7 +68,7 @@ int isDirective(String *string, char *directiveName) {
  * output :
  *			return 1 if identifier found
  *			return 0 if identifier not found
- */
+ **/
 int isIdentifier(String *string)  {
   String *identifier = string;
 

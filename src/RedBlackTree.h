@@ -7,6 +7,8 @@
 #include "StringObject.h"
 #include "Macro.h"
 
+#define addMacro(rootPtr, newNode)  genericAddRedBlackTree(rootPtr, newNode, compare)
+
 void addRedBlackTree(Node **rootPtr, Node *newNode);
 Node *delRedBlackTreex(Node **rootPtr, Node *removeNode);
 void checkLeftRight(Node **rootPtr);
@@ -18,9 +20,9 @@ void handleViolatation(Node **rootPtr);
 void colorFlipping(Node **rootPtr, Node *removedNode);
 
 //generic redBlackTree
-void genericAddRedBlackTree(Node **rootPtr, Node *newNode);
-void _genericAddRedBlackTree(Node **rootPtr, Node *newNode);
-int compare(Node **rootPtr, Node *newNode);
+// void genericAddRedBlackTree(Node **rootPtr, Node *newNode, int (*compare)(void **rootPtr, void *newNode));
+void _genericAddRedBlackTree(Node **rootPtr, Node *newNode, int (*comparePtr)(void **rootPtr, void *newNode));
+int compare(void **rootPtr, void *newNode);
 
 //new implement
 Node *delRedBlackTree(Node **rootPtr, Node *removeNode);
