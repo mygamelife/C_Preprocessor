@@ -13,7 +13,7 @@
 int isHashTag(String *string) {
 
   stringTrim(string);
-  
+
   if(string->string[string->startindex] == '#')
     return 1;
 
@@ -125,12 +125,8 @@ Node *addAllMacroIntoTree(String *string, char *directiveName) {
     }
   }
 
-  // printf("str->startindex %d, str->length %d\n", string->startindex, string->length);
-  // setMacroNode(&macroNode, getMacroInfo(string));
-  // addMacro(&root, &macroNode);
-
+  //Debug purpose
   Macro *m = (Macro*)root->dataPtr;
-
   printf("root name %s, content %s\n", m->name->string, m->content->string);
 
   if(root->left != NULL) {
@@ -141,6 +137,50 @@ Node *addAllMacroIntoTree(String *string, char *directiveName) {
     Macro *mRight = (Macro*)root->right->dataPtr;
     printf("right name %s, content %s\n", mRight->name->string, mRight->content->string);
   }
+  //Debug purpose
 
   return root;
+}
+
+String *findMacro(Node *root, char *targetMacro)  {
+  Macro *macro;
+  char *macroString;
+
+  if(root != NULL)  {
+    macro = (Macro*)root->dataPtr;
+    macroString = macro->name->string;
+
+    printf("findMacro()\n");
+
+    if(strcmp(macroString, targetMacro) == 0) {
+      printf("FOUND Name %s\n", macroString);
+      return macro->content;
+    }
+
+    else if(macro->name->string[0] >= targetMacro[0])
+      findMacro(root->left, targetMacro);
+
+    else findMacro(root->right, targetMacro);
+  }
+}
+
+void directiveDefine(String *string, char *directiveName) {
+  Node *root = addAllMacroIntoTree(string, directiveName);
+
+  Macro *m = (Macro*)root->dataPtr;
+  printf("macro name %s\n", m->name->string);
+
+  stringTrim(string);
+
+  String *token = stringRemoveWordContaining(string, alphaNumericSet);
+  printf("1st token start %d, length %d \n", token->startindex, token->length);
+  char *targetToken = stringSubStringInChars(token , token->length);
+  printf("targetToken %s\n", targetToken);
+
+  token = stringRemoveWordContaining(string, alphaNumericSet);
+  printf("1st token start %d, length %d \n", token->startindex, token->length);
+  targetToken = stringSubStringInChars(token , token->length);
+  printf("targetToken %s\n", targetToken);
+
+  // printf("String %c\n", string->string[string->startindex]);
 }

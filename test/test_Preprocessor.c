@@ -246,18 +246,106 @@ void test_addAllMacroIntoTree_given_HEIGHT_WIDTH_LENGTH_AREA_and_directive_name_
   Macro *m2 = (Macro*)root->right->dataPtr;
   TEST_ASSERT_EQUAL_STRING("WIDTH", m2->name->string);
   TEST_ASSERT_EQUAL_STRING("70cm", m2->content->string);
-  
+
   TEST_ASSERT_NOT_NULL(root->right->left);
   Macro *m3 = (Macro*)root->right->left->dataPtr;
   TEST_ASSERT_EQUAL_STRING("LENGTH", m3->name->string);
   TEST_ASSERT_EQUAL_STRING("950", m3->content->string);
-  
+
   TEST_ASSERT_NOT_NULL(root->left);
   Macro *m4 = (Macro*)root->left->dataPtr;
   TEST_ASSERT_EQUAL_STRING("AREA", m4->name->string);
   TEST_ASSERT_EQUAL_STRING("456", m4->content->string);
-  
+
   //free all malloc memory in tree
   destroyAllMacroInTree(root);
   stringDel(str);
+}
+
+/** test findMacro() given added macroNode tree:
+ ** tree  :
+ *                 MIDDLE(20)
+ *                /     \
+ *      (30)LARGE        SMALL(10)
+ *
+ ** result :
+ *          return macroContent contain 10
+ **/
+void test_findMacro_given_added_macroNode_tree_and_find_SMALL_should_return_10(void)
+{
+  int result = 0;
+	String *str = stringNew("#define MIDDLE 20\n"
+                          "#define LARGE 30\n"
+                          "#define SMALL 10\n");
+
+  printf("Start test_findMacro_given_added_macroNode_tree_and_find_SMALL_should_return_10\n");
+  //add all macroNode to tree
+  Node *root = addAllMacroIntoTree(str, "define");
+
+  //find targetMacro in tree
+  String *macroContent = findMacro(root, "SMALL");
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(macroContent);
+  TEST_ASSERT_EQUAL_STRING("10", macroContent->string);
+
+  //free all malloc memory in tree
+  destroyAllMacroInTree(root);
+  stringDel(str);
+}
+
+/** test findMacro() given added 7 macroNode tree:
+ * Search the IN macroNode in the tree and return the content of it which is 30
+ ** result :
+ *          return macroContent contain 30
+ **/
+void test_findMacro_given_added_macroNode_tree_and_find_IN_should_return_30(void)
+{
+  int result = 0;
+	String *str = stringNew("#define FIND 10\n"
+                          "#define TARGET 20\n"
+                          "#define IN 30\n"
+                          "#define SEVEN 40\n"
+                          "#define MACRO 50\n"
+                          "#define NODE 60\n"
+                          "#define TREE 70\n");
+
+  printf("Start test_findMacro_given_added_macroNode_tree_and_find_IN_should_return_30\n");
+  //add all macroNode to tree
+  Node *root = addAllMacroIntoTree(str, "define");
+
+  //find targetMacro in tree
+  String *macroContent = findMacro(root, "IN");
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(macroContent);
+  TEST_ASSERT_EQUAL_STRING("30", macroContent->string);
+
+  destroyAllMacroInTree(root);
+  stringDel(str);
+}
+
+/** test directiveDefine() given string:
+ *  #define BIG 999
+ *  X = BIG;
+ *
+ ** result :
+ *          X = 999;
+ **/
+void Xtest_directiveDefine_given_BIG_999_and_X_equal_BIG_should_replace_BIG_to_999(void)
+{
+  int result = 0;
+	String *str = stringNew("#define BIG 999\n"
+                          "X = BIG;\n");
+
+  printf("Start test_directiveDefine_given_BIG_999_and_X_equal_BIG_should_replace_BIG_to_999\n");
+  directiveDefine(str, "define");
+  printf("------------------------------------------------------------\n");
+
+  // TEST_ASSERT_NOT_NULL(macro);
+  // TEST_ASSERT_EQUAL_STRING("MAX", macro->name->string);
+  // TEST_ASSERT_EQUAL_STRING("100", macro->content->string);
+
+  // delMacro(macro);
+  // stringDel(str);
 }
