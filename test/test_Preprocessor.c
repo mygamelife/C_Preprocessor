@@ -176,23 +176,88 @@ void test_getMacroInfo_given_name_MINUTE_50_and_SECOND_3000_should_return_macro_
   stringDel(str);
 }
 
-/** test directiveDefine() given str pointer and directive name "define"
- *  #define MAX 500
- *  #define MIN 200
+/** test destroyAllMacroInTree() added two macroNode into tree should free all of them
+ *  #define BYE BY3
+ *  #define HI H1
  *
- *  X = MAX + MIN;
- *
- ** result : X = 500 + 200
+ ** result : free all the malloc memory in tree
  **/
-void test_directiveDefine_given_MAX_500_MIN_200_and_directive_name_define(void)
+void test_destroyAllMacroInTree_given_BYE_HI_macroNode_added_into_tree_should_remove_all_and_become_NULL(void)
 {
   int result = 0;
-	String *str = stringNew("#define MAX 500\n"
-                          "#define MIN 200\n");
+	String *str = stringNew("#define BYE BY3\n"
+                          "#define HI H1\n");
 
-  printf("Start test_directiveDefine_given_MAX_500_MIN_200_and_directive_name_define\n");
-  directiveDefine(str, "define");
+  printf("Start test_destroyAllMacroInTree_given_BYE_HI_macroNode_added_into_tree_should_remove_all_and_become_NULL\n");
+  Node *root = addAllMacroIntoTree(str, "define");
   printf("------------------------------------------------------------\n");
 
+  TEST_ASSERT_NOT_NULL(root);
+  Macro *m1 = (Macro*)root->dataPtr;
+  TEST_ASSERT_EQUAL_STRING("BYE", m1->name->string);
+  TEST_ASSERT_EQUAL_STRING("BY3", m1->content->string);
+
+  TEST_ASSERT_NOT_NULL(root->right);
+  Macro *m2 = (Macro*)root->right->dataPtr;
+  TEST_ASSERT_EQUAL_STRING("HI", m2->name->string);
+  TEST_ASSERT_EQUAL_STRING("H1", m2->content->string);
+  // Macro *macro2 = (Macro*)root->right->dataPtr;
+  // printf("root %s\n", macro->name->string);
+  // printf("root right %s\n", macro2->name->string);
+
+  //free all malloc memory in tree
+  destroyAllMacroInTree(root);
+  stringDel(str);
+}
+
+/** test directiveDefine() given str pointer and directive name "define"
+ *  #define HEIGHT  50cm
+ *  #define WIDTH 70cm
+ *  #define LENGTH  950
+ *  #define AREA  456
+ *
+ ** result :                    root
+ *                               |
+ *                               v
+ *                              HEIGHT
+ *                            /       \
+ *                         AREA        WIDTH
+ *                                    /
+ *                                 LENGTH
+ **/
+void test_addAllMacroIntoTree_given_HEIGHT_WIDTH_LENGTH_AREA_and_directive_name_define_should_add_all_into_tree(void)
+{
+  int result = 0;
+	String *str = stringNew("#define HEIGHT 50cm\n"
+                          "#define WIDTH 70cm\n"
+                          "#define LENGTH 950\n"
+                          "#define AREA 456\n");
+
+  printf("Start test_addAllMacroIntoTree_given_HEIGHT_WIDTH_LENGTH_AREA_and_directive_name_define_should_add_all_into_tree\n");
+  Node *root = addAllMacroIntoTree(str, "define");
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(root);
+  Macro *m1 = (Macro*)root->dataPtr;
+  TEST_ASSERT_EQUAL_STRING("HEIGHT", m1->name->string);
+  TEST_ASSERT_EQUAL_STRING("50cm", m1->content->string);
+
+  TEST_ASSERT_NOT_NULL(root->right);
+  Macro *m2 = (Macro*)root->right->dataPtr;
+  TEST_ASSERT_EQUAL_STRING("WIDTH", m2->name->string);
+  TEST_ASSERT_EQUAL_STRING("70cm", m2->content->string);
+  
+  TEST_ASSERT_NOT_NULL(root->right->left);
+  Macro *m3 = (Macro*)root->right->left->dataPtr;
+  TEST_ASSERT_EQUAL_STRING("LENGTH", m3->name->string);
+  TEST_ASSERT_EQUAL_STRING("950", m3->content->string);
+  
+  TEST_ASSERT_NOT_NULL(root->left);
+  Macro *m4 = (Macro*)root->left->dataPtr;
+  TEST_ASSERT_EQUAL_STRING("AREA", m4->name->string);
+  TEST_ASSERT_EQUAL_STRING("456", m4->content->string);
+  
+  //free all malloc memory in tree
+  destroyAllMacroInTree(root);
   stringDel(str);
 }

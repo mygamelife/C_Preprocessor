@@ -3,8 +3,6 @@
 #include <malloc.h>
 #include "Preprocessor.h"
 
-Node *root = NULL, *macroNode;
-
 /** Find character hashTag at the first position of the string
  * input :
  *			*string is String type pointer
@@ -14,6 +12,8 @@ Node *root = NULL, *macroNode;
  **/
 int isHashTag(String *string) {
 
+  stringTrim(string);
+  
   if(string->string[string->startindex] == '#')
     return 1;
 
@@ -96,12 +96,12 @@ Macro *getMacroInfo(String *string) {
   macroName = stringSubStringInChars(name , name->length);
   printf("macroName %s\n", macroName);
 
-  content = stringRemoveWordContaining(string, numSet);
+  content = stringRemoveWordContaining(string, alphaNumericSet);
   macroContent = stringSubStringInChars(content , content->length);
   printf("macroContent %s\n", macroContent);
 
   printf("string startindex %d, length %d\n", string->startindex, string->length);
-  return macroInfo = newMacro(macroName, macroContent);
+  return macroInfo = newMacro(macroName, macroContent); //need to free malloc
 }
 
 /** Replace all the words if it is a macro
@@ -109,16 +109,17 @@ Macro *getMacroInfo(String *string) {
  *			*string is String type pointer
  *      *directiveName is C directive name
  * output :
- *      replace all the predefine words
+ *      return the address of root pointer
  **/
-void directiveDefine(String *string, char *directiveName) {
+Node *addAllMacroIntoTree(String *string, char *directiveName) {
+  Node *macroNode, *root = NULL;
 
   printf("str->startindex %d, str->length %d\n", string->startindex, string->length);
 
   while(isHashTag(string)) {
     if(isDirective(string, directiveName))  {
       if(isIdentifier(string))  {
-        macroNode = macroNodeNew(getMacroInfo(string));
+        macroNode = macroNodeNew(getMacroInfo(string)); //need to free malloc
         addMacro(&root, macroNode);
       }
     }
@@ -136,8 +137,10 @@ void directiveDefine(String *string, char *directiveName) {
     Macro *mLeft = (Macro*)root->left->dataPtr;
     printf("left name %s, content %s\n", mLeft->name->string, mLeft->content->string);
   }
-  if(root->right != NULL) {
+  else if(root->right != NULL) {
     Macro *mRight = (Macro*)root->right->dataPtr;
     printf("right name %s, content %s\n", mRight->name->string, mRight->content->string);
   }
+
+  return root;
 }

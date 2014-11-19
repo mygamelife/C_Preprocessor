@@ -18,21 +18,6 @@ Macro *newMacro(char *macroName, char *macroContent)  {
   return macro;
 }
 
-/** Free the malloc memory in newMacro()
- * input :
- *			*macro is a macro type pointer
- * output :
- *			free all the malloc memory in newMacro()
- **/
-void delMacro(Macro *macro) {
-
-  if(macro) {
-    stringDel(macro->name);
-    stringDel(macro->content);
-    free(macro);
-  }
-}
-
 /** Create new macroNode to store the Node structure
  * input :
  *			*macroInfo is a pointer contain macro information name and content
@@ -50,17 +35,48 @@ Node *macroNodeNew(Macro *macroInfo)
 	return node;
 }
 
+/** Free the malloc memory in newMacro()
+ * input :
+ *			*macro is a macro type pointer
+ * output :
+ *			free all the malloc memory in newMacro()
+ **/
+void delMacro(Macro *macro) {
+
+  if(macro) {
+    stringDel(macro->name);
+    stringDel(macro->content);
+    free(macro);
+  }
+}
+
 /** Free the malloc memory in macroNodeNew()
  * input :
  *			*node is a node type pointer
  * output :
  *			free all the malloc memory in macroNodeNew() and newMacro()
  **/
-void destroyMacro(Node *node)
+void delMacroNode(Node *node)
 {
 	if(node)  {
     Macro *macro = (Macro*)node->dataPtr;
     delMacro(macro);
     free(node);
+  }
+}
+
+/** Free all macroNode in tree
+ * input :
+ *			*root is a node type pointer pointing to root
+ * output :
+ *			free all the macroNode malloc memory in tree
+ **/
+void destroyAllMacroInTree(Node *root)
+{
+  if(root != NULL)  {
+    destroyAllMacroInTree(root->left);
+    destroyAllMacroInTree(root->right);
+    delMacroNode(root);
+    root = NULL;
   }
 }

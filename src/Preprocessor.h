@@ -14,6 +14,6 @@ int isDirective(String *string, char *directiveName);
 int isHashTag(String *string);
 int isIdentifier(String *string);
 Macro *getMacroInfo(String *string);
-void directiveDefine(String *string, char *directiveName);
+Node *addAllMacroIntoTree(String *string, char *directiveName);
 
 #endif // Preprocessor_H
