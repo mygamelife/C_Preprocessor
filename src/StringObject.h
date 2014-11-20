@@ -29,5 +29,5 @@ void subStringDel(char *subString);
 int stringCharAtInSet(String *str , int relativePos , char *containSet);
 String *stringSubString(String *str , int start , int length);
 String *stringRemoveOperator(String *str , char *containSet);
-void subStringToArray(char charArry[50], String *string);
+void subStringToArray(char charArry[], String *str);
 #endif // StringObject_H

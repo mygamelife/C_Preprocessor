@@ -165,36 +165,72 @@ Macro *findMacro(Node *root, char *targetMacro)  {
 }
 
 void directiveDefine(String *string, char *directiveName) {
-  char stringStateMent[50];
-  Macro *content;
+  char *subString, *resultString;
+  String *holdString;
+  String *token;
+  Macro *foundMacro;
+  int i = 0, j = 0, k = 0, size = 0;
+  int holdStart = 0, holdLength = 0;
+  int bigStart = 0, bigLength = 0;
   
+  //add all available macro into tree
   Node *root = addAllMacroIntoTree(string, directiveName);
 
-  Macro *m = (Macro*)root->dataPtr;
-  printf("macro name %s\n", m->name->string);
-
-  stringTrim(string);
-
+  /*Debugg*/ Macro *m = (Macro*)root->dataPtr; printf("macro name %s\n", m->name->string);
+  
   printf("Before subString string start %d, length %d \n", string->startindex, string->length);
-  subStringToArray(stringStateMent, string);
-  puts(stringStateMent);
+
+  // printf("String %c\n", string->string[string->startindex]);
+  // String *removeBIG = stringRemoveWordContaining(string, "BIG");
+  // printf("removeBIG string start %d, length %d \n", removeBIG->startindex, removeBIG->length);
+  //store the original string
+  holdStart = string->startindex;
+  holdLength = string->length;
   
-  
-  String *token = stringRemoveWordContaining(string, alphaNumericSet);
-  
+  //extract identifier for checking macro purpose
+    token = stringRemoveWordContaining(string, alphaSet);
   while(token->length != 0)  {
-    printf("1st token start %d, length %d \n", token->startindex, token->length);
-    char *targetToken = stringSubStringInChars(token , token->length);
-    printf("targetToken %s\n", targetToken);
-    content = findMacro(root, targetToken);
-    printf("content String %s\n", content->content->string);
-    token = stringRemoveWordContaining(string, alphaNumericSet);
+    subString = stringSubStringInChars(token , token->length);
+    foundMacro = findMacro(root, subString);
+    if(foundMacro != NULL)  {
+      size = holdLength - foundMacro->name->length + foundMacro->content->length;
+      printf("After token start %d, length %d \n", token->startindex, token->length);
+      bigStart = (token->startindex) - (foundMacro->name->length);
+      bigLength = foundMacro->content->length;
+      break;
+    }
+    token = stringRemoveWordContaining(string, alphaSet);
+    puts(subString);
   }
   
+  printf("size %d\n", size);
+  printf("bigStart %d, bigLength %d\n", bigStart, bigLength);
+  printf("string[19] %c\n", string->string[19]);
+  
+  // for(i; i< size ; i++) {
+    
+    // resultString[i] = string->string[holdStart+i];
+    
+    // if(holdStart == bigStart) {
+      // for(j; j< bigLength ; j++)  {
+        // resultString[i] = foundMacro->content->string[j];
+      // }
+    // }
+    
+    // resultString[i+1] = '\0';
+  // }
+  
+  // puts(resultString);
+  
+  
+  //-----------------------------------------------------------------//
+  
+  printf("After holdString start %d, length %d \n", holdStart, holdLength);
   printf("After subString string start %d, length %d \n", string->startindex, string->length);
   // printf("1st token start %d, length %d \n", token->startindex, token->length);
   // targetToken = stringSubStringInChars(token , token->length);
   // printf("targetToken %s\n", targetToken);
 
   // printf("String %c\n", string->string[string->startindex]);
+  destroyAllMacroInTree(root);
 }

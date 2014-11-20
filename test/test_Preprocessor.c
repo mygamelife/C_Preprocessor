@@ -299,7 +299,7 @@ void test_findMacro_given_added_macroNode_tree_and_find_SMALL_should_return_10(v
  ** result :
  *          return macroContent contain 30
  **/
-void test_findMacro_given_added_macroNode_tree_and_find_IN_should_return_30(void)
+void Xtest_findMacro_given_added_macroNode_tree_and_find_IN_should_return_30(void)
 {
   int result = 0;
 	String *str = stringNew("#define FIND 10\n"
@@ -332,11 +332,11 @@ void test_findMacro_given_added_macroNode_tree_and_find_IN_should_return_30(void
  ** result :
  *          X = 999;
  **/
-void Xtest_directiveDefine_given_BIG_999_and_X_equal_BIG_should_replace_BIG_to_999(void)
+void test_directiveDefine_given_BIG_999_and_X_equal_BIG_should_replace_BIG_to_999(void)
 {
   int result = 0;
-	String *str = stringNew("#define BIG 999\n"
-                          "X = BIG;\n");
+	String *str = stringNew("#define BIG 99\n"
+                          "X = BIG\n");
 
   printf("Start test_directiveDefine_given_BIG_999_and_X_equal_BIG_should_replace_BIG_to_999\n");
   directiveDefine(str, "define");
@@ -346,6 +346,6 @@ void Xtest_directiveDefine_given_BIG_999_and_X_equal_BIG_should_replace_BIG_to_9
   // TEST_ASSERT_EQUAL_STRING("MAX", macro->name->string);
   // TEST_ASSERT_EQUAL_STRING("100", macro->content->string);
 
-  // delMacro(macro);
-  // stringDel(str);
+  
+  stringDel(str);
 }

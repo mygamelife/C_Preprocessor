@@ -447,13 +447,13 @@ jump:
  * return :
  *			store the substring into provided character array
  */
-void subStringToArray(char charArry[50], String *str)
+void subStringToArray(char charArry[], String *str)
 {
-	int i = 0, start = str->startindex, length = str->length;  
+	int i = 0, start = str->startindex, length = str->length;
 
-	for(i ; i < length ; i++)
+	for(i ; i < length ; i++) {
 		charArry[i] = str->string[start++];
-  
-  charArry[i] = '\0'; //Create delimiter "\0" for the string
-  
+    charArry[i+1] = '\0'; //Create delimiter "\0" for the string
+  }
+
 }
