@@ -16,6 +16,6 @@ int isIdentifier(String *string);
 Macro *getMacroInfo(String *string);
 Node *addAllMacroIntoTree(String *string, char *directiveName);
 void directiveDefine(String *string, char *directiveName);
-String *findMacro(Node *root, char *targetMacro);
+Macro *findMacro(Node *root, char *targetMacro);
 
 #endif // Preprocessor_H

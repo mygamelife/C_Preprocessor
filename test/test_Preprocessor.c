@@ -283,11 +283,11 @@ void test_findMacro_given_added_macroNode_tree_and_find_SMALL_should_return_10(v
   Node *root = addAllMacroIntoTree(str, "define");
 
   //find targetMacro in tree
-  String *macroContent = findMacro(root, "SMALL");
+  Macro *macroContent = findMacro(root, "SMALL");
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(macroContent);
-  TEST_ASSERT_EQUAL_STRING("10", macroContent->string);
+  TEST_ASSERT_EQUAL_STRING("10", macroContent->content->string);
 
   //free all malloc memory in tree
   destroyAllMacroInTree(root);
@@ -315,11 +315,11 @@ void test_findMacro_given_added_macroNode_tree_and_find_IN_should_return_30(void
   Node *root = addAllMacroIntoTree(str, "define");
 
   //find targetMacro in tree
-  String *macroContent = findMacro(root, "IN");
+  Macro *macroContent = findMacro(root, "IN");
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(macroContent);
-  TEST_ASSERT_EQUAL_STRING("30", macroContent->string);
+  TEST_ASSERT_EQUAL_STRING("30", macroContent->content->string);
 
   destroyAllMacroInTree(root);
   stringDel(str);

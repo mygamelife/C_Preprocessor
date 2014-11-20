@@ -449,8 +449,8 @@ int compare(void **rootPtr, void *newNode)  {
   Macro* m1 = (Macro*)(root->dataPtr);
   Macro* m2 = (Macro*)(newNodePtr->dataPtr);
 
-  printf("Macro1 %s\n", m1->name->string);
-  printf("Macro2 %s\n", m2->name->string);
+  // printf("Macro1 %s\n", m1->name->string);
+  // printf("Macro2 %s\n", m2->name->string);
 
   if(m1->name->string[0] >= m2->name->string[0])
     return 1;
@@ -470,10 +470,10 @@ void _genericAddRedBlackTree(Node **rootPtr, Node *newNode, int (*comparePtr)(vo
 
   if(*rootPtr != NULL)  {
     Macro *rootMacro = (Macro*)(*rootPtr)->dataPtr;
-    printf("rootMacro->name %s\n", rootMacro->name->string);
+    // printf("rootMacro->name %s\n", rootMacro->name->string);
   }
   Macro *newMacro = (Macro*)newNode->dataPtr;
-  printf("newMacro->name %s\n", newMacro->name->string);
+  // printf("newMacro->name %s\n", newMacro->name->string);
 
 	if(*rootPtr == NULL)	{
 		(*rootPtr) = newNode;

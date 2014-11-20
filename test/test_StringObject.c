@@ -916,3 +916,23 @@ void test_stringRemoveOperator_4_operator_and_opSet_should_get_logical_OR_operat
 
 	stringDel(str);
 }
+
+/**Test subStringToArray()
+ * Given subString "Happy Working" should store into charArry[50]
+ */
+void test_subStringToArray_given_Happy_Working_subString_should_store_into_charArry(void)
+{
+	String *str = stringNew("Happy Working");
+	char charArry[50];
+  
+  printf("Start subStringToArray\n");
+	subStringToArray(charArry, str);
+  printf("----------------------------------------------------\n");
+
+  printf("charArry[50] %s\n", charArry);
+  TEST_ASSERT_EQUAL_STRING(str->string, charArry);
+  TEST_ASSERT_EQUAL(0, str->startindex);
+  TEST_ASSERT_EQUAL(13, str->length);
+  
+	stringDel(str);
+}

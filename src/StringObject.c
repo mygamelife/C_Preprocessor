@@ -438,3 +438,22 @@ jump:
 	}
 	return removedWord;
 }
+
+/* Extract subString from string and store to character array
+ * input :
+ *      charArry is character array
+ *      startindex is the start index to know the first position of the subString in string
+ *			length is the substring length to know how many character should remove as a substring
+ * return :
+ *			store the substring into provided character array
+ */
+void subStringToArray(char charArry[50], String *str)
+{
+	int i = 0, start = str->startindex, length = str->length;  
+
+	for(i ; i < length ; i++)
+		charArry[i] = str->string[start++];
+  
+  charArry[i] = '\0'; //Create delimiter "\0" for the string
+  
+}

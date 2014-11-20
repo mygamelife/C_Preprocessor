@@ -126,23 +126,23 @@ Node *addAllMacroIntoTree(String *string, char *directiveName) {
   }
 
   //Debug purpose
-  Macro *m = (Macro*)root->dataPtr;
-  printf("root name %s, content %s\n", m->name->string, m->content->string);
+  // Macro *m = (Macro*)root->dataPtr;
+  // printf("root name %s, content %s\n", m->name->string, m->content->string);
 
-  if(root->left != NULL) {
-    Macro *mLeft = (Macro*)root->left->dataPtr;
-    printf("left name %s, content %s\n", mLeft->name->string, mLeft->content->string);
-  }
-  else if(root->right != NULL) {
-    Macro *mRight = (Macro*)root->right->dataPtr;
-    printf("right name %s, content %s\n", mRight->name->string, mRight->content->string);
-  }
+  // if(root->left != NULL) {
+    // Macro *mLeft = (Macro*)root->left->dataPtr;
+    // printf("left name %s, content %s\n", mLeft->name->string, mLeft->content->string);
+  // }
+  // else if(root->right != NULL) {
+    // Macro *mRight = (Macro*)root->right->dataPtr;
+    // printf("right name %s, content %s\n", mRight->name->string, mRight->content->string);
+  // }
   //Debug purpose
 
   return root;
 }
 
-String *findMacro(Node *root, char *targetMacro)  {
+Macro *findMacro(Node *root, char *targetMacro)  {
   Macro *macro;
   char *macroString;
 
@@ -154,7 +154,7 @@ String *findMacro(Node *root, char *targetMacro)  {
 
     if(strcmp(macroString, targetMacro) == 0) {
       printf("FOUND Name %s\n", macroString);
-      return macro->content;
+      return macro;
     }
 
     else if(macro->name->string[0] >= targetMacro[0])
@@ -165,6 +165,9 @@ String *findMacro(Node *root, char *targetMacro)  {
 }
 
 void directiveDefine(String *string, char *directiveName) {
+  char stringStateMent[50];
+  Macro *content;
+  
   Node *root = addAllMacroIntoTree(string, directiveName);
 
   Macro *m = (Macro*)root->dataPtr;
@@ -172,15 +175,26 @@ void directiveDefine(String *string, char *directiveName) {
 
   stringTrim(string);
 
+  printf("Before subString string start %d, length %d \n", string->startindex, string->length);
+  subStringToArray(stringStateMent, string);
+  puts(stringStateMent);
+  
+  
   String *token = stringRemoveWordContaining(string, alphaNumericSet);
-  printf("1st token start %d, length %d \n", token->startindex, token->length);
-  char *targetToken = stringSubStringInChars(token , token->length);
-  printf("targetToken %s\n", targetToken);
-
-  token = stringRemoveWordContaining(string, alphaNumericSet);
-  printf("1st token start %d, length %d \n", token->startindex, token->length);
-  targetToken = stringSubStringInChars(token , token->length);
-  printf("targetToken %s\n", targetToken);
+  
+  while(token->length != 0)  {
+    printf("1st token start %d, length %d \n", token->startindex, token->length);
+    char *targetToken = stringSubStringInChars(token , token->length);
+    printf("targetToken %s\n", targetToken);
+    content = findMacro(root, targetToken);
+    printf("content String %s\n", content->content->string);
+    token = stringRemoveWordContaining(string, alphaNumericSet);
+  }
+  
+  printf("After subString string start %d, length %d \n", string->startindex, string->length);
+  // printf("1st token start %d, length %d \n", token->startindex, token->length);
+  // targetToken = stringSubStringInChars(token , token->length);
+  // printf("targetToken %s\n", targetToken);
 
   // printf("String %c\n", string->string[string->startindex]);
 }
