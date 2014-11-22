@@ -124,21 +124,6 @@ Node *addAllMacroIntoTree(String *string, char *directiveName) {
       }
     }
   }
-
-  //Debug purpose
-  // Macro *m = (Macro*)root->dataPtr;
-  // printf("root name %s, content %s\n", m->name->string, m->content->string);
-
-  // if(root->left != NULL) {
-    // Macro *mLeft = (Macro*)root->left->dataPtr;
-    // printf("left name %s, content %s\n", mLeft->name->string, mLeft->content->string);
-  // }
-  // else if(root->right != NULL) {
-    // Macro *mRight = (Macro*)root->right->dataPtr;
-    // printf("right name %s, content %s\n", mRight->name->string, mRight->content->string);
-  // }
-  //Debug purpose
-
   return root;
 }
 
@@ -183,7 +168,8 @@ void directiveDefine(String *string, char *directiveName) {
   token = stringRemoveWordContaining(string, alphaSet);
   
   while(token->length != 0)  {
-    macroIdentifier = stringSubStringInChars(token , token->length);
+    macroIdentifier = stringSubStringInChars(token , token->length); //<---------- PROBLEM
+    printf("macroIdentifier start %d, length %d \n", string->startindex, string->length);
     foundMacro = findMacro(root, macroIdentifier);
     if(foundMacro != NULL)  {
       size = originalStringLength - foundMacro->name->length + foundMacro->content->length;
@@ -194,6 +180,7 @@ void directiveDefine(String *string, char *directiveName) {
     
     else  size = originalStringLength;
     token = stringRemoveWordContaining(string, alphaSet);
+    printf("token start %d, length %d \n", token->startindex, token->length);
     puts(macroIdentifier);
   }
   
@@ -218,31 +205,31 @@ void directiveDefine(String *string, char *directiveName) {
   destroyAllMacroInTree(root);
 }
 
-void replaceMacroInString(char stringArry[], String *originalString, int originalStringStart, int size, int macroAt, Macro *macro)  {
+void replaceMacroInString(char stringArray[], String *originalString, int originalStringStart, int size, int macroAt, Macro *macro)  {
   int i = 0, j = 0, macroContentLength = macro->content->length, macroNameLength = macro->name->length;
   char *macroContent = macro->content->string;
   
   if(macro != NULL)   {
     for(i; i< size ; i++) {
       
-      stringArry[i] = originalString->string[originalStringStart++];
+      stringArray[i] = originalString->string[originalStringStart++];
     
       if(originalStringStart == macroAt) {
         for(j; j< macroContentLength ; j++)  {
           i++;
-          stringArry[i] = macroContent[j];
+          stringArray[i] = macroContent[j];
         }
         originalStringStart += macroNameLength;
       }   
-      stringArry[i+1] = '\0';
+      stringArray[i+1] = '\0';
     }
   }
   
   else  {
     for(i; i< size ; i++) {      
-      stringArry[i] = originalString->string[originalStringStart++];
-      stringArry[i+1] = '\0';
+      stringArray[i] = originalString->string[originalStringStart++];
+      stringArray[i+1] = '\0';
     }    
   } 
-  puts(stringArry);
+  puts(stringArray);
 }

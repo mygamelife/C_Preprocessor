@@ -333,7 +333,7 @@ void test_findMacro_given_added_macroNode_tree_and_find_IN_should_return_30(void
  ** result :
  *          X = 10;
  **/
-void test_replaceMacroInString_given_TEN_in_string_should_replace_it_with_10(void)
+void test_replaceMacroInString_given_TEN_in_string_should_replace_it_with_10(void) // <----- Problem
 {
 	String *str = stringNew("X = TEN;");
   Macro *macro = newMacro("TEN", "10");
@@ -384,7 +384,7 @@ void test_replaceMacroInString_given_Three_in_string_should_replace_it_with_3(vo
  ** result :
  *          X = 999;
  **/
-void Xtest_directiveDefine_given_BIG_999_and_X_equal_BIG_should_replace_BIG_to_999(void)
+void test_directiveDefine_given_BIG_999_and_X_equal_BIG_should_replace_BIG_to_999(void)
 {
   int result = 0;
 	String *str = stringNew("#define BIG 99\n"

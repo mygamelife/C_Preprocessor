@@ -17,5 +17,5 @@ Macro *getMacroInfo(String *string);
 Node *addAllMacroIntoTree(String *string, char *directiveName);
 void directiveDefine(String *string, char *directiveName);
 Macro *findMacro(Node *root, char *targetMacro);
-void replaceMacroInString(char stringArry[], String *originalString, int originalStringStart, int size, int macroAt, Macro *macro);
+void replaceMacroInString(char stringArray[], String *originalString, int originalStringStart, int size, int macroAt, Macro *macro);
 #endif // Preprocessor_H
