@@ -165,72 +165,84 @@ Macro *findMacro(Node *root, char *targetMacro)  {
 }
 
 void directiveDefine(String *string, char *directiveName) {
-  char *subString, *resultString;
-  String *holdString;
-  String *token;
+  int size, originalStringStart, originalStringLength, bigStart = 0, bigLength = 0;
+  char *macroIdentifier;
+  String *holdString, *token;
   Macro *foundMacro;
-  int i = 0, j = 0, k = 0, size = 0;
-  int holdStart = 0, holdLength = 0;
-  int bigStart = 0, bigLength = 0;
   
   //add all available macro into tree
   Node *root = addAllMacroIntoTree(string, directiveName);
-
-  /*Debugg*/ Macro *m = (Macro*)root->dataPtr; printf("macro name %s\n", m->name->string);
   
   printf("Before subString string start %d, length %d \n", string->startindex, string->length);
 
-  // printf("String %c\n", string->string[string->startindex]);
-  // String *removeBIG = stringRemoveWordContaining(string, "BIG");
-  // printf("removeBIG string start %d, length %d \n", removeBIG->startindex, removeBIG->length);
-  //store the original string
-  holdStart = string->startindex;
-  holdLength = string->length;
+  //store the original string position
+  originalStringStart = string->startindex;
+  originalStringLength = string->length;
   
   //extract identifier for checking macro purpose
-    token = stringRemoveWordContaining(string, alphaSet);
+  token = stringRemoveWordContaining(string, alphaSet);
+  
   while(token->length != 0)  {
-    subString = stringSubStringInChars(token , token->length);
-    foundMacro = findMacro(root, subString);
+    macroIdentifier = stringSubStringInChars(token , token->length);
+    foundMacro = findMacro(root, macroIdentifier);
     if(foundMacro != NULL)  {
-      size = holdLength - foundMacro->name->length + foundMacro->content->length;
-      printf("After token start %d, length %d \n", token->startindex, token->length);
+      size = originalStringLength - foundMacro->name->length + foundMacro->content->length;
       bigStart = (token->startindex) - (foundMacro->name->length);
       bigLength = foundMacro->content->length;
       break;
     }
+    
+    else  size = originalStringLength;
     token = stringRemoveWordContaining(string, alphaSet);
-    puts(subString);
+    puts(macroIdentifier);
   }
   
   printf("size %d\n", size);
   printf("bigStart %d, bigLength %d\n", bigStart, bigLength);
   printf("string[19] %c\n", string->string[19]);
   
-  // for(i; i< size ; i++) {
-    
-    // resultString[i] = string->string[holdStart+i];
-    
-    // if(holdStart == bigStart) {
-      // for(j; j< bigLength ; j++)  {
-        // resultString[i] = foundMacro->content->string[j];
-      // }
-    // }
-    
-    // resultString[i+1] = '\0';
-  // }
+  //create a temp char array
+  //-----------------------------------------------------------------//
+  char stringToArray[size];
   
-  // puts(resultString);
+  replaceMacroInString(stringToArray, string, originalStringStart, size, bigStart, foundMacro);
+  
+  puts(stringToArray);
   
   
   //-----------------------------------------------------------------//
   
-  printf("After holdString start %d, length %d \n", holdStart, holdLength);
+  printf("After holdString start %d, length %d \n", originalStringStart, originalStringLength);
   printf("After subString string start %d, length %d \n", string->startindex, string->length);
-  // printf("1st token start %d, length %d \n", token->startindex, token->length);
-  // targetToken = stringSubStringInChars(token , token->length);
-  // printf("targetToken %s\n", targetToken);
 
-  // printf("String %c\n", string->string[string->startindex]);
   destroyAllMacroInTree(root);
+}
+
+void replaceMacroInString(char stringArry[], String *originalString, int originalStringStart, int size, int macroAt, Macro *macro)  {
+  int i = 0, j = 0, macroContentLength = macro->content->length, macroNameLength = macro->name->length;
+  char *macroContent = macro->content->string;
+  
+  if(macro != NULL)   {
+    for(i; i< size ; i++) {
+      
+      stringArry[i] = originalString->string[originalStringStart++];
+    
+      if(originalStringStart == macroAt) {
+        for(j; j< macroContentLength ; j++)  {
+          i++;
+          stringArry[i] = macroContent[j];
+        }
+        originalStringStart += macroNameLength;
+      }   
+      stringArry[i+1] = '\0';
+    }
+  }
+  
+  else  {
+    for(i; i< size ; i++) {      
+      stringArry[i] = originalString->string[originalStringStart++];
+      stringArry[i+1] = '\0';
+    }    
+  } 
+  puts(stringArry);
 }

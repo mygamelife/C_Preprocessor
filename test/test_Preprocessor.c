@@ -299,7 +299,7 @@ void test_findMacro_given_added_macroNode_tree_and_find_SMALL_should_return_10(v
  ** result :
  *          return macroContent contain 30
  **/
-void Xtest_findMacro_given_added_macroNode_tree_and_find_IN_should_return_30(void)
+void test_findMacro_given_added_macroNode_tree_and_find_IN_should_return_30(void)
 {
   int result = 0;
 	String *str = stringNew("#define FIND 10\n"
@@ -325,6 +325,58 @@ void Xtest_findMacro_given_added_macroNode_tree_and_find_IN_should_return_30(voi
   stringDel(str);
 }
 
+/** test replaceMacroInString():
+ **  TEN 10
+ **  X = TEN;
+ *
+ *  should replace TEN to 10
+ ** result :
+ *          X = 10;
+ **/
+void test_replaceMacroInString_given_TEN_in_string_should_replace_it_with_10(void)
+{
+	String *str = stringNew("X = TEN;");
+  Macro *macro = newMacro("TEN", "10");
+  char stringArry[7];
+  
+  printf("Start test_replaceMacroInString_given_TEN_in_string_should_replace_it_with_10\n");
+  replaceMacroInString(stringArry, str, 0, 7, 4, macro);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(stringArry);
+  TEST_ASSERT_EQUAL_STRING("X = 10;", stringArry);
+
+  delMacro(macro);
+  stringDel(str);
+}
+
+/** test replaceMacroInString():
+ **  Three 3
+ **  X = 10 + Three + 5
+ *
+ *  should replace Three to 3
+ ** result :
+ *          X = 10 + 3 + 5
+ **/
+void test_replaceMacroInString_given_Three_in_string_should_replace_it_with_3(void)
+{
+	String *str = stringNew("X = 10 + Three + 5");
+  Macro *macro = newMacro("Three", "3");
+  int size = 14;
+  char stringArry[size];
+  char *strPtr;
+  
+  printf("Start test_replaceMacroInString_given_Three_in_string_should_replace_it_with_3\n");
+  replaceMacroInString(stringArry, str, 0, size, 9, macro);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(stringArry);
+  TEST_ASSERT_EQUAL_STRING("X = 10 + 3 + 5", stringArry);
+  
+  delMacro(macro);
+  stringDel(str);
+}
+
 /** test directiveDefine() given string:
  *  #define BIG 999
  *  X = BIG;
@@ -332,11 +384,11 @@ void Xtest_findMacro_given_added_macroNode_tree_and_find_IN_should_return_30(voi
  ** result :
  *          X = 999;
  **/
-void test_directiveDefine_given_BIG_999_and_X_equal_BIG_should_replace_BIG_to_999(void)
+void Xtest_directiveDefine_given_BIG_999_and_X_equal_BIG_should_replace_BIG_to_999(void)
 {
   int result = 0;
 	String *str = stringNew("#define BIG 99\n"
-                          "X = BIG\n");
+                          "X = BIG");
 
   printf("Start test_directiveDefine_given_BIG_999_and_X_equal_BIG_should_replace_BIG_to_999\n");
   directiveDefine(str, "define");
