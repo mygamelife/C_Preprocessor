@@ -15,7 +15,8 @@ int isHashTag(String *string);
 int isIdentifier(String *string);
 Macro *getMacroInfo(String *string);
 Node *addAllMacroIntoTree(String *string, char *directiveName);
-void directiveDefine(String *string, char *directiveName);
-Macro *findMacro(Node *root, char *targetMacro);
+String *directiveDefine(String *string, char *directiveName);
+Macro *findMacroInTree(Node *root, char *targetMacro);
 char *replaceMacroInString(String *oriString, String *subString, Macro *macro, int size);
+String *searchAndReplaceMacroInString(String *str, String *oriString, Node *root);
 #endif // Preprocessor_H

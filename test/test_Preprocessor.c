@@ -262,7 +262,7 @@ void test_addAllMacroIntoTree_given_HEIGHT_WIDTH_LENGTH_AREA_and_directive_name_
   stringDel(str);
 }
 
-/** test findMacro() given added macroNode tree:
+/** test findMacroInTree() given added macroNode tree:
  ** tree  :
  *                 MIDDLE(20)
  *                /     \
@@ -271,19 +271,19 @@ void test_addAllMacroIntoTree_given_HEIGHT_WIDTH_LENGTH_AREA_and_directive_name_
  ** result :
  *          return macroContent contain 10
  **/
-void test_findMacro_given_added_macroNode_tree_and_find_SMALL_should_return_10(void)
+void test_findMacroInTree_given_added_macroNode_tree_and_find_SMALL_should_return_10(void)
 {
   int result = 0;
 	String *str = stringNew("#define MIDDLE 20\n"
                           "#define LARGE 30\n"
                           "#define SMALL 10\n");
 
-  printf("Start test_findMacro_given_added_macroNode_tree_and_find_SMALL_should_return_10\n");
+  printf("Start test_findMacroInTree_given_added_macroNode_tree_and_find_SMALL_should_return_10\n");
   //add all macroNode to tree
   Node *root = addAllMacroIntoTree(str, "define");
 
   //find targetMacro in tree
-  Macro *macroContent = findMacro(root, "SMALL");
+  Macro *macroContent = findMacroInTree(root, "SMALL");
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(macroContent);
@@ -294,12 +294,12 @@ void test_findMacro_given_added_macroNode_tree_and_find_SMALL_should_return_10(v
   stringDel(str);
 }
 
-/** test findMacro() given added 7 macroNode tree:
+/** test findMacroInTree() given added 7 macroNode tree:
  * Search the IN macroNode in the tree and return the content of it which is 30
  ** result :
  *          return macroContent contain 30
  **/
-void test_findMacro_given_added_macroNode_tree_and_find_IN_should_return_30(void)
+void test_findMacroInTree_given_added_macroNode_tree_and_find_IN_should_return_30(void)
 {
   int result = 0;
 	String *str = stringNew("#define FIND 10\n"
@@ -310,12 +310,12 @@ void test_findMacro_given_added_macroNode_tree_and_find_IN_should_return_30(void
                           "#define NODE 60\n"
                           "#define TREE 70\n");
 
-  printf("Start test_findMacro_given_added_macroNode_tree_and_find_IN_should_return_30\n");
+  printf("Start test_findMacroInTree_given_added_macroNode_tree_and_find_IN_should_return_30\n");
   //add all macroNode to tree
   Node *root = addAllMacroIntoTree(str, "define");
 
   //find targetMacro in tree
-  Macro *macroContent = findMacro(root, "IN");
+  Macro *macroContent = findMacroInTree(root, "IN");
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(macroContent);
@@ -348,6 +348,7 @@ void test_replaceMacroInString_given_TEN_in_string_should_replace_it_with_10(voi
   TEST_ASSERT_NOT_NULL(result);
   TEST_ASSERT_EQUAL_STRING("X = 10;", result);
 
+  subStringDel(result);
   delMacro(macro);
   stringDel(subStr);
   stringDel(str);
@@ -376,6 +377,7 @@ void test_replaceMacroInString_given_Three_in_string_should_replace_it_with_3(vo
   TEST_ASSERT_NOT_NULL(result);
   TEST_ASSERT_EQUAL_STRING("X = 10 + 3 + 5", result);
   
+  subStringDel(result);
   delMacro(macro);
   stringDel(subStr);
   stringDel(str);
@@ -404,6 +406,7 @@ void test_replaceMacroInString_given_ONEFIVE_in_string_should_replace_it_with_15
   TEST_ASSERT_NOT_NULL(result);
   TEST_ASSERT_EQUAL_STRING("X = 5 + 15 + Three + 5", result);
   
+  subStringDel(result);
   delMacro(macro);
   stringDel(subStr);
   stringDel(str);
@@ -432,6 +435,7 @@ void test_replaceMacroInString_given_NINE_in_string_should_only_replace_it_with_
   TEST_ASSERT_NOT_NULL(result);
   TEST_ASSERT_EQUAL_STRING("X = HI + BYE + 1 + 99999", result);
   
+  subStringDel(result);
   delMacro(macro);
   stringDel(subStr);
   stringDel(str);
@@ -460,8 +464,69 @@ void test_replaceMacroInString_shouldnt_replace_anything_in_the_string(void)
   TEST_ASSERT_NOT_NULL(result);
   TEST_ASSERT_EQUAL_STRING("X = HAPPY * HAPPY / 1000", result);
   
+  subStringDel(result);
   delMacro(macro);
   stringDel(subStr);
+  stringDel(str);
+}
+
+/** test searchAndReplaceMacroInString():
+ **  #define Dumb 500
+ *
+ **  10 + Dumb
+ *
+ *  should replace Dumb with 500 
+ ** result :
+ *          10 + 500
+ **/
+void test_searchAndReplaceMacroInString_given_10_plus_Dumb_in_string_should_replace_it_with_500(void) // <----- Problem
+{
+	String *str = stringNew("#define Dumb 500\n"
+                           "10 + Dumb");
+  String *oriString = stringSubString(str, 17, 9);
+  String *result;
+  
+  printf("Start test_searchAndReplaceMacroInString_given_10_plus_Dumb_in_string_should_replace_it_with_500\n");
+  Node *root = addAllMacroIntoTree(str, "define");
+  result = searchAndReplaceMacroInString(str, oriString, root);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(result);
+  TEST_ASSERT_EQUAL_STRING("10 + 500", result->string);
+
+  destroyAllMacroInTree(root);
+  stringDel(result);
+  stringDel(oriString);
+  stringDel(str);
+}
+
+/** test searchAndReplaceMacroInString():
+ **  #define Mini 888 + Huge
+ *  
+ **  A = 23 * Mini
+ *
+ *  should replace Mini with 888 + Huge 
+ ** result :
+ *          A = 23 * 888 + Huge
+ **/
+void test_searchAndReplaceMacroInString_given_23_times_Mini_in_string_should_replace_Mini_with_888_plus_Huge(void) // <----- Problem
+{
+	String *str = stringNew("#define Mini 888 + Huge\n"
+                           "A = 23 * Mini");
+  String *oriString = stringSubString(str, 24, 13);
+  String *result;
+  
+  printf("Start test_searchAndReplaceMacroInString_given_23_times_Mini_in_string_should_replace_Mini_with_888_plus_Huge\n");
+  Node *root = addAllMacroIntoTree(str, "define");
+  result = searchAndReplaceMacroInString(str, oriString, root);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(result);
+  TEST_ASSERT_EQUAL_STRING("A = 23 * 888 + Huge", result->string);
+
+  destroyAllMacroInTree(root);
+  stringDel(result);
+  stringDel(oriString);
   stringDel(str);
 }
 
@@ -472,19 +537,50 @@ void test_replaceMacroInString_shouldnt_replace_anything_in_the_string(void)
  ** result :
  *          X = 999;
  **/
-void test_directiveDefine_given_BIG_999_and_X_equal_BIG_should_replace_BIG_to_999(void)
+void Xtest_directiveDefine_given_BIG_999_and_X_equal_BIG_should_replace_BIG_to_999(void)
 {
-  int result = 0;
 	String *str = stringNew("#define BIG 99\n"
                           "X = BIG");
+  String *result;
 
   printf("Start test_directiveDefine_given_BIG_999_and_X_equal_BIG_should_replace_BIG_to_999\n");
-  directiveDefine(str, "define");
+  result = directiveDefine(str, "define");
   printf("------------------------------------------------------------\n");
 
-  // TEST_ASSERT_NOT_NULL(macro);
-  // TEST_ASSERT_EQUAL_STRING("MAX", macro->name->string);
-  // TEST_ASSERT_EQUAL_STRING("100", macro->content->string);
+  TEST_ASSERT_NOT_NULL(result);
+  TEST_ASSERT_EQUAL_STRING("X = 99", result->string);
+  TEST_ASSERT_EQUAL(0, result->startindex);
+  TEST_ASSERT_EQUAL(6, result->length);
 
+  stringDel(result);
+  stringDel(str);
+}
+
+/** test directiveDefine() given string:
+ *  #define ONE 1
+ *  #define TWO 2
+ *  X = ONE + TWO
+ *
+ ** result :
+ *          X = 1 + TWO
+ *          X = 1 + 2
+ **/
+void Xtest_directiveDefine_given_ONE_plus_ONE_should_replace_two_ONE_with_1(void)
+{
+	String *str = stringNew("#define ONE 1\n"
+                          "#define TWO 2\n"
+                          "X = ONE + TWO");
+  String *result;
+
+  printf("Start test_directiveDefine_given_ONE_plus_ONE_should_replace_two_ONE_with_1\n");
+  result = directiveDefine(str, "define");
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(result);
+  TEST_ASSERT_EQUAL_STRING("X = 1 + 2", result->string);
+  // TEST_ASSERT_EQUAL(0, result->startindex);
+  // TEST_ASSERT_EQUAL(6, result->length);
+
+  stringDel(result);
   stringDel(str);
 }

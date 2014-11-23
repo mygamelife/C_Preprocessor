@@ -4,6 +4,7 @@
 extern char *numSet;
 extern char *opSet;
 extern char *alphaNumericSet;
+extern char *alphaNumericSetWithSymbol;
 extern char *alphaSet;
 
 typedef struct
