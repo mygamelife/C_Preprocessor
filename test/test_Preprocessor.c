@@ -336,17 +336,20 @@ void test_findMacro_given_added_macroNode_tree_and_find_IN_should_return_30(void
 void test_replaceMacroInString_given_TEN_in_string_should_replace_it_with_10(void) // <----- Problem
 {
 	String *str = stringNew("X = TEN;");
+	String *subStr = stringSubString(str, 4, 3);
   Macro *macro = newMacro("TEN", "10");
-  char stringArry[7];
+  char *result;
+  int size = size = (str->length) - (macro->name->length) + (macro->content->length);
   
   printf("Start test_replaceMacroInString_given_TEN_in_string_should_replace_it_with_10\n");
-  replaceMacroInString(stringArry, str, 0, 7, 4, macro);
+  result = replaceMacroInString(str, subStr, macro, size);
   printf("------------------------------------------------------------\n");
 
-  TEST_ASSERT_NOT_NULL(stringArry);
-  TEST_ASSERT_EQUAL_STRING("X = 10;", stringArry);
+  TEST_ASSERT_NOT_NULL(result);
+  TEST_ASSERT_EQUAL_STRING("X = 10;", result);
 
   delMacro(macro);
+  stringDel(subStr);
   stringDel(str);
 }
 
@@ -361,19 +364,104 @@ void test_replaceMacroInString_given_TEN_in_string_should_replace_it_with_10(voi
 void test_replaceMacroInString_given_Three_in_string_should_replace_it_with_3(void)
 {
 	String *str = stringNew("X = 10 + Three + 5");
+  String *subStr = stringSubString(str, 9, 5);
   Macro *macro = newMacro("Three", "3");
-  int size = 14;
-  char stringArry[size];
-  char *strPtr;
+  char *result;
+  int size = size = (str->length) - (macro->name->length) + (macro->content->length);
   
   printf("Start test_replaceMacroInString_given_Three_in_string_should_replace_it_with_3\n");
-  replaceMacroInString(stringArry, str, 0, size, 9, macro);
+  result = replaceMacroInString(str, subStr, macro, size);
   printf("------------------------------------------------------------\n");
 
-  TEST_ASSERT_NOT_NULL(stringArry);
-  TEST_ASSERT_EQUAL_STRING("X = 10 + 3 + 5", stringArry);
+  TEST_ASSERT_NOT_NULL(result);
+  TEST_ASSERT_EQUAL_STRING("X = 10 + 3 + 5", result);
   
   delMacro(macro);
+  stringDel(subStr);
+  stringDel(str);
+}
+
+/** test replaceMacroInString():
+ **  ONEFIVE 15
+ **  X = 5 + ONEFIVE + Three + 5
+ *
+ *  should replace ONEFIVE to 15 and other remain the same
+ ** result :
+ *          X = 5 + 15 + Three + 5
+ **/
+void test_replaceMacroInString_given_ONEFIVE_in_string_should_replace_it_with_15_other_identifier_should_remain_same(void)
+{
+	String *str = stringNew("X = 5 + ONEFIVE + Three + 5");
+  String *subStr = stringSubString(str, 8, 7);
+  Macro *macro = newMacro("ONEFIVE", "15");
+  char *result;
+  int size = size = (str->length) - (macro->name->length) + (macro->content->length);
+  
+  printf("Start test_replaceMacroInString_given_ONEFIVE_in_string_should_replace_it_with_15_other_identifier_should_remain_same\n");
+  result = replaceMacroInString(str, subStr, macro, size);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(result);
+  TEST_ASSERT_EQUAL_STRING("X = 5 + 15 + Three + 5", result);
+  
+  delMacro(macro);
+  stringDel(subStr);
+  stringDel(str);
+}
+
+/** test replaceMacroInString():
+ **  NINE 99999
+ **  X = HI + BYE + 1 + NINE
+ *
+ *  should only replace NINE to 99999 and other remain the same
+ ** result :
+ *          X = HI + BYE + 1 + 99999
+ **/
+void test_replaceMacroInString_given_NINE_in_string_should_only_replace_it_with_99999_other_identifier_should_remain_same(void)
+{
+	String *str = stringNew("X = HI + BYE + 1 + NINE");
+  String *subStr = stringSubString(str, 19, 4);
+  Macro *macro = newMacro("NINE", "99999");
+  char *result;
+  int size = size = (str->length) - (macro->name->length) + (macro->content->length);
+  
+  printf("Start test_replaceMacroInString_given_NINE_in_string_should_only_replace_it_with_99999_other_identifier_should_remain_same\n");
+  result = replaceMacroInString(str, subStr, macro, size);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(result);
+  TEST_ASSERT_EQUAL_STRING("X = HI + BYE + 1 + 99999", result);
+  
+  delMacro(macro);
+  stringDel(subStr);
+  stringDel(str);
+}
+
+/** test replaceMacroInString():
+ **  -EMPTY-
+ **  X = HAPPY * HAPPY / 1000
+ *
+ *  shouldn't anything in the string
+ ** result :
+ *          X = HAPPY * HAPPY / 1000
+ **/
+void test_replaceMacroInString_shouldnt_replace_anything_in_the_string(void)
+{
+	String *str = stringNew("X = HAPPY * HAPPY / 1000");
+  String *subStr = stringSubString(str, 4, 2);
+  Macro *macro = NULL;
+  char *result;
+  int size = size = (str->length) - 0 + 0;
+  
+  printf("Start test_replaceMacroInString_shouldnt_replace_anything_in_the_string\n");
+  result = replaceMacroInString(str, subStr, macro, size);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(result);
+  TEST_ASSERT_EQUAL_STRING("X = HAPPY * HAPPY / 1000", result);
+  
+  delMacro(macro);
+  stringDel(subStr);
   stringDel(str);
 }
 
@@ -398,6 +486,5 @@ void test_directiveDefine_given_BIG_999_and_X_equal_BIG_should_replace_BIG_to_99
   // TEST_ASSERT_EQUAL_STRING("MAX", macro->name->string);
   // TEST_ASSERT_EQUAL_STRING("100", macro->content->string);
 
-  
   stringDel(str);
 }
