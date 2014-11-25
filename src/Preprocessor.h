@@ -18,5 +18,5 @@ Node *addAllMacroIntoTree(String *string, char *directiveName);
 String *directiveDefine(String *string, char *directiveName);
 Macro *findMacroInTree(Node *root, char *targetMacro);
 char *replaceMacroInString(String *oriString, String *subString, Macro *macro, int size);
-String *searchAndReplaceMacroInString(String *str, String *oriString, Node *root);
+String *searchAndReplaceMacroInString(String *str, Node *root, int *found);
 #endif // Preprocessor_H

@@ -144,6 +144,8 @@ void test_getMacroInfo_given_name_MAX_content_100_should_return_macro_pointer_wi
   TEST_ASSERT_EQUAL_STRING("MAX", macro->name->string);
   TEST_ASSERT_EQUAL_STRING("100", macro->content->string);
 
+  subStringDel(macro->name->string);
+  subStringDel(macro->content->string);
   delMacro(macro);
   stringDel(str);
 }
@@ -172,6 +174,55 @@ void test_getMacroInfo_given_name_MINUTE_50_and_SECOND_3000_should_return_macro_
   TEST_ASSERT_EQUAL(21, str->startindex);
   TEST_ASSERT_EQUAL(1, str->length);
 
+  subStringDel(macro->name->string);
+  subStringDel(macro->content->string);
+  delMacro(macro);
+  stringDel(str);
+}
+
+/** test getMacroInfo() given 2 info
+ *  _MAX32 = "4 $$"
+ *  ONE_1 = "ABC * 5"
+ *  _2TWO = "!@#$%"
+ *  macro pointer should contain all these information
+ **/
+void test_getMacroInfo_given_name_3_identifier_name_and_3_random_content_should_return_macro_pointer_with_these_info(void)
+{
+  int result = 0;
+	String *str = stringNew("_MAX32 4 $$\n"
+                          "ONE_1 ABC * 5\n"
+                          "_2TWO !@#$%\n");
+
+  printf("Start test_getMacroInfo_given_name_3_identifier_name_and_3_random_content_should_return_macro_pointer_with_these_info\n");
+  Macro *macro = getMacroInfo(str);
+  
+  TEST_ASSERT_NOT_NULL(macro);
+  TEST_ASSERT_EQUAL_STRING("_MAX32", macro->name->string);
+  TEST_ASSERT_EQUAL_STRING("4 $$", macro->content->string);
+  
+  subStringDel(macro->name->string);
+  subStringDel(macro->content->string);
+  delMacro(macro);
+  
+  macro = getMacroInfo(str);
+  
+  TEST_ASSERT_NOT_NULL(macro);
+  TEST_ASSERT_EQUAL_STRING("ONE_1", macro->name->string);
+  TEST_ASSERT_EQUAL_STRING("ABC * 5", macro->content->string);
+  
+  subStringDel(macro->name->string);
+  subStringDel(macro->content->string);
+  delMacro(macro);
+  
+  macro = getMacroInfo(str);
+  
+  TEST_ASSERT_NOT_NULL(macro);
+  TEST_ASSERT_EQUAL_STRING("_2TWO", macro->name->string);
+  TEST_ASSERT_EQUAL_STRING("!@#$%", macro->content->string);
+  printf("------------------------------------------------------------\n");
+
+  subStringDel(macro->name->string);
+  subStringDel(macro->content->string);
   delMacro(macro);
   stringDel(str);
 }
@@ -483,20 +534,20 @@ void test_searchAndReplaceMacroInString_given_10_plus_Dumb_in_string_should_repl
 {
 	String *str = stringNew("#define Dumb 500\n"
                            "10 + Dumb");
-  String *oriString = stringSubString(str, 17, 9);
   String *result;
+  int found = 0;
   
   printf("Start test_searchAndReplaceMacroInString_given_10_plus_Dumb_in_string_should_replace_it_with_500\n");
   Node *root = addAllMacroIntoTree(str, "define");
-  result = searchAndReplaceMacroInString(str, oriString, root);
+  result = searchAndReplaceMacroInString(str, root, &found);
   printf("------------------------------------------------------------\n");
 
+  TEST_ASSERT_EQUAL(1, found);
   TEST_ASSERT_NOT_NULL(result);
   TEST_ASSERT_EQUAL_STRING("10 + 500", result->string);
 
   destroyAllMacroInTree(root);
   stringDel(result);
-  stringDel(oriString);
   stringDel(str);
 }
 
@@ -513,20 +564,50 @@ void test_searchAndReplaceMacroInString_given_23_times_Mini_in_string_should_rep
 {
 	String *str = stringNew("#define Mini 888 + Huge\n"
                            "A = 23 * Mini");
-  String *oriString = stringSubString(str, 24, 13);
   String *result;
+  int found = 0;
   
   printf("Start test_searchAndReplaceMacroInString_given_23_times_Mini_in_string_should_replace_Mini_with_888_plus_Huge\n");
   Node *root = addAllMacroIntoTree(str, "define");
-  result = searchAndReplaceMacroInString(str, oriString, root);
+  result = searchAndReplaceMacroInString(str, root, &found);
   printf("------------------------------------------------------------\n");
 
+  TEST_ASSERT_EQUAL(1, found);
   TEST_ASSERT_NOT_NULL(result);
   TEST_ASSERT_EQUAL_STRING("A = 23 * 888 + Huge", result->string);
 
   destroyAllMacroInTree(root);
   stringDel(result);
-  stringDel(oriString);
+  stringDel(str);
+}
+
+/** test searchAndReplaceMacroInString():
+ **  #define _FIRE 18*10
+ *  
+ **  F = FIRE
+ *
+ *  shouldn't replace anything and the string remain the same 
+ ** result :
+ *          F = FIRE
+ **/
+void test_searchAndReplaceMacroInString_given_F_equal_FIRE_in_string_shouldnt_replace_anything(void) // <----- Problem
+{
+	String *str = stringNew("#define _FIRE 18*10\n"
+                           "F = FIRE");
+  String *result;
+  int found = 0;
+  
+  printf("Start test_searchAndReplaceMacroInString_given_F_equal_FIRE_in_string_shouldnt_replace_anything\n");
+  Node *root = addAllMacroIntoTree(str, "define");
+  result = searchAndReplaceMacroInString(str, root, &found);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_EQUAL(0, found);
+  TEST_ASSERT_NOT_NULL(result);
+  TEST_ASSERT_EQUAL_STRING("F = FIRE", result->string);
+
+  destroyAllMacroInTree(root);
+  stringDel(result);
   stringDel(str);
 }
 
@@ -542,6 +623,7 @@ void Xtest_directiveDefine_given_BIG_999_and_X_equal_BIG_should_replace_BIG_to_9
 	String *str = stringNew("#define BIG 99\n"
                           "X = BIG");
   String *result;
+  Macro *found;
 
   printf("Start test_directiveDefine_given_BIG_999_and_X_equal_BIG_should_replace_BIG_to_999\n");
   result = directiveDefine(str, "define");
@@ -569,7 +651,8 @@ void Xtest_directiveDefine_given_ONE_plus_ONE_should_replace_two_ONE_with_1(void
 {
 	String *str = stringNew("#define ONE 1\n"
                           "#define TWO 2\n"
-                          "X = ONE + TWO");
+                          "#define Three 3\n"
+                          "X = ONE + TWO + Three");
   String *result;
 
   printf("Start test_directiveDefine_given_ONE_plus_ONE_should_replace_two_ONE_with_1\n");
@@ -577,7 +660,7 @@ void Xtest_directiveDefine_given_ONE_plus_ONE_should_replace_two_ONE_with_1(void
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(result);
-  TEST_ASSERT_EQUAL_STRING("X = 1 + 2", result->string);
+  TEST_ASSERT_EQUAL_STRING("X = 1 + 2 + 3", result->string);
   // TEST_ASSERT_EQUAL(0, result->startindex);
   // TEST_ASSERT_EQUAL(6, result->length);
 

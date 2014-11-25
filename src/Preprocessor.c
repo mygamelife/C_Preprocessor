@@ -209,11 +209,13 @@ char *replaceMacroInString(String *oriString, String *subString, Macro *macro, i
  ** output :
  *          return String type pointer contain string information after replaced macro name with macro content
  **/
-String *searchAndReplaceMacroInString(String *str, String *oriString, Node *root) {
+String *searchAndReplaceMacroInString(String *str, Node *root, int *found) {
   int size = 0;
   char *token, *replacedMacroString;
-  String *subString, *macroString;
+  String *subString, *macroString, *oriString, *tempMacro;
   Macro *foundMacro;
+  
+  oriString = stringSubString(str , str->startindex, str->length); /**need free**/
   
   subString = stringRemoveWordContaining(str, alphaSet);
   printf("oriString start %d, oriString length %d\n", oriString->startindex, oriString->length);
@@ -229,6 +231,10 @@ String *searchAndReplaceMacroInString(String *str, String *oriString, Node *root
     else  size = oriString->length;
     subString = stringRemoveWordContaining(str, alphaSet);
   }
+  
+  if(foundMacro != NULL)
+    *found = 1;
+    
   puts(token);
   printf("size %d\n", size);
   printf("subString start %d, subString length %d\n", subString->startindex, subString->length);
@@ -236,10 +242,15 @@ String *searchAndReplaceMacroInString(String *str, String *oriString, Node *root
   //create a temp char array
   replacedMacroString = replaceMacroInString(oriString, subString, foundMacro, size); /**need free**/
   macroString = stringNew(replacedMacroString);
-  
+ 
+  // if(foundMacro != NULL)
+    // tempMacro = searchAndReplaceMacroInString(macroString, root);
   //free tree memory before exit this function
+  stringDel(oriString);
   subStringDel(token);
+  // subStringDel(replacedMacroString);
   return macroString;
+
 }
 
 
@@ -252,49 +263,16 @@ String *directiveDefine(String *string, char *directiveName) {
   int size;
   char *token, *replacedMacroString;
   String *subString, *macroString, *originalString;
-  Macro *foundMacro;
 
   //add all available macro into tree
   Node *root = addAllMacroIntoTree(string, directiveName); /**need free**/
 
   printf("Before subString string start %d, length %d \n", string->startindex, string->length);
 
-  //store the original string
-  originalString = stringSubString(string , string->startindex, string->length); /**need free**/
-  printf("originalString start %d, length %d \n", originalString->startindex, originalString->length);
-
-  //extract subString for checking macro purpose
-  subString = stringRemoveWordContaining(string, alphaSet);
-
-  while(subString->length != 0)  {
-    // printf("subString start %d, subString length %d\n", subString->startindex, subString->length);
-    token = stringSubStringInChars(subString , subString->length); /**need free**/
-    foundMacro = findMacroInTree(root, token);
-    if(foundMacro != NULL)  {
-      // printf("hi\n");
-      size = (originalString->length) - (foundMacro->name->length) + (foundMacro->content->length);
-      break;
-    }
-    else  size = originalString->length;
-    subString = stringRemoveWordContaining(string, alphaSet);
-  }
-  puts(token);
-  printf("size %d\n", size);
-  printf("subString start %d, subString length %d\n", subString->startindex, subString->length);
-
-  //create a temp char array
-  replacedMacroString = replaceMacroInString(originalString, subString, foundMacro, size); /**need free**/
-  macroString = stringNew(replacedMacroString); /**need free**/
-  
-  // printf("macroString string start %d, length %d \n", macroString->startindex, macroString->length);
-  printf("subString string start %d, length %d \n", subString->startindex, subString->length);
-  printf("After subString string start %d, length %d \n", string->startindex, string->length);
+  // macroString = searchAndReplaceMacroInString(string, root, foundMacro);
 
   //free tree memory before exit this function
   destroyAllMacroInTree(root);
-  stringDel(originalString);
-  subStringDel(token);
-  // subStringDel(replacedMacroString);
   
   return macroString;
 }
