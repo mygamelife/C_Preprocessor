@@ -143,6 +143,7 @@ void test_getMacroInfo_given_name_MAX_content_100_should_return_macro_pointer_wi
   TEST_ASSERT_EQUAL_STRING("MAX", macro->name->string);
   TEST_ASSERT_EQUAL_STRING("100", macro->content->string);
 
+  delMacroNameAndContent(macro);
   delMacro(macro);
   stringDel(str);
 }
@@ -174,6 +175,7 @@ void test_getMacroInfo_given_name_MINUTE_50_and_SECOND_3000_should_return_macro_
   TEST_ASSERT_EQUAL(21, str->startindex);
   TEST_ASSERT_EQUAL(1, str->length);
 
+  delMacroNameAndContent(macro);
   delMacro(macro);
   stringDel(str);
 }
@@ -197,6 +199,7 @@ void test_getMacroInfo_given_name_3_identifier_name_and_3_random_content_should_
   TEST_ASSERT_EQUAL_STRING("_MAX32", macro->name->string);
   TEST_ASSERT_EQUAL_STRING("4 $$", macro->content->string);
   
+  delMacroNameAndContent(macro);
   delMacro(macro);
   
   macro = getMacroInfo(str);
@@ -205,6 +208,7 @@ void test_getMacroInfo_given_name_3_identifier_name_and_3_random_content_should_
   TEST_ASSERT_EQUAL_STRING("ONE_1", macro->name->string);
   TEST_ASSERT_EQUAL_STRING("ABC * 5", macro->content->string);
   
+  delMacroNameAndContent(macro);
   delMacro(macro);
   
   macro = getMacroInfo(str);
@@ -214,6 +218,7 @@ void test_getMacroInfo_given_name_3_identifier_name_and_3_random_content_should_
   TEST_ASSERT_EQUAL_STRING("!@#$%", macro->content->string);
   printf("------------------------------------------------------------\n");
 
+  delMacroNameAndContent(macro);
   delMacro(macro);
   stringDel(str);
 }
@@ -238,6 +243,7 @@ void test_getMacroInfo_given_empty_info_should_return_NULL(void)
   }
   printf("------------------------------------------------------------\n");
 
+  delMacroNameAndContent(macro);
   delMacro(macro);
   stringDel(str);
 }
@@ -257,6 +263,7 @@ void test_getMacroInfo_given_macro_name_but_empty_info_should_return_NULL(void)
   TEST_ASSERT_EQUAL_STRING("EmptyContent", macro->name->string);
   TEST_ASSERT_EQUAL_STRING(" ", macro->content->string); //empty content
 
+  delMacroNameAndContent(macro);
   delMacro(macro);
   stringDel(str);
 }
