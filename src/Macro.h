@@ -13,6 +13,7 @@ struct Macro  {
 
 Macro *newMacro(char *macroName, char *macroContent);
 void delMacro(Macro *macro);
+void delMacroNameAndContent(Macro *macro);
 Node *macroNodeNew(Macro *macroInfo);
 void delMacroNode(Node *node);
 void destroyAllMacroInTree(Node *root);
