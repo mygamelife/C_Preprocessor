@@ -303,9 +303,6 @@ int subStringToInteger(char *subString)
 void stringDel(String *str)
 {
 	if(str) {
-    // if(str->string)
-      // subStringDel(str->string);
-      
 		free(str);
   }
 }

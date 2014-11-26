@@ -161,4 +161,8 @@ void test_genericAddRedBlackTree_given_macroName_and_macroContent_should_store_a
   TEST_ASSERT_EQUAL_NODE(&nodeB, &nodeC, 'b', root);
   TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &nodeB);
   TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &nodeC);
+  
+  delMacro(macro1);
+  delMacro(macro2);
+  delMacro(macro3);
 }
