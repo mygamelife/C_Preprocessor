@@ -131,7 +131,7 @@ void test_isIdentifier_given_123MAX_should_return_0(void)
  *  content = "100"
  *  macro pointer should contain all these information
  **/
-void test_getMacroInfo_given_name_MAX_content_100_should_return_macro_pointer_with_these_info(void)
+void Xtest_getMacroInfo_given_name_MAX_content_100_should_return_macro_pointer_with_these_info(void)
 {
 	String *str = stringNew("MAX 100");
 
@@ -155,7 +155,7 @@ void test_getMacroInfo_given_name_MAX_content_100_should_return_macro_pointer_wi
  *  content = "3000"
  *  macro pointer should contain all these information
  **/
-void test_getMacroInfo_given_name_MINUTE_50_and_SECOND_3000_should_return_macro_pointer_with_these_info(void)
+void Xtest_getMacroInfo_given_name_MINUTE_50_and_SECOND_3000_should_return_macro_pointer_with_these_info(void)
 {
 	String *str = stringNew("MINUTE 50\n"
                           "SECOND 3000\n");
@@ -186,7 +186,7 @@ void test_getMacroInfo_given_name_MINUTE_50_and_SECOND_3000_should_return_macro_
  *  _2TWO = "!@#$%"
  *  macro pointer should contain all these information
  **/
-void test_getMacroInfo_given_name_3_identifier_name_and_3_random_content_should_return_macro_pointer_with_these_info(void)
+void Xtest_getMacroInfo_given_name_3_identifier_name_and_3_random_content_should_return_macro_pointer_with_these_info(void)
 {
 	String *str = stringNew("_MAX32 4 $$\n"
                           "ONE_1 ABC * 5\n"
@@ -226,7 +226,7 @@ void test_getMacroInfo_given_name_3_identifier_name_and_3_random_content_should_
 /** test getMacroInfo() given empty macro name
  *  should throw ERR_EMPTY_MACRO_NAME
  **/
-void test_getMacroInfo_given_empty_info_should_return_NULL(void)
+void Xtest_getMacroInfo_given_empty_info_should_return_NULL(void)
 {
   String *str;
   Macro *macro;
@@ -251,7 +251,7 @@ void test_getMacroInfo_given_empty_info_should_return_NULL(void)
 /** test getMacroInfo() given macro name but empty content
  *  should return NULL
  **/
-void test_getMacroInfo_given_macro_name_but_empty_info_should_return_NULL(void)
+void Xtest_getMacroInfo_given_macro_name_but_empty_info_should_return_NULL(void)
 {
 	String *str = stringNew("EmptyContent\n");
 
