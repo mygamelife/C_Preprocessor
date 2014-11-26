@@ -18,6 +18,7 @@ String *stringNew(char *charString);
 void stringTrimLeft(String *str);
 void stringTrimRight(String *str);
 void stringTrim(String *str);
+void stringTrimUntilEOL(String *str);
 String *stringRemoveWordContaining (String *str , char *containSet);
 String *stringRemoveWordNotContaining (String *str , char *notContainSet);
 int stringCharAt(String *str ,  int relativePos);

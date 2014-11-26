@@ -88,16 +88,29 @@ int isIdentifier(String *string)  {
  *			return NULL if macro information is not found
  **/
 Macro *getMacroInfo(String *string) {
-  char *macroName, *macroContent;
+  char *macroName, *macroContent, EOL = '\n';
   String *name, *content;
   Macro *macroInfo;
-
+  
   name = stringRemoveWordContaining(string, alphaNumericSet);
+  printf("name start %d, length %d\n", name->startindex, name->length);
+  
+  if(name->length == 0)
+    Throw(ERR_EMPTY_MACRO_NAME);
+    
   macroName = stringSubStringInChars(name , name->length);
   
-  stringTrim(string);
+  printf("After string start %d, length %d\n", string->startindex, string->length);
+    
+  // stringTrim(string);
+  stringTrimUntilEOL(string);
   
+  if(string->string[string->startindex] == EOL)
+    return macroInfo = newMacro(macroName, " "); //" " this space indicate it is empty content
+    
   content = stringRemoveWordContaining(string, alphaNumericSetWithSymbol);
+  printf("content start %d, length %d\n", content->startindex, content->length);
+    
   macroContent = stringSubStringInChars(content , content->length);
 
   return macroInfo = newMacro(macroName, macroContent); //need to free malloc
@@ -142,6 +155,7 @@ Macro *findMacroInTree(Node *root, char *targetMacro)  {
     macro = (Macro*)root->dataPtr;
     macroString = macro->name->string;
 
+    printf("FOUND Name %s\n", macroString);
     // printf("findMacroInTree()\n");
 
     if(strcmp(macroString, targetMacro) == 0) {
@@ -154,6 +168,37 @@ Macro *findMacroInTree(Node *root, char *targetMacro)  {
 
     else findMacroInTree(root->right, targetMacro);
   }
+}
+
+/** *searchMacroInString(String *str, Node *root)
+ * This function is use to search pre-defined macro in string
+ *
+ ** input :
+ *          *str is a pointer pointing to the given string
+ *          *root is a pointer pointing to the macro tree
+ ** output :
+ *          If found return foundMacro pointer contain macro information
+ *          Else return NULL
+ **/
+Macro *searchMacroInString(String *str, Node *root) {
+  char *token;
+  String *subString;
+  Macro *foundMacro;
+  
+  subString = stringRemoveWordContaining(str, alphaSet);
+  printf("subString start %d, subString length %d\n", subString->startindex, subString->length);
+  while(subString->length != 0)  {
+    printf("subString start %d, subString length %d\n", subString->startindex, subString->length);
+    token = stringSubStringInChars(subString , subString->length); /**need free**/
+    printf("token %s\n", token);
+    foundMacro = findMacroInTree(root, token);
+    if(foundMacro != NULL)  {
+      printf("foundMacro->string \n");
+      break;
+    }    
+    subString = stringRemoveWordContaining(str, alphaSet);
+  }
+  return foundMacro;
 }
 
 /** *replaceMacroInString(String *oriString, String *subString, Macro *macro, int size)
@@ -250,7 +295,6 @@ String *searchAndReplaceMacroInString(String *str, Node *root, int *found) {
   subStringDel(token);
   // subStringDel(replacedMacroString);
   return macroString;
-
 }
 
 

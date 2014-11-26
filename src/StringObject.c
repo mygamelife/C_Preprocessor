@@ -79,6 +79,26 @@ void stringTrim(String *str)
 	stringTrimRight(str);
 }
 
+/* To remove all spaces at left and right side in string
+ * input :
+ *		string
+ * output:
+ *		string after remove all spaces on left and right side
+ */
+void stringTrimUntilEOL(String *str)
+{ 
+	while(isspace(str->string[str->startindex]))  {
+		if(str->length == 0)
+		break;
+    
+    if(str->string[str->startindex] == '\n')
+      return;
+      
+		str->startindex++;
+    str->length--;
+	}
+}
+
 /* To remove words contain in ContainSet
  * input :
  *		ContainSet character that need to be remove

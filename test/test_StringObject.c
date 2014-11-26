@@ -936,3 +936,31 @@ void test_subStringToArray_given_Happy_Working_subString_should_store_into_charA
   
 	stringDel(str);
 }
+
+/*
+ * Trim spaces stop when EOL is meet
+ */
+void test1_stringTrimUntilEOL_should_stop_when_EOL_is_meet_else_keep_trim(void)
+{
+	String *str = stringNew("  \n");
+	stringTrimUntilEOL(str);
+
+	TEST_ASSERT_EQUAL(2 , str->startindex);
+	TEST_ASSERT_EQUAL(1 , str->length);
+
+	stringDel(str);
+}
+
+/*
+ * Trim spaces stop when EOL is meet
+ */
+void test2_stringTrimUntilEOL_should_stop_when_EOL_is_meet_else_keep_trim(void)
+{
+	String *str = stringNew(" a \n");
+	stringTrimUntilEOL(str);
+
+	TEST_ASSERT_EQUAL(1 , str->startindex);
+	TEST_ASSERT_EQUAL(3 , str->length);
+
+	stringDel(str);
+}

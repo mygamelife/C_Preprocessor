@@ -44,8 +44,14 @@ Node *macroNodeNew(Macro *macroInfo)
 void delMacro(Macro *macro) {
 
   if(macro) {
-    stringDel(macro->name);
-    stringDel(macro->content);
+    if(macro->name->string) {
+      subStringDel(macro->name->string);
+      stringDel(macro->name);
+    }
+    if(macro->content->string)  {
+      subStringDel(macro->content->string);
+      stringDel(macro->content);
+    }    
     free(macro);
   }
 }
