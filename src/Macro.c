@@ -41,7 +41,7 @@ Node *macroNodeNew(Macro *macroInfo)
  * output :
  *			free the malloc memory
  **/
-void delMacroNameAndContent(Macro *macro) 
+void delMacroNameAndContent(Macro *macro)
 {
   if(macro)  {
     if(macro->name)
@@ -61,7 +61,7 @@ void delMacro(Macro *macro) {
 
   if(macro) {
     stringDel(macro->name);
-    stringDel(macro->content);   
+    stringDel(macro->content);
     free(macro);
   }
 }
