@@ -279,7 +279,7 @@ void test_getMacroInfo_given_macro_name_but_empty_info_should_return_NULL(void)
  *
  ** result : free all the malloc memory in tree
  **/
-void Xtest_destroyAllMacroInTree_given_BYE_HI_macroNode_added_into_tree_should_remove_all_and_become_NULL(void)
+void test_destroyAllMacroInTree_given_BYE_HI_macroNode_added_into_tree_should_remove_all_and_become_NULL(void)
 {
 	String *str = stringNew("#define BYE BY3\n"
                           "#define HI H1\n");
