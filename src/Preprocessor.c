@@ -103,7 +103,7 @@ Macro *getMacroInfo(String *string) {
   
   if(string->string[string->startindex] == EOL) {
     macroContent = malloc(sizeof(char) + 1);
-    macroContent = "";
+    macroContent = "\0";
     return macroInfo = newMacro(macroName, macroContent); //" " this space indicate it is empty content
   }
     
