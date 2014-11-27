@@ -145,7 +145,6 @@ void test_createMacroInfo_given_name_MAX_content_100_should_return_macro_pointer
   TEST_ASSERT_EQUAL_STRING("100", macro->content->string);
 
   delMacroNameAndContent(macro);
-  // delMacro(macro);
   stringDel(str);
 }
 
@@ -166,7 +165,6 @@ void test_createMacroInfo_given_name_MINUTE_50_and_SECOND_3000_should_return_mac
   Macro *macro = createMacroInfo(str);
   //free memory
   delMacroNameAndContent(macro);
-  // delMacro(macro);
   
   macro = createMacroInfo(str);
   printf("------------------------------------------------------------\n");
@@ -176,7 +174,6 @@ void test_createMacroInfo_given_name_MINUTE_50_and_SECOND_3000_should_return_mac
   TEST_ASSERT_EQUAL_STRING("3000", macro->content->string);
 
   delMacroNameAndContent(macro);
-  // delMacro(macro);
   stringDel(str);
 }
 
@@ -200,7 +197,6 @@ void test_createMacroInfo_given_name_3_identifier_name_and_3_random_content_shou
   TEST_ASSERT_EQUAL_STRING("4 $$", macro->content->string);
   
   delMacroNameAndContent(macro);
-  // delMacro(macro);
   
   macro = createMacroInfo(str);
   
@@ -209,7 +205,6 @@ void test_createMacroInfo_given_name_3_identifier_name_and_3_random_content_shou
   TEST_ASSERT_EQUAL_STRING("ABC * 5", macro->content->string);
   
   delMacroNameAndContent(macro);
-  // delMacro(macro);
   
   macro = createMacroInfo(str);
   
@@ -219,7 +214,6 @@ void test_createMacroInfo_given_name_3_identifier_name_and_3_random_content_shou
   printf("------------------------------------------------------------\n");
 
   delMacroNameAndContent(macro);
-  // delMacro(macro);
   stringDel(str);
 }
 
@@ -244,7 +238,6 @@ void test_createMacroInfo_given_empty_info_should_return_NULL(void)
   printf("------------------------------------------------------------\n");
 
   delMacroNameAndContent(macro);
-  // delMacro(macro);
   stringDel(str);
 }
 
