@@ -155,7 +155,7 @@ void test_getMacroInfo_given_name_MAX_content_100_should_return_macro_pointer_wi
  *  content = "3000"
  *  macro pointer should contain all these information
  **/
-void Xtest_getMacroInfo_given_name_MINUTE_50_and_SECOND_3000_should_return_macro_pointer_with_these_info(void)
+void test_getMacroInfo_given_name_MINUTE_50_and_SECOND_3000_should_return_macro_pointer_with_these_info(void)
 {
 	String *str = stringNew("MINUTE 50\n"
                           "SECOND 3000\n");
