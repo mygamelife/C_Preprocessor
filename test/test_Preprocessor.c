@@ -227,15 +227,15 @@ void Xtest_getMacroInfo_given_name_3_identifier_name_and_3_random_content_should
 /** test getMacroInfo() given empty macro name
  *  should throw ERR_EMPTY_MACRO_NAME
  **/
-void Xtest_getMacroInfo_given_empty_info_should_return_NULL(void)
+void test_getMacroInfo_given_empty_info_should_return_NULL(void)
 {
   String *str;
-  Macro *macro;
+  Macro *macro = NULL;
   CEXCEPTION_T err;
 	
   printf("Start test_getMacroInfo_given_empty_info_should_return_NULL\n");  
   Try {
-    str = stringNew("\n");
+    str = stringNew(" \n");
     macro = getMacroInfo(str);
     TEST_FAIL_MESSAGE("Should throw ERR_EMPTY_MACRO_NAME exception");
   }
@@ -262,7 +262,7 @@ void test_getMacroInfo_given_macro_name_but_empty_info_should_return_NULL(void)
 
   TEST_ASSERT_NOT_NULL(macro);
   TEST_ASSERT_EQUAL_STRING("EmptyContent", macro->name->string);
-  TEST_ASSERT_EQUAL_STRING(" ", macro->content->string); //empty content
+  TEST_ASSERT_EQUAL_STRING("\n", macro->content->string); //empty content
 
   delMacroNameAndContent(macro);
   delMacro(macro);
@@ -293,9 +293,6 @@ void test_destroyAllMacroInTree_given_BYE_HI_macroNode_added_into_tree_should_re
   Macro *m2 = (Macro*)root->right->dataPtr;
   TEST_ASSERT_EQUAL_STRING("HI", m2->name->string);
   TEST_ASSERT_EQUAL_STRING("H1", m2->content->string);
-  // Macro *macro2 = (Macro*)root->right->dataPtr;
-  // printf("root %s\n", macro->name->string);
-  // printf("root right %s\n", macro2->name->string);
 
   //free all malloc memory in tree
   destroyAllMacroInTree(root);

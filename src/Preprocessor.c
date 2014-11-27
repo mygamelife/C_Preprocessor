@@ -105,8 +105,10 @@ Macro *getMacroInfo(String *string) {
   // stringTrim(string);
   stringTrimUntilEOL(string);
   
-  if(string->string[string->startindex] == EOL)
-    return macroInfo = newMacro(macroName, " "); //" " this space indicate it is empty content
+  if(string->string[string->startindex] == EOL) {
+    macroContent = stringSubStringInChars(string , 1);
+    return macroInfo = newMacro(macroName, macroContent); //" " this space indicate it is empty content
+  }
     
   content = stringRemoveWordContaining(string, alphaNumericSetWithSymbol);
   printf("content start %d, length %d\n", content->startindex, content->length);

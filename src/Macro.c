@@ -76,7 +76,7 @@ void delMacroNode(Node *node)
 {
 	if(node)  {
     Macro *macro = (Macro*)node->dataPtr;
-    // delMacroNameAndContent(macro);
+    delMacroNameAndContent(macro);
     delMacro(macro);
     free(node);
   }
