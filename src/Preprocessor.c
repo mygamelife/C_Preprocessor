@@ -93,16 +93,12 @@ Macro *getMacroInfo(String *string) {
   Macro *macroInfo;
   
   name = stringRemoveWordContaining(string, alphaNumericSet);
-  printf("name start %d, length %d\n", name->startindex, name->length);
   
   if(name->length == 0)
     Throw(ERR_EMPTY_MACRO_NAME);
     
   macroName = stringSubStringInChars(name , name->length);
-  
-  printf("After string start %d, length %d\n", string->startindex, string->length);
     
-  // stringTrim(string);
   stringTrimUntilEOL(string);
   
   if(string->string[string->startindex] == EOL) {
