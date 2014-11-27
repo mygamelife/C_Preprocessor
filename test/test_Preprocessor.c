@@ -131,7 +131,7 @@ void test_isIdentifier_given_123MAX_should_return_0(void)
  *  content = "100"
  *  macro pointer should contain all these information
  **/
-void Xtest_getMacroInfo_given_name_MAX_content_100_should_return_macro_pointer_with_these_info(void)
+void test_getMacroInfo_given_name_MAX_content_100_should_return_macro_pointer_with_these_info(void)
 {
 	String *str = stringNew("MAX 100");
 
@@ -187,7 +187,7 @@ void test_getMacroInfo_given_name_MINUTE_50_and_SECOND_3000_should_return_macro_
  *  _2TWO = "!@#$%"
  *  macro pointer should contain all these information
  **/
-void Xtest_getMacroInfo_given_name_3_identifier_name_and_3_random_content_should_return_macro_pointer_with_these_info(void)
+void test_getMacroInfo_given_name_3_identifier_name_and_3_random_content_should_return_macro_pointer_with_these_info(void)
 {
 	String *str = stringNew("_MAX32 4 $$\n"
                           "ONE_1 ABC * 5\n"
@@ -262,7 +262,7 @@ void test_getMacroInfo_given_macro_name_but_empty_info_should_return_NULL(void)
 
   TEST_ASSERT_NOT_NULL(macro);
   TEST_ASSERT_EQUAL_STRING("EmptyContent", macro->name->string);
-  TEST_ASSERT_EQUAL_STRING("\n", macro->content->string); //empty content
+  TEST_ASSERT_EQUAL_STRING("", macro->content->string); //empty content
 
   delMacroNameAndContent(macro);
   delMacro(macro);
@@ -315,7 +315,7 @@ void test_addAllMacroIntoTree_given_macroNode_contain_macro_name_but_empty_conte
   TEST_ASSERT_NOT_NULL(root);
   Macro *m1 = (Macro*)root->dataPtr;
   TEST_ASSERT_EQUAL_STRING("empty_content", m1->name->string);
-  TEST_ASSERT_EQUAL_STRING(" ", m1->content->string);
+  TEST_ASSERT_EQUAL_STRING("", m1->content->string);
 
   //free all malloc memory in tree
   destroyAllMacroInTree(root);
@@ -504,7 +504,7 @@ void test_searchMacroInString_given_Looking_for_Empty_Macro_should_macro_pointer
 
   TEST_ASSERT_NOT_NULL(searchResult);
   TEST_ASSERT_EQUAL_STRING("Empty", searchResult->name->string);
-  TEST_ASSERT_EQUAL_STRING(" ", searchResult->content->string);
+  TEST_ASSERT_EQUAL_STRING("", searchResult->content->string);
 
   destroyAllMacroInTree(root);
   stringDel(str);
