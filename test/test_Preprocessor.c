@@ -268,7 +268,7 @@ void test_getMacroInfo_given_macro_name_but_empty_info_should_return_NULL(void)
     printf("nameStr not NULL\n");
   if(macro->content->string)
     printf("contentStr not NULL\n");
-  delMacroNameAndContent(macro);
+  // delMacroNameAndContent(macro);
   delMacro(macro);
   stringDel(str);
 }
