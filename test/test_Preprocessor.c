@@ -264,7 +264,7 @@ void test_getMacroInfo_given_macro_name_but_empty_info_should_return_NULL(void)
   TEST_ASSERT_EQUAL_STRING("", macro->content->string); //empty content
 
   // subStringDel(macro->name->string);
-  subStringDel(macro->content->string);
+  subStringDel(macro->content);
   // delMacroNameAndContent(macro);
   // delMacro(macro);
   stringDel(str);
