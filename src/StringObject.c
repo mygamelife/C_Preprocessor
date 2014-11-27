@@ -314,7 +314,6 @@ void subStringDel(char *subString)
 {
 	if(subString) {
 		free(subString);
-    subString = NULL;
   }
 }
 
