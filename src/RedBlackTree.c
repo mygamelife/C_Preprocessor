@@ -468,13 +468,6 @@ void genericAddRedBlackTree(Node **rootPtr, Node *newNode, int (*compare)(void *
 void _genericAddRedBlackTree(Node **rootPtr, Node *newNode, int (*comparePtr)(void **rootPtr, void *newNode))	{
 	Node *root = *rootPtr;
 
-  if(*rootPtr != NULL)  {
-    Macro *rootMacro = (Macro*)(*rootPtr)->dataPtr;
-    // printf("rootMacro->name %s\n", rootMacro->name->string);
-  }
-  Macro *newMacro = (Macro*)newNode->dataPtr;
-  // printf("newMacro->name %s\n", newMacro->name->string);
-
 	if(*rootPtr == NULL)	{
 		(*rootPtr) = newNode;
 		return;
