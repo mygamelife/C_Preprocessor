@@ -312,8 +312,10 @@ void stringDel(String *str)
  */
 void subStringDel(char *subString)
 {
-	if(subString)
+	if(subString) {
 		free(subString);
+    subString = NULL;
+  }
 }
 
 /* Check the relative position of the string if in contain in containSet
