@@ -252,7 +252,7 @@ void test_getMacroInfo_given_empty_info_should_return_NULL(void)
 /** test getMacroInfo() given macro name but empty content
  *  should return NULL
  **/
-void Xtest_getMacroInfo_given_macro_name_but_empty_info_should_return_NULL(void)
+void test_getMacroInfo_given_macro_name_but_empty_info_should_return_NULL(void)
 {
 	String *str = stringNew("EmptyContent\n");
 
@@ -264,6 +264,10 @@ void Xtest_getMacroInfo_given_macro_name_but_empty_info_should_return_NULL(void)
   TEST_ASSERT_EQUAL_STRING("EmptyContent", macro->name->string);
   TEST_ASSERT_EQUAL_STRING("", macro->content->string); //empty content
 
+  if(macro->name->string)
+    printf("nameStr not NULL\n");
+  if(macro->content->string)
+    printf("contentStr not NULL\n");
   delMacroNameAndContent(macro);
   delMacro(macro);
   stringDel(str);
@@ -304,7 +308,7 @@ void Xtest_destroyAllMacroInTree_given_BYE_HI_macroNode_added_into_tree_should_r
  *  
  ** result : should add macroNode which contain macro name but empty content
  **/
-void test_addAllMacroIntoTree_given_macroNode_contain_macro_name_but_empty_content_should_add_into_tree(void)
+void Xtest_addAllMacroIntoTree_given_macroNode_contain_macro_name_but_empty_content_should_add_into_tree(void)
 {
 	String *str = stringNew("#define empty_content\n");
 
@@ -337,7 +341,7 @@ void test_addAllMacroIntoTree_given_macroNode_contain_macro_name_but_empty_conte
  *                                    /
  *                                 LENGTH
  **/
-void test_addAllMacroIntoTree_given_HEIGHT_WIDTH_LENGTH_AREA_and_directive_name_define_should_add_all_into_tree(void)
+void Xtest_addAllMacroIntoTree_given_HEIGHT_WIDTH_LENGTH_AREA_and_directive_name_define_should_add_all_into_tree(void)
 {
 	String *str = stringNew("#define HEIGHT 50cm\n"
                           "#define WIDTH 70cm\n"
@@ -376,7 +380,7 @@ void test_addAllMacroIntoTree_given_HEIGHT_WIDTH_LENGTH_AREA_and_directive_name_
 /** test findMacroInTree() given added macroNode tree:
  ** Given random macroName and content contain symbol/spaces should add into tree
  **/
-void test_findMacroInTree_given_random_name_and_content_contain_symbol_and_spaces_should_able_to_find_these_information(void)
+void Xtest_findMacroInTree_given_random_name_and_content_contain_symbol_and_spaces_should_able_to_find_these_information(void)
 {
   int result = 0;
 	String *str = stringNew("#define _Apple *_*\n"
@@ -410,7 +414,7 @@ void test_findMacroInTree_given_random_name_and_content_contain_symbol_and_space
  ** result :
  *          should return NULL
  **/
-void test_findMacroInTree_given_added_macroNode_tree_and_find_findSomethingDoesntExist_should_return_NULL(void)
+void Xtest_findMacroInTree_given_added_macroNode_tree_and_find_findSomethingDoesntExist_should_return_NULL(void)
 {
 	String *str = stringNew("#define FIND 10\n"
                           "#define TARGET 20\n"
@@ -441,7 +445,7 @@ void test_findMacroInTree_given_added_macroNode_tree_and_find_findSomethingDoesn
  ** String :
  *          X trying to search Macro;
  **/
-void test_searchMacroInString_given_string_X_trying_to_search_Macro_should_get_search_macroInfo(void) // <----- Problem
+void Xtest_searchMacroInString_given_string_X_trying_to_search_Macro_should_get_search_macroInfo(void) // <----- Problem
 {
 	String *str = stringNew("#define search Macro\n"
                            "X trying to search Macro\n");
@@ -467,7 +471,7 @@ void test_searchMacroInString_given_string_X_trying_to_search_Macro_should_get_s
  ** String :
  *          Search Something
  **/
-void test_searchMacroInString_given_Search_Something_should_return_NULL_pointer(void) // <----- Problem
+void Xtest_searchMacroInString_given_Search_Something_should_return_NULL_pointer(void) // <----- Problem
 {
 	String *str = stringNew("#define Doesnt Exist\n"
                            "Search Something\n");
