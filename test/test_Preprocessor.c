@@ -131,7 +131,7 @@ void test_isIdentifier_given_123MAX_should_return_0(void)
  *  content = "100"
  *  macro pointer should contain all these information
  **/
-void test_getMacroInfo_given_name_MAX_content_100_should_return_macro_pointer_with_these_info(void)
+void Xtest_getMacroInfo_given_name_MAX_content_100_should_return_macro_pointer_with_these_info(void)
 {
 	String *str = stringNew("MAX 100");
 
