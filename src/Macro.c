@@ -71,20 +71,20 @@ void delMacroNameAndContent(Macro *macro)
   }
 }
 
-/** Free the malloc memory in newMacro()
- * input :
- *			*macro is a macro type pointer
- * output :
- *			free all the malloc memory in newMacro()
- **/
-void delMacro(Macro *macro) {
+// /** Free the malloc memory in newMacro()
+ // * input :
+ // *			*macro is a macro type pointer
+ // * output :
+ // *			free all the malloc memory in newMacro()
+ // **/
+// void delMacro(Macro *macro) {
 
-  if(macro) {
-    stringDel(macro->name);
-    stringDel(macro->content);
-    free(macro);
-  }
-}
+  // if(macro) {
+    // stringDel(macro->name);
+    // stringDel(macro->content);
+    // free(macro);
+  // }
+// }
 
 /** Free the malloc memory in macroNodeNew()
  * input :

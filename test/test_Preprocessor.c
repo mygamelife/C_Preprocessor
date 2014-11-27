@@ -296,7 +296,6 @@ void test_destroyAllMacroInTree_given_BYE_HI_macroNode_added_into_tree_should_re
   //free all malloc memory in tree
   destroyAllMacroInTree(root);
   free(root);
-  TEST_ASSERT_EQUAL_STRING("BYE", m1->name->string);
   stringDel(str);
 }
 
