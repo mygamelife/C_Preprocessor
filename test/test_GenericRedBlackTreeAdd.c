@@ -31,8 +31,8 @@ void test_compare_given_Apple_Orange_should_return_0(void)  {
 
   TEST_ASSERT_EQUAL(0, result);
 
-  delMacro(macro1);
-  delMacro(macro2);
+  delTestMacro(macro1);
+  delTestMacro(macro2);
 }
 
 /**Test compare() given
@@ -52,8 +52,8 @@ void test_compare_given_Girl_and_Boy_should_return_1(void)  {
 
   TEST_ASSERT_EQUAL(1, result);
 
-  delMacro(macro1);
-  delMacro(macro2);
+  delTestMacro(macro1);
+  delTestMacro(macro2);
 }
 
 // #define addMacro(rootPtr, newNode)  genericAddRedBlackTree(rootPtr, newNode, compare)
@@ -103,8 +103,8 @@ void test_genericAddRedBlackTree_given_macroName_and_macroContent_should_store_a
   TEST_ASSERT_EQUAL_NODE(&nodeB, NULL, 'b', root);
   TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &nodeB);
 
-  delMacro(macro1);
-  delMacro(macro2);
+  delTestMacro(macro1);
+  delTestMacro(macro2);
 }
 
 /**store macro3 to right-side of macro1 given macro1, macro2 and macro3 info:
@@ -161,8 +161,8 @@ void test_genericAddRedBlackTree_given_macroName_and_macroContent_should_store_a
   TEST_ASSERT_EQUAL_NODE(&nodeB, &nodeC, 'b', root);
   TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &nodeB);
   TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &nodeC);
-  
-  delMacro(macro1);
-  delMacro(macro2);
-  delMacro(macro3);
+
+  delTestMacro(macro1);
+  delTestMacro(macro2);
+  delTestMacro(macro3);
 }

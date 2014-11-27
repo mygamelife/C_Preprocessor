@@ -44,10 +44,15 @@ Node *macroNodeNew(Macro *macroInfo)
 void delMacroNameAndContent(Macro *macro)
 {
   if(macro)  {
-    if(macro->name)
+    if(macro->name) {
       subStringDel(macro->name->string);
-    if(macro->content)
+      free(macro->name);
+    }
+    if(macro->content)  {
       subStringDel(macro->content->string);
+      free(macro->content);
+    }
+    free(macro);
   }
 }
 
@@ -66,6 +71,21 @@ void delMacro(Macro *macro) {
   }
 }
 
+/** Free the malloc memory in newMacro()
+ * input :
+ *			*macro is a macro type pointer
+ * output :
+ *			free all the malloc memory in newMacro()
+ **/
+void delTestMacro(Macro *macro) {
+
+  if(macro) {
+    stringDel(macro->name);
+    stringDel(macro->content);
+    free(macro);
+  }
+}
+
 /** Free the malloc memory in macroNodeNew()
  * input :
  *			*node is a node type pointer
@@ -76,7 +96,7 @@ void delMacroNode(Node *node)
 {
 	if(node)  {
     Macro *macro = (Macro*)node->dataPtr;
-    delMacroNameAndContent(macro);
+    // delMacroNameAndContent(macro);
     delMacro(macro);
     free(node);
   }
