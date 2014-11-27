@@ -227,7 +227,7 @@ void test_getMacroInfo_given_name_3_identifier_name_and_3_random_content_should_
 /** test getMacroInfo() given empty macro name
  *  should throw ERR_EMPTY_MACRO_NAME
  **/
-void Xtest_getMacroInfo_given_empty_info_should_return_NULL(void)
+void test_getMacroInfo_given_empty_info_should_return_NULL(void)
 {
   String *str;
   Macro *macro = NULL;
@@ -252,7 +252,7 @@ void Xtest_getMacroInfo_given_empty_info_should_return_NULL(void)
 /** test getMacroInfo() given macro name but empty content
  *  should return NULL
  **/
-void Xtest_getMacroInfo_given_macro_name_but_empty_info_should_return_NULL(void)
+void test_getMacroInfo_given_macro_name_but_empty_info_should_return_NULL(void)
 {
 	String *str = stringNew("EmptyContent\n");
 
