@@ -15,7 +15,7 @@ void setUp(void)  {}
 void tearDown(void) {}
 
 /** test isHashTag given # should return 1 **/
-void test_isHashTag_given_hashtag_should_return_1(void)
+void Xtest_isHashTag_given_hashtag_should_return_1(void)
 {
   int result = 0;
 	String *str = stringNew("#");
@@ -27,7 +27,7 @@ void test_isHashTag_given_hashtag_should_return_1(void)
 }
 
 /** test isHashTag given $ should return 1 **/
-void test_isHashTag_given_dollar_sign_should_return_0(void)
+void Xtest_isHashTag_given_dollar_sign_should_return_0(void)
 {
   int result = 0;
 	String *str = stringNew("$");
@@ -39,7 +39,7 @@ void test_isHashTag_given_dollar_sign_should_return_0(void)
 }
 
 /** test isDirective given invalid directive name should throw an error**/
-void test_isDirective_should_throw_an_exception(void)
+void Xtest_isDirective_should_throw_an_exception(void)
 {
 	String *str;
   CEXCEPTION_T err;
@@ -56,7 +56,7 @@ void test_isDirective_should_throw_an_exception(void)
 }
 
 /** test isDirective given "   # in  clude" space at # and inside directive name should throw an error **/
-void test_isDirective_space_between_hashtag_and_inside_directiveName_should_throw_error(void)
+void Xtest_isDirective_space_between_hashtag_and_inside_directiveName_should_throw_error(void)
 {
 	String *str;
   CEXCEPTION_T err;
@@ -73,7 +73,7 @@ void test_isDirective_space_between_hashtag_and_inside_directiveName_should_thro
 }
 
 /** test isDirective given #define should return 1 **/
-void test_isDirective_given_define_should_return_1(void)
+void Xtest_isDirective_given_define_should_return_1(void)
 {
   int result = 0;
 	String *str = stringNew("#define");
@@ -85,7 +85,7 @@ void test_isDirective_given_define_should_return_1(void)
 }
 
 /** test isDirective given "     #   define" space between # and directive name should return 1 **/
-void test_isDirective_space_between_hashtag_and_directiveName_should_return_1(void)
+void Xtest_isDirective_space_between_hashtag_and_directiveName_should_return_1(void)
 {
   int result = 0;
 	String *str = stringNew("     #   define");
@@ -97,7 +97,7 @@ void test_isDirective_space_between_hashtag_and_directiveName_should_return_1(vo
 }
 
 /** test isIdentifier given "_MAX_123" should return 1 **/
-void test_isIdentifier_given__MAX_123_should_return_1(void)
+void Xtest_isIdentifier_given__MAX_123_should_return_1(void)
 {
   int result = 0;
 	String *str = stringNew("_MAX_123");
@@ -109,7 +109,7 @@ void test_isIdentifier_given__MAX_123_should_return_1(void)
 }
 
 /** test isIdentifier given "123MAX" should return 0 **/
-void test_isIdentifier_given_123MAX_should_return_0(void)
+void Xtest_isIdentifier_given_123MAX_should_return_0(void)
 {
   int result = 0;
   String *str;
@@ -264,7 +264,7 @@ void test_getMacroInfo_given_macro_name_but_empty_info_should_return_NULL(void)
   TEST_ASSERT_EQUAL_STRING("", macro->content->string); //empty content
 
   // subStringDel(macro->name->string);
-  free(macro->content->string);
+  subStringDel(macro->content->string);
   // delMacroNameAndContent(macro);
   // delMacro(macro);
   stringDel(str);

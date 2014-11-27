@@ -102,7 +102,8 @@ Macro *getMacroInfo(String *string) {
   stringTrimUntilEOL(string);
   
   if(string->string[string->startindex] == EOL) {
-    macroContent = malloc(sizeof(char) + 1);
+    printf("enter\n");  
+    macroContent = malloc(sizeof(char) * 1);
     macroContent = "\0";
     return macroInfo = newMacro(macroName, macroContent); //" " this space indicate it is empty content
   }

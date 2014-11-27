@@ -34,8 +34,6 @@ void test_rightRotate_3_elements(void)	{
 	setNode(&node5, &node1, NULL, 'b');
 	setNode(&node10, &node5, NULL, 'b');
 	Node *root = &node10;
-	printf("Root address %x\n", &root);
-  printf("test_rightRotate_3_elements\n");
 	rightRotate(&root);
 	printf("-----------------------------");
   
