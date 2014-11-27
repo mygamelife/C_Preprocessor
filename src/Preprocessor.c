@@ -87,7 +87,7 @@ int isIdentifier(String *string)  {
  *			return macroInfo contain all the macro information
  *			return NULL if macro information is not found
  **/
-Macro *getMacroInfo(String *string) {
+Macro *createMacroInfo(String *string) {
   char *macroName, *macroContent, EOL = '\n';
   String *name, *content;
   Macro *macroInfo;
@@ -129,7 +129,7 @@ Node *addAllMacroIntoTree(String *string, char *directiveName) {
   while(isHashTag(string)) {
     if(isDirective(string, directiveName))  {
       if(isIdentifier(string))  {
-        macroNode = macroNodeNew(getMacroInfo(string)); //need to free malloc
+        macroNode = macroNodeNew(createMacroInfo(string)); //need to free malloc
         addMacro(&root, macroNode);
       }
     }

@@ -7,6 +7,15 @@ extern char *alphaNumericSet;
 extern char *alphaNumericSetWithSymbol;
 extern char *alphaSet;
 
+/*  type
+ *  0 - static
+ * -1 - dynamic
+ */
+typedef struct  {
+  char type; 
+  char text[0];
+}Text;
+
 typedef struct
 {
 	char *string;
@@ -15,6 +24,7 @@ typedef struct
 }String;
 
 String *stringNew(char *charString);
+String *newString(char *charString);
 void stringTrimLeft(String *str);
 void stringTrimRight(String *str);
 void stringTrim(String *str);

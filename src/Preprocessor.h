@@ -13,7 +13,7 @@
 int isDirective(String *string, char *directiveName);
 int isHashTag(String *string);
 int isIdentifier(String *string);
-Macro *getMacroInfo(String *string);
+Macro *createMacroInfo(String *string);
 Node *addAllMacroIntoTree(String *string, char *directiveName);
 String *directiveDefine(String *string, char *directiveName);
 Macro *findMacroInTree(Node *root, char *targetMacro);

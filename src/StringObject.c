@@ -10,6 +10,10 @@ char *alphaNumericSet = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01
 char *alphaNumericSetWithSymbol = " _abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789(~!@#$%^&*_-+{}=|;:)\'<,.>/?";
 char *alphaSet = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
+String *newString(char *charString) {
+  
+}
+
 /* Create a new String
  * input :
  *		charString is the string that we receive

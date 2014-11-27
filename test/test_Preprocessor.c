@@ -126,17 +126,17 @@ void Xtest_isIdentifier_given_123MAX_should_return_0(void)
   stringDel(str);
 }
 
-/** test getMacroInfo() given 1 info
+/** test createMacroInfo() given 1 info
  *  name = "MAX"
  *  content = "100"
  *  macro pointer should contain all these information
  **/
-void Xtest_getMacroInfo_given_name_MAX_content_100_should_return_macro_pointer_with_these_info(void)
+void Xtest_createMacroInfo_given_name_MAX_content_100_should_return_macro_pointer_with_these_info(void)
 {
 	String *str = stringNew("MAX 100");
 
-  printf("Start test_getMacroInfo_given_name_MAX_content_100_should_return_macro_pointer_with_these_info\n");
-  Macro *macro = getMacroInfo(str);
+  printf("Start test_createMacroInfo_given_name_MAX_content_100_should_return_macro_pointer_with_these_info\n");
+  Macro *macro = createMacroInfo(str);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(macro);
@@ -148,26 +148,26 @@ void Xtest_getMacroInfo_given_name_MAX_content_100_should_return_macro_pointer_w
   stringDel(str);
 }
 
-/** test getMacroInfo() given 2 info
+/** test createMacroInfo() given 2 info
  *  name = "MINUTE"
  *  content = "50"
  *  name = "SECOND"
  *  content = "3000"
  *  macro pointer should contain all these information
  **/
-void Xtest_getMacroInfo_given_name_MINUTE_50_and_SECOND_3000_should_return_macro_pointer_with_these_info(void)
+void Xtest_createMacroInfo_given_name_MINUTE_50_and_SECOND_3000_should_return_macro_pointer_with_these_info(void)
 {
 	String *str = stringNew("MINUTE 50\n"
                           "SECOND 3000\n");
 
-  printf("Start test_getMacroInfo_given_name_MINUTE_50_and_SECOND_3000_should_return_macro_pointer_with_these_info\n");
+  printf("Start test_createMacroInfo_given_name_MINUTE_50_and_SECOND_3000_should_return_macro_pointer_with_these_info\n");
   
-  Macro *macro = getMacroInfo(str);
+  Macro *macro = createMacroInfo(str);
   //free memory
   delMacroNameAndContent(macro);
   // delMacro(macro);
   
-  macro = getMacroInfo(str);
+  macro = createMacroInfo(str);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(macro);
@@ -179,20 +179,20 @@ void Xtest_getMacroInfo_given_name_MINUTE_50_and_SECOND_3000_should_return_macro
   stringDel(str);
 }
 
-/** test getMacroInfo() given 2 info
+/** test createMacroInfo() given 2 info
  *  _MAX32 = "4 $$"
  *  ONE_1 = "ABC * 5"
  *  _2TWO = "!@#$%"
  *  macro pointer should contain all these information
  **/
-void Xtest_getMacroInfo_given_name_3_identifier_name_and_3_random_content_should_return_macro_pointer_with_these_info(void)
+void Xtest_createMacroInfo_given_name_3_identifier_name_and_3_random_content_should_return_macro_pointer_with_these_info(void)
 {
 	String *str = stringNew("_MAX32 4 $$\n"
                           "ONE_1 ABC * 5\n"
                           "_2TWO !@#$%\n");
 
-  printf("Start test_getMacroInfo_given_name_3_identifier_name_and_3_random_content_should_return_macro_pointer_with_these_info\n");
-  Macro *macro = getMacroInfo(str);
+  printf("Start test_createMacroInfo_given_name_3_identifier_name_and_3_random_content_should_return_macro_pointer_with_these_info\n");
+  Macro *macro = createMacroInfo(str);
   
   TEST_ASSERT_NOT_NULL(macro);
   TEST_ASSERT_EQUAL_STRING("_MAX32", macro->name->string);
@@ -201,7 +201,7 @@ void Xtest_getMacroInfo_given_name_3_identifier_name_and_3_random_content_should
   delMacroNameAndContent(macro);
   // delMacro(macro);
   
-  macro = getMacroInfo(str);
+  macro = createMacroInfo(str);
   
   TEST_ASSERT_NOT_NULL(macro);
   TEST_ASSERT_EQUAL_STRING("ONE_1", macro->name->string);
@@ -210,7 +210,7 @@ void Xtest_getMacroInfo_given_name_3_identifier_name_and_3_random_content_should
   delMacroNameAndContent(macro);
   // delMacro(macro);
   
-  macro = getMacroInfo(str);
+  macro = createMacroInfo(str);
   
   TEST_ASSERT_NOT_NULL(macro);
   TEST_ASSERT_EQUAL_STRING("_2TWO", macro->name->string);
@@ -222,19 +222,19 @@ void Xtest_getMacroInfo_given_name_3_identifier_name_and_3_random_content_should
   stringDel(str);
 }
 
-/** test getMacroInfo() given empty macro name
+/** test createMacroInfo() given empty macro name
  *  should throw ERR_EMPTY_MACRO_NAME
  **/
-void Xtest_getMacroInfo_given_empty_info_should_return_NULL(void)
+void Xtest_createMacroInfo_given_empty_info_should_return_NULL(void)
 {
   String *str;
   Macro *macro = NULL;
   CEXCEPTION_T err;
 	
-  printf("Start test_getMacroInfo_given_empty_info_should_return_NULL\n");  
+  printf("Start test_createMacroInfo_given_empty_info_should_return_NULL\n");  
   Try {
     str = stringNew(" \n");
-    macro = getMacroInfo(str);
+    macro = createMacroInfo(str);
     TEST_FAIL_MESSAGE("Should throw ERR_EMPTY_MACRO_NAME exception");
   }
   Catch(err) {
@@ -247,16 +247,16 @@ void Xtest_getMacroInfo_given_empty_info_should_return_NULL(void)
   stringDel(str);
 }
 
-/** test getMacroInfo() given macro name but empty content
+/** test createMacroInfo() given macro name but empty content
  *  should return NULL
  **/
-void test_getMacroInfo_given_macro_name_but_empty_info_should_return_NULL(void)
+void test_createMacroInfo_given_macro_name_but_empty_info_should_return_NULL(void)
 {
 	String *str = stringNew("EmptyContent\n");
   Macro *macro;
   
-  printf("Start test_getMacroInfo_given_macro_name_but_empty_info_should_return_NULL\n");  
-  macro = getMacroInfo(str);
+  printf("Start test_createMacroInfo_given_macro_name_but_empty_info_should_return_NULL\n");  
+  macro = createMacroInfo(str);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(macro);
