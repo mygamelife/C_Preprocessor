@@ -966,15 +966,3 @@ void test2_stringTrimUntilEOL_should_stop_when_EOL_is_meet_else_keep_trim(void)
 
 	stringDel(str);
 }
-
-/*
- */
-void test_newString(void)
-{
-	String *str = stringNew(t"Samuel");
-  
-	if(str->string[0] == '\0') 
-    printf("it is '\0'");
-
-	// stringDel(str);
-}

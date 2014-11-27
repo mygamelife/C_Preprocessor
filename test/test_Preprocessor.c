@@ -15,7 +15,7 @@ void setUp(void)  {}
 void tearDown(void) {}
 
 /** test isHashTag given # should return 1 **/
-void Xtest_isHashTag_given_hashtag_should_return_1(void)
+void test_isHashTag_given_hashtag_should_return_1(void)
 {
   int result = 0;
 	String *str = stringNew("#");
@@ -27,7 +27,7 @@ void Xtest_isHashTag_given_hashtag_should_return_1(void)
 }
 
 /** test isHashTag given $ should return 1 **/
-void Xtest_isHashTag_given_dollar_sign_should_return_0(void)
+void test_isHashTag_given_dollar_sign_should_return_0(void)
 {
   int result = 0;
 	String *str = stringNew("$");
@@ -39,7 +39,7 @@ void Xtest_isHashTag_given_dollar_sign_should_return_0(void)
 }
 
 /** test isDirective given invalid directive name should throw an error**/
-void Xtest_isDirective_should_throw_an_exception(void)
+void test_isDirective_should_throw_an_exception(void)
 {
 	String *str;
   CEXCEPTION_T err;
@@ -56,7 +56,7 @@ void Xtest_isDirective_should_throw_an_exception(void)
 }
 
 /** test isDirective given "   # in  clude" space at # and inside directive name should throw an error **/
-void Xtest_isDirective_space_between_hashtag_and_inside_directiveName_should_throw_error(void)
+void test_isDirective_space_between_hashtag_and_inside_directiveName_should_throw_error(void)
 {
 	String *str;
   CEXCEPTION_T err;
@@ -73,7 +73,7 @@ void Xtest_isDirective_space_between_hashtag_and_inside_directiveName_should_thr
 }
 
 /** test isDirective given #define should return 1 **/
-void Xtest_isDirective_given_define_should_return_1(void)
+void test_isDirective_given_define_should_return_1(void)
 {
   int result = 0;
 	String *str = stringNew("#define");
@@ -85,7 +85,7 @@ void Xtest_isDirective_given_define_should_return_1(void)
 }
 
 /** test isDirective given "     #   define" space between # and directive name should return 1 **/
-void Xtest_isDirective_space_between_hashtag_and_directiveName_should_return_1(void)
+void test_isDirective_space_between_hashtag_and_directiveName_should_return_1(void)
 {
   int result = 0;
 	String *str = stringNew("     #   define");
@@ -97,7 +97,7 @@ void Xtest_isDirective_space_between_hashtag_and_directiveName_should_return_1(v
 }
 
 /** test isIdentifier given "_MAX_123" should return 1 **/
-void Xtest_isIdentifier_given__MAX_123_should_return_1(void)
+void test_isIdentifier_given__MAX_123_should_return_1(void)
 {
   int result = 0;
 	String *str = stringNew("_MAX_123");
@@ -109,7 +109,7 @@ void Xtest_isIdentifier_given__MAX_123_should_return_1(void)
 }
 
 /** test isIdentifier given "123MAX" should return 0 **/
-void Xtest_isIdentifier_given_123MAX_should_return_0(void)
+void test_isIdentifier_given_123MAX_should_return_0(void)
 {
   int result = 0;
   String *str;
@@ -131,7 +131,7 @@ void Xtest_isIdentifier_given_123MAX_should_return_0(void)
  *  content = "100"
  *  macro pointer should contain all these information
  **/
-void Xtest_createMacroInfo_given_name_MAX_content_100_should_return_macro_pointer_with_these_info(void)
+void test_createMacroInfo_given_name_MAX_content_100_should_return_macro_pointer_with_these_info(void)
 {
 	String *str = stringNew("MAX 100");
 
@@ -155,7 +155,7 @@ void Xtest_createMacroInfo_given_name_MAX_content_100_should_return_macro_pointe
  *  content = "3000"
  *  macro pointer should contain all these information
  **/
-void Xtest_createMacroInfo_given_name_MINUTE_50_and_SECOND_3000_should_return_macro_pointer_with_these_info(void)
+void test_createMacroInfo_given_name_MINUTE_50_and_SECOND_3000_should_return_macro_pointer_with_these_info(void)
 {
 	String *str = stringNew("MINUTE 50\n"
                           "SECOND 3000\n");
@@ -185,7 +185,7 @@ void Xtest_createMacroInfo_given_name_MINUTE_50_and_SECOND_3000_should_return_ma
  *  _2TWO = "!@#$%"
  *  macro pointer should contain all these information
  **/
-void Xtest_createMacroInfo_given_name_3_identifier_name_and_3_random_content_should_return_macro_pointer_with_these_info(void)
+void test_createMacroInfo_given_name_3_identifier_name_and_3_random_content_should_return_macro_pointer_with_these_info(void)
 {
 	String *str = stringNew("_MAX32 4 $$\n"
                           "ONE_1 ABC * 5\n"
@@ -225,7 +225,7 @@ void Xtest_createMacroInfo_given_name_3_identifier_name_and_3_random_content_sho
 /** test createMacroInfo() given empty macro name
  *  should throw ERR_EMPTY_MACRO_NAME
  **/
-void Xtest_createMacroInfo_given_empty_info_should_return_NULL(void)
+void test_createMacroInfo_given_empty_info_should_return_NULL(void)
 {
   String *str;
   Macro *macro = NULL;
@@ -263,10 +263,7 @@ void test_createMacroInfo_given_macro_name_but_empty_info_should_return_NULL(voi
   TEST_ASSERT_EQUAL_STRING("EmptyContent", macro->name->string);
   TEST_ASSERT_EQUAL_STRING("", macro->content->string); //empty content
 
-  // subStringDel(macro->name->string);
-  subStringDel(macro->content->string);
-  // delMacroNameAndContent(macro);
-  // delMacro(macro);
+  delMacroNameAndContent(macro);
   stringDel(str);
 }
 
@@ -276,7 +273,7 @@ void test_createMacroInfo_given_macro_name_but_empty_info_should_return_NULL(voi
  *
  ** result : free all the malloc memory in tree
  **/
-void Xtest_destroyAllMacroInTree_given_BYE_HI_macroNode_added_into_tree_should_remove_all_and_become_NULL(void)
+void test_destroyAllMacroInTree_given_BYE_HI_macroNode_added_into_tree_should_remove_all_and_become_NULL(void)
 {
 	String *str = stringNew("#define BYE BY3\n"
                           "#define HI H1\n");

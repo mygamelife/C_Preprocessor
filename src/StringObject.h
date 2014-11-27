@@ -7,15 +7,6 @@ extern char *alphaNumericSet;
 extern char *alphaNumericSetWithSymbol;
 extern char *alphaSet;
 
-/*  type
- *  0 - static
- * -1 - dynamic
- */
-typedef struct  {
-  char type; 
-  char text[0];
-}Text;
-
 typedef struct
 {
 	char *string;
