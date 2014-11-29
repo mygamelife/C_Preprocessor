@@ -755,7 +755,7 @@ void test_directiveDefine_given_Japan_and_ABC_should_replace_Japan_with_Ohaiyo(v
  *          X = 1 + TWO
  *          X = 1 + 2
  **/
-void Xtest_directiveDefine_given_ONE_plus_ONE_should_replace_two_ONE_with_1(void)
+void test_directiveDefine_given_ONE_plus_ONE_should_replace_two_ONE_with_1(void)
 {
 	String *str = stringNew("#define ONE 1\n"
                           "#define TWO 2\n"
@@ -769,8 +769,67 @@ void Xtest_directiveDefine_given_ONE_plus_ONE_should_replace_two_ONE_with_1(void
 
   TEST_ASSERT_NOT_NULL(result);
   TEST_ASSERT_EQUAL_STRING("X = 1 + 2 + 3", result->string);
-  // TEST_ASSERT_EQUAL(0, result->startindex);
-  // TEST_ASSERT_EQUAL(6, result->length);
+  TEST_ASSERT_EQUAL(0, result->startindex);
+  TEST_ASSERT_EQUAL(13, result->length);
+
+  stringDel(result);
+  stringDel(str);
+}
+
+/** test directiveDefine() given string:
+ *  #define blank
+ *  #define _someth1ng #Sur prise
+ *  S = blank * _someth1ng
+ *
+ ** result :
+ *          S = blank * _someth1ng --> S =  * _someth1ng --> S =  * #Sur prise
+ **/
+void test_directiveDefine_should_replace_blank_with_empty_string_and_replace__something_with_sur_prise(void)
+{
+	String *str = stringNew("#define blank\n"
+                          "#define _someth1ng #Sur prise\n"
+                          "S = blank * _someth1ng");
+  String *result;
+
+  printf("Start test_directiveDefine_should_replace_blank_with_empty_string_and_replace__something_with_sur_prise\n");
+  result = directiveDefine(str, "define");
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(result);
+  TEST_ASSERT_EQUAL_STRING("S =  * #Sur prise", result->string);
+  TEST_ASSERT_EQUAL(0, result->startindex);
+  TEST_ASSERT_EQUAL(17, result->length);
+
+  stringDel(result);
+  stringDel(str);
+}
+
+/** test directiveDefine() given string:
+ *  #define BES123 800X
+ *  #define _Dumb _dumb2 + 3
+ *  #define _dumb2 DUMB DUMB
+ *
+ *  Im BES123 * (xox + _Dumb)
+ *
+ ** result :
+ *          X = 1 + TWO
+ **/
+void test_directiveDefine_given_BES123__Dumb__dumb2_should_replace_all_the_given_macro(void)
+{
+	String *str = stringNew("#define BES123 800X\n"
+                          "#define _Dumb _dumb2 + 3\n"
+                          "#define _dumb2 DUMB DUMB\n"
+                          "Im BES123 * (xox + _Dumb)");
+  String *result;
+
+  printf("Start test_directiveDefine_given_BES123__Dumb__dumb2_should_replace_all_the_given_macro\n");
+  result = directiveDefine(str, "define");
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(result);
+  TEST_ASSERT_EQUAL_STRING("Im 800X * (xox + DUMB DUMB + 3)", result->string);
+  TEST_ASSERT_EQUAL(0, result->startindex);
+  TEST_ASSERT_EQUAL(31, result->length);
 
   stringDel(result);
   stringDel(str);

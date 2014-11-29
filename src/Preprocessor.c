@@ -179,15 +179,16 @@ String *subStringMacroInString(String *str, Node *root) {
   String *subString;
   Macro *foundMacro;
 
-  subString = stringRemoveWordContaining(str, alphaSet);
+  subString = stringRemoveWordContaining(str, alphaNumericSet);
   while(subString->length != 0)  {
     token = stringSubStringInChars(subString , subString->length); /**need free**/
+    puts(token);
     foundMacro = findMacroInTree(root, token);
     subStringDel(token);
     if(foundMacro != NULL)  {
       break;
     }
-    subString = stringRemoveWordContaining(str, alphaSet);
+    subString = stringRemoveWordContaining(str, alphaNumericSet);
   }
   return subString;
 }
@@ -237,7 +238,7 @@ char *replaceMacroInString(String *oriString, String *subString, Macro *macro, i
 
 String *directiveDefine(String *str, char *directiveName) {
   int size;
-  char *macroToken, *replacedMacroString;
+  char *macroToken, *replacedMacroString = NULL;
   String *subString, *tempString, *stringStatement;
   Macro *foundMacro;
 
@@ -266,15 +267,16 @@ String *directiveDefine(String *str, char *directiveName) {
     
     //store the replacedMacroInstring for searching macro in string without modify original stringStatement
     tempString = stringNew(replacedMacroString); /**need free**/
-    
+
     //Overwrite stringStatement with new replaced macro string
     stringStatement = stringSubString(tempString, tempString->startindex, tempString->length); /**need free**/
 
     //Overwrite subString with the latest replacedMacroString
     subString = subStringMacroInString(tempString, root);
-    printf("stringStatement start %d, length %d \n", stringStatement->startindex, stringStatement->length);
-    printf("tempString start %d, length %d \n", tempString->startindex, tempString->length);
-    
+    // printf("stringStatement start %d, length %d \n", stringStatement->startindex, stringStatement->length);
+    // printf("tempString %s\n", tempString->string);
+    // printf("tempString start %d, length %d \n", tempString->startindex, tempString->length);
+    // printf("subString start %d, length %d \n", subString->startindex, subString->length);
     /*free memory*/
     stringDel(tempString);
   }
