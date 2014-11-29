@@ -295,7 +295,7 @@ void Xtest_createMacroInfo_given_string_contain_backslash_behind_macroContent_sh
   printf("Start test_createMacroInfo_given_string_contain_backslash_behind_macroContent_should_remove_backslash_can_get_macro_content\n");
   macro = createMacroInfo(str);
   printf("------------------------------------------------------------\n");
-  
+
   TEST_ASSERT_NOT_NULL(macro);
   TEST_ASSERT_EQUAL_STRING("Clash", macro->name->string);
   TEST_ASSERT_EQUAL_STRING("Of Clan", macro->content->string); //empty content
@@ -555,7 +555,7 @@ void test_subStringMacroInString_given_Looking_for_Empty_Macro_should_macro_poin
  ** result :
  *          X = 10;
  **/
-void Xtest_replaceMacroInString_given_TEN_in_string_should_replace_it_with_10(void) // <----- Problem
+void test_replaceMacroInString_given_TEN_in_string_should_replace_it_with_10(void) // <----- Problem
 {
 	String *str = stringNew("X = TEN;");
 	String *subStr = stringSubString(str, 4, 3);
@@ -584,7 +584,7 @@ void Xtest_replaceMacroInString_given_TEN_in_string_should_replace_it_with_10(vo
  ** result :
  *          X = 10 + 3 + 5
  **/
-void Xtest_replaceMacroInString_given_Three_in_string_should_replace_it_with_3(void)
+void test_replaceMacroInString_given_Three_in_string_should_replace_it_with_3(void)
 {
 	String *str = stringNew("X = 10 + Three + 5");
   String *subStr = stringSubString(str, 9, 5);
@@ -613,7 +613,7 @@ void Xtest_replaceMacroInString_given_Three_in_string_should_replace_it_with_3(v
  ** result :
  *          X = 5 + 15 + Three + 5
  **/
-void Xtest_replaceMacroInString_given_ONEFIVE_in_string_should_replace_it_with_15_other_identifier_should_remain_same(void)
+void test_replaceMacroInString_given_ONEFIVE_in_string_should_replace_it_with_15_other_identifier_should_remain_same(void)
 {
 	String *str = stringNew("X = 5 + ONEFIVE + Three + 5");
   String *subStr = stringSubString(str, 8, 7);
@@ -642,7 +642,7 @@ void Xtest_replaceMacroInString_given_ONEFIVE_in_string_should_replace_it_with_1
  ** result :
  *          X = HI + BYE + 1 + 99999
  **/
-void Xtest_replaceMacroInString_given_NINE_in_string_should_only_replace_it_with_99999_other_identifier_should_remain_same(void)
+void test_replaceMacroInString_given_NINE_in_string_should_only_replace_it_with_99999_other_identifier_should_remain_same(void)
 {
 	String *str = stringNew("X = HI + BYE + 1 + NINE");
   String *subStr = stringSubString(str, 19, 4);
@@ -671,7 +671,7 @@ void Xtest_replaceMacroInString_given_NINE_in_string_should_only_replace_it_with
  ** result :
  *          X = HAPPY * HAPPY / 1000
  **/
-void Xtest_replaceMacroInString_shouldnt_replace_anything_in_the_string(void)
+void test_replaceMacroInString_shouldnt_replace_anything_in_the_string(void)
 {
 	String *str = stringNew("X = HAPPY * HAPPY / 1000");
   String *subStr = stringSubString(str, 4, 2);
@@ -692,118 +692,55 @@ void Xtest_replaceMacroInString_shouldnt_replace_anything_in_the_string(void)
   stringDel(str);
 }
 
-/** test searchAndReplaceMacroInString():
- **  #define Dumb 500
+/** test directiveDefine() given string:
+ *  #define _MAX 999
+ *  A = _MAX
  *
- **  10 + Dumb
- *
- *  should replace Dumb with 500
  ** result :
- *          10 + 500
+ *          A = 999;
  **/
-void Xtest_searchAndReplaceMacroInString_given_10_plus_Dumb_in_string_should_replace_it_with_500(void) // <----- Problem
+void test_directiveDefine_given__MAX_999_and_A_equal__MAX_should_replace__MAX_to_999(void)
 {
-	String *str = stringNew("#define Dumb 500\n"
-                           "10 + Dumb");
+	String *str = stringNew("#define _MAX 999\n"
+                          "A = _MAX");
   String *result;
-  int found = 0;
 
-  printf("Start test_searchAndReplaceMacroInString_given_10_plus_Dumb_in_string_should_replace_it_with_500\n");
-  Node *root = addAllMacroIntoTree(str, "define");
-  result = searchAndReplaceMacroInString(str, root, &found);
+  printf("Start test_directiveDefine_given__MAX_999_and_A_equal__MAX_should_replace__MAX_to_999\n");
+  result = directiveDefine(str, "define");
   printf("------------------------------------------------------------\n");
 
-  // TEST_ASSERT_EQUAL(1, found);
   TEST_ASSERT_NOT_NULL(result);
-  // TEST_ASSERT_EQUAL_STRING("10 + 500", result->string);
+  TEST_ASSERT_EQUAL_STRING("A = 999", result->string);
+  TEST_ASSERT_EQUAL(0, result->startindex);
+  TEST_ASSERT_EQUAL(7, result->length);
 
-  destroyAllMacroInTree(root);
-  stringDel(result);
-  stringDel(str);
-}
-
-/** test searchAndReplaceMacroInString():
- **  #define Mini 888 + Huge
- *
- **  A = 23 * Mini
- *
- *  should replace Mini with 888 + Huge
- ** result :
- *          A = 23 * 888 + Huge
- **/
-void Xtest_searchAndReplaceMacroInString_given_23_times_Mini_in_string_should_replace_Mini_with_888_plus_Huge(void) // <----- Problem
-{
-	String *str = stringNew("#define Mini 888 + Huge\n"
-                           "A = 23 * Mini");
-  String *result;
-  int found = 0;
-
-  printf("Start test_searchAndReplaceMacroInString_given_23_times_Mini_in_string_should_replace_Mini_with_888_plus_Huge\n");
-  Node *root = addAllMacroIntoTree(str, "define");
-  result = searchAndReplaceMacroInString(str, root, &found);
-  printf("------------------------------------------------------------\n");
-
-  TEST_ASSERT_EQUAL(1, found);
-  TEST_ASSERT_NOT_NULL(result);
-  TEST_ASSERT_EQUAL_STRING("A = 23 * 888 + Huge", result->string);
-
-  destroyAllMacroInTree(root);
-  stringDel(result);
-  stringDel(str);
-}
-
-/** test searchAndReplaceMacroInString():
- **  #define _FIRE 18*10
- *
- **  F = FIRE
- *
- *  shouldn't replace anything and the string remain the same
- ** result :
- *          F = FIRE
- **/
-void Xtest_searchAndReplaceMacroInString_given_F_equal_FIRE_in_string_shouldnt_replace_anything(void) // <----- Problem
-{
-	String *str = stringNew("#define _FIRE 18*10\n"
-                           "F = FIRE");
-  String *result;
-  int found = 0;
-
-  printf("Start test_searchAndReplaceMacroInString_given_F_equal_FIRE_in_string_shouldnt_replace_anything\n");
-  Node *root = addAllMacroIntoTree(str, "define");
-  result = searchAndReplaceMacroInString(str, root, &found);
-  printf("------------------------------------------------------------\n");
-
-  TEST_ASSERT_EQUAL(0, found);
-  TEST_ASSERT_NOT_NULL(result);
-  TEST_ASSERT_EQUAL_STRING("F = FIRE", result->string);
-
-  destroyAllMacroInTree(root);
   stringDel(result);
   stringDel(str);
 }
 
 /** test directiveDefine() given string:
- *  #define BIG 999
- *  X = BIG;
+ *  #define Japan ABC
+ *  #define ABC Ohaiyo
+ *  S = Japan
  *
  ** result :
- *          X = 999;
+ *          S = Japan -->  S = ABC --> S = Ohaiyo
  **/
-void Xtest_directiveDefine_given_BIG_999_and_X_equal_BIG_should_replace_BIG_to_999(void)
+void test_directiveDefine_given_Japan_and_ABC_should_replace_Japan_with_Ohaiyo(void)
 {
-	String *str = stringNew("#define BIG 99\n"
-                          "X = BIG");
+	String *str = stringNew("#define Japan ABC\n"
+                          "#define ABC Ohaiyo\n"
+                          "S = Japan");
   String *result;
-  Macro *found;
 
-  printf("Start test_directiveDefine_given_BIG_999_and_X_equal_BIG_should_replace_BIG_to_999\n");
+  printf("Start test_directiveDefine_given_Japan_and_ABC_should_replace_Japan_with_Ohaiyo\n");
   result = directiveDefine(str, "define");
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(result);
-  TEST_ASSERT_EQUAL_STRING("X = 99", result->string);
+  TEST_ASSERT_EQUAL_STRING("S = Ohaiyo", result->string);
   TEST_ASSERT_EQUAL(0, result->startindex);
-  TEST_ASSERT_EQUAL(6, result->length);
+  TEST_ASSERT_EQUAL(10, result->length);
 
   stringDel(result);
   stringDel(str);
