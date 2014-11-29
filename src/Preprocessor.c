@@ -174,7 +174,7 @@ Macro *findMacroInTree(Node *root, char *targetMacro)  {
   }
 }
 
-/** *searchMacroInString(String *str, Node *root)
+/** *subStringMacroInString(String *str, Node *root)
  * This function is use to search pre-defined macro in string
  *
  ** input :
@@ -184,25 +184,28 @@ Macro *findMacroInTree(Node *root, char *targetMacro)  {
  *          If found return foundMacro pointer contain macro information
  *          Else return NULL
  **/
-Macro *searchMacroInString(String *str, Node *root) {
+String *subStringMacroInString(String *str, Node *root) {
   char *token;
   String *subString;
   Macro *foundMacro;
   
+  printf("str start %d, subString length %d\n", str->startindex, str->length);
   subString = stringRemoveWordContaining(str, alphaSet);
-  printf("subString start %d, subString length %d\n", subString->startindex, subString->length);
+  
   while(subString->length != 0)  {
-    printf("subString start %d, subString length %d\n", subString->startindex, subString->length);
+    
     token = stringSubStringInChars(subString , subString->length); /**need free**/
     printf("token %s\n", token);
     foundMacro = findMacroInTree(root, token);
+    subStringDel(token);
     if(foundMacro != NULL)  {
       printf("foundMacro->string \n");
       break;
     }    
     subString = stringRemoveWordContaining(str, alphaSet);
   }
-  return foundMacro;
+  printf("subString start %d, subString length %d\n", subString->startindex, subString->length);
+  return subString;
 }
 
 /** *replaceMacroInString(String *oriString, String *subString, Macro *macro, int size)
@@ -266,37 +269,37 @@ String *searchAndReplaceMacroInString(String *str, Node *root, int *found) {
   
   oriString = stringSubString(str , str->startindex, str->length); /**need free**/
   
-  subString = stringRemoveWordContaining(str, alphaSet);
-  printf("oriString start %d, oriString length %d\n", oriString->startindex, oriString->length);
+  // subString = stringRemoveWordContaining(str, alphaSet);
+  // printf("oriString start %d, oriString length %d\n", oriString->startindex, oriString->length);
 
-  while(subString->length != 0)  {
-    printf("subString start %d, subString length %d\n", subString->startindex, subString->length);
-    token = stringSubStringInChars(subString , subString->length); /**need free**/
-    foundMacro = findMacroInTree(root, token);
-    if(foundMacro != NULL)  {
-      size = (oriString->length) - (foundMacro->name->length) + (foundMacro->content->length);
-      break;
-    }
-    else  size = oriString->length;
-    subString = stringRemoveWordContaining(str, alphaSet);
-  }
-  
-  if(foundMacro != NULL)
-    *found = 1;
+  // while(subString->length != 0)  {
+    // printf("subString start %d, subString length %d\n", subString->startindex, subString->length);
+    // token = stringSubStringInChars(subString , subString->length); /**need free**/
+    // foundMacro = findMacroInTree(root, token);
+    // if(foundMacro != NULL)  {
+      
+      // break;
+    // }
     
-  puts(token);
+    // subString = stringRemoveWordContaining(str, alphaSet);
+  // }
+  // foundMacro = subStringMacroInString(str, root);
+  if(foundMacro != NULL)
+    size = (oriString->length) - (foundMacro->name->length) + (foundMacro->content->length);
+  else  size = oriString->length;
+  // if(foundMacro != NULL)
+    // *found = 1;
+    
+  // puts(token);
   printf("size %d\n", size);
-  printf("subString start %d, subString length %d\n", subString->startindex, subString->length);
+  printf("subString start %d, subString length %d\n", str->startindex, str->length);
 
   //create a temp char array
-  replacedMacroString = replaceMacroInString(oriString, subString, foundMacro, size); /**need free**/
-  macroString = stringNew(replacedMacroString);
- 
-  // if(foundMacro != NULL)
-    // tempMacro = searchAndReplaceMacroInString(macroString, root);
+  // replacedMacroString = replaceMacroInString(oriString, subString, foundMacro, size); /**need free**/
+  // macroString = stringNew(replacedMacroString);
+
   //free tree memory before exit this function
-  stringDel(oriString);
-  subStringDel(token);
+  // stringDel(oriString);
   // subStringDel(replacedMacroString);
   return macroString;
 }

@@ -469,77 +469,79 @@ void test_findMacroInTree_given_added_macroNode_tree_and_find_findSomethingDoesn
   stringDel(str);
 }
 
-/** test searchMacroInString():
+/** test subStringMacroInString():
  ** macro :
  *          #define search Macro
  *
  ** String :
  *          X trying to search Macro;
  **/
-void test_searchMacroInString_given_string_X_trying_to_search_Macro_should_get_search_macroInfo(void) // <----- Problem
+void test_subStringMacroInString_given_string_X_trying_to_search_Macro_should_get_search_macroInfo(void) // <----- Problem
 {
 	String *str = stringNew("#define search Macro\n"
                            "X trying to search Macro\n");
-  Macro *searchResult;
+  String *subString;
 
-  printf("Start test_searchMacroInString_given_string_X_trying_to_search_Macro_should_get_search_macroInfo\n");
+  printf("Start test_subStringMacroInString_given_string_X_trying_to_search_Macro_should_get_search_macroInfo\n");
   Node *root = addAllMacroIntoTree(str, "define");
-  searchResult = searchMacroInString(str, root);
+  subString = subStringMacroInString(str, root);
   printf("------------------------------------------------------------\n");
 
-  TEST_ASSERT_NOT_NULL(searchResult);
-  TEST_ASSERT_EQUAL_STRING("search", searchResult->name->string);
-  TEST_ASSERT_EQUAL_STRING("Macro", searchResult->content->string);
+  TEST_ASSERT_NOT_NULL(subString);
+  TEST_ASSERT_EQUAL(33, subString->startindex);
+  TEST_ASSERT_EQUAL(6, subString->length);
 
   destroyAllMacroInTree(root);
   stringDel(str);
 }
 
-/** test searchMacroInString():
+/** test subStringMacroInString():
  ** macro :
  *          #define Doesnt Exist
  *
  ** String :
  *          Search Something
  **/
-void test_searchMacroInString_given_Search_Something_should_return_NULL_pointer(void) // <----- Problem
+void test_subStringMacroInString_given_Search_Something_should_return_NULL_pointer(void) // <----- Problem
 {
 	String *str = stringNew("#define Doesnt Exist\n"
                            "Search Something\n");
-  Macro *searchResult;
+  String *subString;
 
-  printf("Start test_searchMacroInString_given_string_X_trying_to_search_Macro_should_get_search_macroInfo\n");
+  printf("Start test_subStringMacroInString_given_string_X_trying_to_search_Macro_should_get_search_macroInfo\n");
   Node *root = addAllMacroIntoTree(str, "define");
-  searchResult = searchMacroInString(str, root);
+  subString = subStringMacroInString(str, root);
   printf("------------------------------------------------------------\n");
 
-  TEST_ASSERT_NULL(searchResult);
+  TEST_ASSERT_NOT_NULL(subString);
+  TEST_ASSERT_EQUAL(0, subString->startindex);
+  TEST_ASSERT_EQUAL(0, subString->length);
 
   destroyAllMacroInTree(root);
   stringDel(str);
 }
 
-/** test searchMacroInString():
+/** test subStringMacroInString():
  ** macro :
  *          #define Empty
  *
  ** String :
  *          Looking for Empty Macro
  **/
-void test_searchMacroInString_given_Looking_for_Empty_Macro_should_macro_pointer(void) // <----- Problem
+void test_subStringMacroInString_given_Looking_for_Empty_Macro_should_macro_pointer(void) // <----- Problem
 {
 	String *str = stringNew("#define Empty        \n"
                            "Looking for Empty Macro\n");
-  Macro *searchResult;
+  String *subString;
 
-  printf("Start test_searchMacroInString_given_Looking_for_Empty_Macro_should_macro_pointer\n");
+  printf("Start test_subStringMacroInString_given_Looking_for_Empty_Macro_should_macro_pointer\n");
   Node *root = addAllMacroIntoTree(str, "define");
-  searchResult = searchMacroInString(str, root);
+  subString = subStringMacroInString(str, root);
   printf("------------------------------------------------------------\n");
 
-  TEST_ASSERT_NOT_NULL(searchResult);
-  TEST_ASSERT_EQUAL_STRING("Empty", searchResult->name->string);
-  TEST_ASSERT_EQUAL_STRING("", searchResult->content->string);
+  TEST_ASSERT_NOT_NULL(subString);
+  TEST_ASSERT_EQUAL(34, subString->startindex);
+  TEST_ASSERT_EQUAL(5, subString->length);
 
   destroyAllMacroInTree(root);
   stringDel(str);
@@ -711,9 +713,9 @@ void Xtest_searchAndReplaceMacroInString_given_10_plus_Dumb_in_string_should_rep
   result = searchAndReplaceMacroInString(str, root, &found);
   printf("------------------------------------------------------------\n");
 
-  TEST_ASSERT_EQUAL(1, found);
+  // TEST_ASSERT_EQUAL(1, found);
   TEST_ASSERT_NOT_NULL(result);
-  TEST_ASSERT_EQUAL_STRING("10 + 500", result->string);
+  // TEST_ASSERT_EQUAL_STRING("10 + 500", result->string);
 
   destroyAllMacroInTree(root);
   stringDel(result);
