@@ -87,28 +87,32 @@ int isIdentifier(String *string)  {
  *			return macroInfo contain all the macro information
  *			return NULL if macro information is not found
  **/
-Macro *createMacroInfo(String *string) {
+Macro *createMacroInfo(String *str) {
   char *macroName, *macroContent, EOL = '\n';
   String *name, *content;
   Macro *macroInfo;
   
-  name = stringRemoveWordContaining(string, alphaNumericSet);
+  // stringTrim(str);
+  printf("str %c\n", str->string[str->startindex]);
+  // if(str->string[str->startindex] == 92)
+    // str->startindex++;
+    
+  name = stringRemoveWordContaining(str, alphaNumericSet);
   
   if(name->length == 0)
     Throw(ERR_EMPTY_MACRO_NAME);
     
   macroName = stringSubStringInChars(name , name->length);
     
-  stringTrimUntilEOL(string);
+  stringTrimUntilEOL(str);
   
-  if(string->string[string->startindex] == EOL) {
-    printf("enter\n");  
+  if(str->string[str->startindex] == EOL || str->string[str->startindex] == '\0') {
     macroContent = malloc(sizeof(char) * 1);
     macroContent[0] = '\0';
     return macroInfo = newMacro(macroName, macroContent); //" " this space indicate it is empty content
   }
     
-  content = stringRemoveWordContaining(string, alphaNumericSetWithSymbol);
+  content = stringRemoveWordContaining(str, alphaNumericSetWithSymbol);
   printf("content start %d, length %d\n", content->startindex, content->length);
     
   macroContent = stringSubStringInChars(content , content->length);

@@ -11,6 +11,8 @@
 #include "InitNode.h"
 #include "CustomAssertions.h"
 
+#define \
+        define
 void setUp(void)  {}
 
 void tearDown(void) {}
@@ -161,11 +163,11 @@ void test_createMacroInfo_given_name_MINUTE_50_and_SECOND_3000_should_return_mac
                           "SECOND 3000\n");
 
   printf("Start test_createMacroInfo_given_name_MINUTE_50_and_SECOND_3000_should_return_macro_pointer_with_these_info\n");
-  
+
   Macro *macro = createMacroInfo(str);
   //free memory
   delMacroNameAndContent(macro);
-  
+
   macro = createMacroInfo(str);
   printf("------------------------------------------------------------\n");
 
@@ -191,23 +193,23 @@ void test_createMacroInfo_given_name_3_identifier_name_and_3_random_content_shou
 
   printf("Start test_createMacroInfo_given_name_3_identifier_name_and_3_random_content_should_return_macro_pointer_with_these_info\n");
   Macro *macro = createMacroInfo(str);
-  
+
   TEST_ASSERT_NOT_NULL(macro);
   TEST_ASSERT_EQUAL_STRING("_MAX32", macro->name->string);
   TEST_ASSERT_EQUAL_STRING("4 $$", macro->content->string);
-  
+
   delMacroNameAndContent(macro);
-  
+
   macro = createMacroInfo(str);
-  
+
   TEST_ASSERT_NOT_NULL(macro);
   TEST_ASSERT_EQUAL_STRING("ONE_1", macro->name->string);
   TEST_ASSERT_EQUAL_STRING("ABC * 5", macro->content->string);
-  
+
   delMacroNameAndContent(macro);
-  
+
   macro = createMacroInfo(str);
-  
+
   TEST_ASSERT_NOT_NULL(macro);
   TEST_ASSERT_EQUAL_STRING("_2TWO", macro->name->string);
   TEST_ASSERT_EQUAL_STRING("!@#$%", macro->content->string);
@@ -225,8 +227,8 @@ void test_createMacroInfo_given_empty_info_should_return_NULL(void)
   String *str;
   Macro *macro = NULL;
   CEXCEPTION_T err;
-	
-  printf("Start test_createMacroInfo_given_empty_info_should_return_NULL\n");  
+
+  printf("Start test_createMacroInfo_given_empty_info_should_return_NULL\n");
   Try {
     str = stringNew(" \n");
     macro = createMacroInfo(str);
@@ -248,14 +250,55 @@ void test_createMacroInfo_given_macro_name_but_empty_info_should_return_NULL(voi
 {
 	String *str = stringNew("EmptyContent\n");
   Macro *macro;
-  
-  printf("Start test_createMacroInfo_given_macro_name_but_empty_info_should_return_NULL\n");  
+
+  printf("Start test_createMacroInfo_given_macro_name_but_empty_info_should_return_NULL\n");
   macro = createMacroInfo(str);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(macro);
   TEST_ASSERT_EQUAL_STRING("EmptyContent", macro->name->string);
   TEST_ASSERT_EQUAL_STRING("", macro->content->string); //empty content
+
+  delMacroNameAndContent(macro);
+  stringDel(str);
+}
+
+/** test createMacroInfo() given string contain backslash '\' after macro content
+ **/
+void test_createMacroInfo_given_string_contain_backslash_should_remove_backslash_can_get_macro_name(void)
+{
+	String *str = stringNew("\
+                           ABC");
+  Macro *macro;
+
+  printf("Start test_createMacroInfo_given_string_contain_backslash_should_remove_backslash_can_get_macro_name\n");
+  macro = createMacroInfo(str);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(macro);
+  TEST_ASSERT_EQUAL_STRING("ABC", macro->name->string);
+  TEST_ASSERT_EQUAL_STRING("", macro->content->string); //empty content
+
+  delMacroNameAndContent(macro);
+  stringDel(str);
+}
+
+/** test createMacroInfo() given string contain backslash '\' behind macro content
+ **/
+void Xtest_createMacroInfo_given_string_contain_backslash_behind_macroContent_should_remove_backslash_can_get_macro_content(void)
+{
+	String *str = stringNew("Clash Of\
+                                 Clan\n"
+                                 "X = AB");
+  Macro *macro;
+
+  printf("Start test_createMacroInfo_given_string_contain_backslash_behind_macroContent_should_remove_backslash_can_get_macro_content\n");
+  macro = createMacroInfo(str);
+  printf("------------------------------------------------------------\n");
+  
+  TEST_ASSERT_NOT_NULL(macro);
+  TEST_ASSERT_EQUAL_STRING("Clash", macro->name->string);
+  TEST_ASSERT_EQUAL_STRING("Of Clan", macro->content->string); //empty content
 
   delMacroNameAndContent(macro);
   stringDel(str);
@@ -292,11 +335,11 @@ void test_destroyAllMacroInTree_given_BYE_HI_macroNode_added_into_tree_should_re
 }
 
 /** test directiveDefine() given macro name and empty content
- *  #define empty_content  
- *  
+ *  #define empty_content
+ *
  ** result : should add macroNode which contain macro name but empty content
  **/
-void Xtest_addAllMacroIntoTree_given_macroNode_contain_macro_name_but_empty_content_should_add_into_tree(void)
+void test_addAllMacroIntoTree_given_macroNode_contain_macro_name_but_empty_content_should_add_into_tree(void)
 {
 	String *str = stringNew("#define empty_content\n");
 
@@ -329,7 +372,7 @@ void Xtest_addAllMacroIntoTree_given_macroNode_contain_macro_name_but_empty_cont
  *                                    /
  *                                 LENGTH
  **/
-void Xtest_addAllMacroIntoTree_given_HEIGHT_WIDTH_LENGTH_AREA_and_directive_name_define_should_add_all_into_tree(void)
+void test_addAllMacroIntoTree_given_HEIGHT_WIDTH_LENGTH_AREA_and_directive_name_define_should_add_all_into_tree(void)
 {
 	String *str = stringNew("#define HEIGHT 50cm\n"
                           "#define WIDTH 70cm\n"
@@ -368,7 +411,7 @@ void Xtest_addAllMacroIntoTree_given_HEIGHT_WIDTH_LENGTH_AREA_and_directive_name
 /** test findMacroInTree() given added macroNode tree:
  ** Given random macroName and content contain symbol/spaces should add into tree
  **/
-void Xtest_findMacroInTree_given_random_name_and_content_contain_symbol_and_spaces_should_able_to_find_these_information(void)
+void test_findMacroInTree_given_random_name_and_content_contain_symbol_and_spaces_should_able_to_find_these_information(void)
 {
   int result = 0;
 	String *str = stringNew("#define _Apple *_*\n"
@@ -386,10 +429,10 @@ void Xtest_findMacroInTree_given_random_name_and_content_contain_symbol_and_spac
 
   TEST_ASSERT_NOT_NULL(macroContent);
   TEST_ASSERT_EQUAL_STRING("*_*", macroContent->content->string);
-  
+
   macroContent = findMacroInTree(root, "Alex_123");
   TEST_ASSERT_EQUAL_STRING("$hi", macroContent->content->string);
-  
+
   macroContent = findMacroInTree(root, "AoA32");
   TEST_ASSERT_EQUAL_STRING("; bye!!", macroContent->content->string);
   //free all malloc memory in tree
@@ -402,7 +445,7 @@ void Xtest_findMacroInTree_given_random_name_and_content_contain_symbol_and_spac
  ** result :
  *          should return NULL
  **/
-void Xtest_findMacroInTree_given_added_macroNode_tree_and_find_findSomethingDoesntExist_should_return_NULL(void)
+void test_findMacroInTree_given_added_macroNode_tree_and_find_findSomethingDoesntExist_should_return_NULL(void)
 {
 	String *str = stringNew("#define FIND 10\n"
                           "#define TARGET 20\n"
@@ -433,12 +476,12 @@ void Xtest_findMacroInTree_given_added_macroNode_tree_and_find_findSomethingDoes
  ** String :
  *          X trying to search Macro;
  **/
-void Xtest_searchMacroInString_given_string_X_trying_to_search_Macro_should_get_search_macroInfo(void) // <----- Problem
+void test_searchMacroInString_given_string_X_trying_to_search_Macro_should_get_search_macroInfo(void) // <----- Problem
 {
 	String *str = stringNew("#define search Macro\n"
                            "X trying to search Macro\n");
   Macro *searchResult;
-  
+
   printf("Start test_searchMacroInString_given_string_X_trying_to_search_Macro_should_get_search_macroInfo\n");
   Node *root = addAllMacroIntoTree(str, "define");
   searchResult = searchMacroInString(str, root);
@@ -459,12 +502,12 @@ void Xtest_searchMacroInString_given_string_X_trying_to_search_Macro_should_get_
  ** String :
  *          Search Something
  **/
-void Xtest_searchMacroInString_given_Search_Something_should_return_NULL_pointer(void) // <----- Problem
+void test_searchMacroInString_given_Search_Something_should_return_NULL_pointer(void) // <----- Problem
 {
 	String *str = stringNew("#define Doesnt Exist\n"
                            "Search Something\n");
   Macro *searchResult;
-  
+
   printf("Start test_searchMacroInString_given_string_X_trying_to_search_Macro_should_get_search_macroInfo\n");
   Node *root = addAllMacroIntoTree(str, "define");
   searchResult = searchMacroInString(str, root);
@@ -483,12 +526,12 @@ void Xtest_searchMacroInString_given_Search_Something_should_return_NULL_pointer
  ** String :
  *          Looking for Empty Macro
  **/
-void Xtest_searchMacroInString_given_Looking_for_Empty_Macro_should_macro_pointer(void) // <----- Problem
+void test_searchMacroInString_given_Looking_for_Empty_Macro_should_macro_pointer(void) // <----- Problem
 {
 	String *str = stringNew("#define Empty        \n"
                            "Looking for Empty Macro\n");
   Macro *searchResult;
-  
+
   printf("Start test_searchMacroInString_given_Looking_for_Empty_Macro_should_macro_pointer\n");
   Node *root = addAllMacroIntoTree(str, "define");
   searchResult = searchMacroInString(str, root);
@@ -517,7 +560,7 @@ void Xtest_replaceMacroInString_given_TEN_in_string_should_replace_it_with_10(vo
   Macro *macro = newMacro("TEN", "10");
   char *result;
   int size = size = (str->length) - (macro->name->length) + (macro->content->length);
-  
+
   printf("Start test_replaceMacroInString_given_TEN_in_string_should_replace_it_with_10\n");
   result = replaceMacroInString(str, subStr, macro, size);
   printf("------------------------------------------------------------\n");
@@ -546,14 +589,14 @@ void Xtest_replaceMacroInString_given_Three_in_string_should_replace_it_with_3(v
   Macro *macro = newMacro("Three", "3");
   char *result;
   int size = size = (str->length) - (macro->name->length) + (macro->content->length);
-  
+
   printf("Start test_replaceMacroInString_given_Three_in_string_should_replace_it_with_3\n");
   result = replaceMacroInString(str, subStr, macro, size);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(result);
   TEST_ASSERT_EQUAL_STRING("X = 10 + 3 + 5", result);
-  
+
   subStringDel(result);
   delMacro(macro);
   stringDel(subStr);
@@ -575,14 +618,14 @@ void Xtest_replaceMacroInString_given_ONEFIVE_in_string_should_replace_it_with_1
   Macro *macro = newMacro("ONEFIVE", "15");
   char *result;
   int size = size = (str->length) - (macro->name->length) + (macro->content->length);
-  
+
   printf("Start test_replaceMacroInString_given_ONEFIVE_in_string_should_replace_it_with_15_other_identifier_should_remain_same\n");
   result = replaceMacroInString(str, subStr, macro, size);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(result);
   TEST_ASSERT_EQUAL_STRING("X = 5 + 15 + Three + 5", result);
-  
+
   subStringDel(result);
   delMacro(macro);
   stringDel(subStr);
@@ -604,14 +647,14 @@ void Xtest_replaceMacroInString_given_NINE_in_string_should_only_replace_it_with
   Macro *macro = newMacro("NINE", "99999");
   char *result;
   int size = size = (str->length) - (macro->name->length) + (macro->content->length);
-  
+
   printf("Start test_replaceMacroInString_given_NINE_in_string_should_only_replace_it_with_99999_other_identifier_should_remain_same\n");
   result = replaceMacroInString(str, subStr, macro, size);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(result);
   TEST_ASSERT_EQUAL_STRING("X = HI + BYE + 1 + 99999", result);
-  
+
   subStringDel(result);
   delMacro(macro);
   stringDel(subStr);
@@ -633,14 +676,14 @@ void Xtest_replaceMacroInString_shouldnt_replace_anything_in_the_string(void)
   Macro *macro = NULL;
   char *result;
   int size = size = (str->length) - 0 + 0;
-  
+
   printf("Start test_replaceMacroInString_shouldnt_replace_anything_in_the_string\n");
   result = replaceMacroInString(str, subStr, macro, size);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(result);
   TEST_ASSERT_EQUAL_STRING("X = HAPPY * HAPPY / 1000", result);
-  
+
   subStringDel(result);
   delMacro(macro);
   stringDel(subStr);
@@ -652,7 +695,7 @@ void Xtest_replaceMacroInString_shouldnt_replace_anything_in_the_string(void)
  *
  **  10 + Dumb
  *
- *  should replace Dumb with 500 
+ *  should replace Dumb with 500
  ** result :
  *          10 + 500
  **/
@@ -662,7 +705,7 @@ void Xtest_searchAndReplaceMacroInString_given_10_plus_Dumb_in_string_should_rep
                            "10 + Dumb");
   String *result;
   int found = 0;
-  
+
   printf("Start test_searchAndReplaceMacroInString_given_10_plus_Dumb_in_string_should_replace_it_with_500\n");
   Node *root = addAllMacroIntoTree(str, "define");
   result = searchAndReplaceMacroInString(str, root, &found);
@@ -679,10 +722,10 @@ void Xtest_searchAndReplaceMacroInString_given_10_plus_Dumb_in_string_should_rep
 
 /** test searchAndReplaceMacroInString():
  **  #define Mini 888 + Huge
- *  
+ *
  **  A = 23 * Mini
  *
- *  should replace Mini with 888 + Huge 
+ *  should replace Mini with 888 + Huge
  ** result :
  *          A = 23 * 888 + Huge
  **/
@@ -692,7 +735,7 @@ void Xtest_searchAndReplaceMacroInString_given_23_times_Mini_in_string_should_re
                            "A = 23 * Mini");
   String *result;
   int found = 0;
-  
+
   printf("Start test_searchAndReplaceMacroInString_given_23_times_Mini_in_string_should_replace_Mini_with_888_plus_Huge\n");
   Node *root = addAllMacroIntoTree(str, "define");
   result = searchAndReplaceMacroInString(str, root, &found);
@@ -709,10 +752,10 @@ void Xtest_searchAndReplaceMacroInString_given_23_times_Mini_in_string_should_re
 
 /** test searchAndReplaceMacroInString():
  **  #define _FIRE 18*10
- *  
+ *
  **  F = FIRE
  *
- *  shouldn't replace anything and the string remain the same 
+ *  shouldn't replace anything and the string remain the same
  ** result :
  *          F = FIRE
  **/
@@ -722,7 +765,7 @@ void Xtest_searchAndReplaceMacroInString_given_F_equal_FIRE_in_string_shouldnt_r
                            "F = FIRE");
   String *result;
   int found = 0;
-  
+
   printf("Start test_searchAndReplaceMacroInString_given_F_equal_FIRE_in_string_shouldnt_replace_anything\n");
   Node *root = addAllMacroIntoTree(str, "define");
   result = searchAndReplaceMacroInString(str, root, &found);
