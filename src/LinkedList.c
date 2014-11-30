@@ -45,22 +45,52 @@ void addLinkedList(LinkedList **listPtr, LinkedList *newList) {
     *listPtr  = newList;
     return;
   }
-
-  if(head->next == NULL)
-    printf("head->next NULL\n");
     
   tail = head;
   
-  while(tail->next != NULL) {
-    printf("hihi\n");
+  while(tail->next != NULL)
     tail = tail->next;
-  }
-    
-    tail->next = newList;
-  
-  
 
-  // tail = newList;
-  // char *charPtr = (char*)head->data;
-  // puts(charPtr);
+    tail->next = newList;
+}
+
+/** compare 2 String type character
+ * input :
+ *			**rootPtr is a void pointer pointing to the root
+ *      *newNode is a void pointer pointing to the newNode
+ * output :
+ *			return 1 if root == newNode
+ *			return 0 root != newNode
+ **/
+int compare(void *dataInCollection, void *targetData)  {
+  //type cast void pointer to Node type
+  char *data1 = (char*)dataInCollection;
+  char *data2 = (char*)targetData;
+
+  puts(data1);
+  if(!strcmp(data1, data2))
+    return 1;
+    
+  else return 0;
+}
+
+/** addLinkedList add newList into LinkedList
+ *  input :
+ *          **listPtr is the pointer pointing to head pointer address
+ *          *newList is the pointer pointing to the new created list
+ *  output  :
+ *            newList should contain in the LinkList->next;
+ **/
+int findLinkedList(LinkedList **listPtr, void *data, int(*compare)(void *dataInCollection, void *data))  {
+  LinkedList *head = *listPtr;
+  int result;
+    
+  while(head != NULL) {
+    if(compare(head->data, data))
+      return 1;
+      
+    else 
+      head = head->next;
+  }
+  return 0;
 }

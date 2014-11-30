@@ -238,7 +238,7 @@ char *replaceMacroInString(String *oriString, String *subString, Macro *macro, i
 
 String *directiveDefine(String *str, char *directiveName) {
   int size;
-  char *macroToken, *replacedMacroString = NULL;
+  char *macroToken, *replacedMacroString;
   String *subString, *tempString, *stringStatement;
   Macro *foundMacro;
 
@@ -259,6 +259,7 @@ String *directiveDefine(String *str, char *directiveName) {
     else  size = stringStatement->length;
 
     printf("subString start %d, length %d \n", subString->startindex, subString->length);
+
     replacedMacroString = replaceMacroInString(stringStatement, subString, foundMacro, size); /**need free**/
     
     /*free memory after replaced Macro*/
@@ -273,10 +274,12 @@ String *directiveDefine(String *str, char *directiveName) {
 
     //Overwrite subString with the latest replacedMacroString
     subString = subStringMacroInString(tempString, root);
+
     // printf("stringStatement start %d, length %d \n", stringStatement->startindex, stringStatement->length);
     // printf("tempString %s\n", tempString->string);
     // printf("tempString start %d, length %d \n", tempString->startindex, tempString->length);
     // printf("subString start %d, length %d \n", subString->startindex, subString->length);
+
     /*free memory*/
     stringDel(tempString);
   }
