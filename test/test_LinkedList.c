@@ -42,7 +42,7 @@ void test_addLinkedList_should_add_created_list_into_LinkedList(void) {
   TEST_ASSERT_NULL(head->next);
   char *result = (char*)head->data;
   TEST_ASSERT_EQUAL_STRING("YOYO", result);
-  
+
   destroyAllLinkedLists(head);
 }
 
@@ -65,7 +65,7 @@ void test_addLinkedList_should_add_two_created_list_into_LinkedList(void) {
   char *name1 = "IM";
   char *name2 = "JUST";
   char *name3 = "LIST";
-  
+
   LinkedList *head = NULL;
   LinkedList *list1 = linkListNew(name1);
   LinkedList *list2 = linkListNew(name2);
@@ -73,29 +73,29 @@ void test_addLinkedList_should_add_two_created_list_into_LinkedList(void) {
 
   printf("Start test_addLinkedList_should_add_created_list_into_LinkedList\n");
   addLinkedList(&head, list1);
-  
+
   TEST_ASSERT_NOT_NULL(head);
   TEST_ASSERT_NULL(head->next);
   char *result1 = (char*)head->data;
   TEST_ASSERT_EQUAL_STRING("IM", result1);
-  
+
   addLinkedList(&head, list2);
   TEST_ASSERT_NOT_NULL(head->next);
   char *result2 = (char*)head->next->data;
   TEST_ASSERT_EQUAL_STRING("JUST", result2);
-  
+
   addLinkedList(&head, list3);
   TEST_ASSERT_NOT_NULL(head->next->next);
   TEST_ASSERT_NULL(head->next->next->next);
   char *result3 = (char*)head->next->next->data;
   TEST_ASSERT_EQUAL_STRING("LIST", result3);
-  
+
   printf("----------------------------------------------------------------");
 
   destroyAllLinkedLists(head);
 }
 
-/** test int compare(void *dataInCollection, void *targetData) 
+/** test int compare(void *dataInCollection, void *targetData)
  ** Given 2 completely equal string should return 1
  **/
 void test_compare_given_2_completely_equal_string_should_return_1(void) {
@@ -104,13 +104,13 @@ void test_compare_given_2_completely_equal_string_should_return_1(void) {
   int result = 0;
 
   printf("Start test_compare_given_2_completely_equal_string_should_return_1\n");
-  result = compare(name1, name2); 
+  result = compareChar(name1, name2);
   printf("----------------------------------------------------------------");
 
   TEST_ASSERT_EQUAL(1, result);
 }
 
-/** test int compare(void *dataInCollection, void *targetData) 
+/** test int compare(void *dataInCollection, void *targetData)
  ** Given 2 different string should return 0
  **/
 void test_compare_given_2_different_string_should_return_0(void) {
@@ -119,7 +119,7 @@ void test_compare_given_2_different_string_should_return_0(void) {
   int result = 0;
 
   printf("Start test_compare_given_2_different_string_should_return_0\n");
-  result = compare(name1, name2); 
+  result = compareChar(name1, name2);
   printf("----------------------------------------------------------------");
 
   TEST_ASSERT_EQUAL(0, result);

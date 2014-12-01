@@ -174,21 +174,23 @@ Macro *findMacroInTree(Node *root, char *targetMacro)  {
  *          If found return foundMacro pointer contain macro information
  *          Else return NULL
  **/
-String *subStringMacroInString(String *str, Node *root) {
+String *subStringMacroInString(String *str, Node *root, LinkedList *head) {
   char *token;
   String *subString;
   Macro *foundMacro;
-
+  
   subString = stringRemoveWordContaining(str, alphaNumericSet);
   while(subString->length != 0)  {
     token = stringSubStringInChars(subString , subString->length); /**need free**/
     puts(token);
     foundMacro = findMacroInTree(root, token);
-    subStringDel(token);
+    
     if(foundMacro != NULL)  {
       break;
     }
+    
     subString = stringRemoveWordContaining(str, alphaNumericSet);
+    subStringDel(token);
   }
   return subString;
 }
@@ -237,25 +239,53 @@ char *replaceMacroInString(String *oriString, String *subString, Macro *macro, i
 
 
 String *directiveDefine(String *str, char *directiveName) {
-  int size;
+  int size, count = 0, Cyclic = 0;
   char *macroToken, *replacedMacroString;
   String *subString, *tempString, *stringStatement;
   Macro *foundMacro;
+  LinkedList *head = NULL;
 
   //add all available macro into tree
   Node *root = addAllMacroIntoTree(str, directiveName); /**need free**/
   printf("String Statement start %d, length %d \n", str->startindex, str->length);
   stringStatement = stringSubString(str, str->startindex, str->length); /**need free**/
-  subString = subStringMacroInString(str, root);
+  subString = subStringMacroInString(str, root, head);
   printf("subString start %d, length %d \n", subString->startindex, subString->length);
 
   /*--------------------------------------------------------------------------------------*/
   while(subString->length != 0) {
     macroToken = stringSubStringInChars(subString , subString->length); /**need free**/
+    if(findList(&head, macroToken))  {
+      printf("subString->string %s\n", subString->string);
+      printf("Cyclic Happen\n");
+      break;
+    }
     foundMacro = findMacroInTree(root, macroToken);
 
-    if(foundMacro != NULL)
+    // if(foundMacro != NULL)  {
+      // if(findList(&head, foundMacro->name->string)) {
+        // printf("Cyclic\n");
+        // subString->length = 0;
+        // Cyclic = 1;
+      // }
+      // else  {
+        // LinkedList *newList = linkListNew(foundMacro->name->string);
+        // addLinkedList(&head, newList);
+        
+        // char *stringChar = (char*)head->data;
+        // printf("newList %s\n", stringChar);
+        
+        // if(head->next != NULL)
+          // printf("head next not null\n");
+        
+      // }
+    // }
+    if(foundMacro != NULL)  {
       size = (stringStatement->length) - (foundMacro->name->length) + (foundMacro->content->length);
+      LinkedList *newList = linkListNew(foundMacro->name->string);
+      addLinkedList(&head, newList);
+      printf("Created new list for %s\n", foundMacro->name->string);
+    }
     else  size = stringStatement->length;
 
     printf("subString start %d, length %d \n", subString->startindex, subString->length);
@@ -273,8 +303,13 @@ String *directiveDefine(String *str, char *directiveName) {
     stringStatement = stringSubString(tempString, tempString->startindex, tempString->length); /**need free**/
 
     //Overwrite subString with the latest replacedMacroString
-    subString = subStringMacroInString(tempString, root);
+    subString = subStringMacroInString(tempString, root, head);
+    
+    
+    // break;
 
+    // if(Cyclic)
+      // break;
     // printf("stringStatement start %d, length %d \n", stringStatement->startindex, stringStatement->length);
     // printf("tempString %s\n", tempString->string);
     // printf("tempString start %d, length %d \n", tempString->startindex, tempString->length);

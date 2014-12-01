@@ -54,7 +54,7 @@ void addLinkedList(LinkedList **listPtr, LinkedList *newList) {
     tail->next = newList;
 }
 
-/** compare 2 String type character
+/** compareChar 2 String type character
  * input :
  *			**rootPtr is a void pointer pointing to the root
  *      *newNode is a void pointer pointing to the newNode
@@ -62,13 +62,14 @@ void addLinkedList(LinkedList **listPtr, LinkedList *newList) {
  *			return 1 if root == newNode
  *			return 0 root != newNode
  **/
-int compare(void *dataInCollection, void *targetData)  {
+int compareChar(void *dataInCollection, void *targetData)  {
   //type cast void pointer to Node type
   char *data1 = (char*)dataInCollection;
   char *data2 = (char*)targetData;
 
   puts(data1);
-  if(!strcmp(data1, data2))
+  //data1 is equal with data2
+  if(strcmp(data1, data2) == 0)
     return 1;
     
   else return 0;
@@ -81,12 +82,12 @@ int compare(void *dataInCollection, void *targetData)  {
  *  output  :
  *            newList should contain in the LinkList->next;
  **/
-int findLinkedList(LinkedList **listPtr, void *data, int(*compare)(void *dataInCollection, void *data))  {
+int findLinkedList(LinkedList **listPtr, void *data, int(*compareChar)(void *dataInCollection, void *data))  {
   LinkedList *head = *listPtr;
   int result;
     
   while(head != NULL) {
-    if(compare(head->data, data))
+    if(compareChar(head->data, data))
       return 1;
       
     else 
