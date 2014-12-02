@@ -15,7 +15,6 @@ typedef struct
 }String;
 
 String *stringNew(char *charString);
-String *newString(char *charString);
 void stringTrimLeft(String *str);
 void stringTrimRight(String *str);
 void stringTrim(String *str);
@@ -33,4 +32,5 @@ int stringCharAtInSet(String *str , int relativePos , char *containSet);
 String *stringSubString(String *str , int start , int length);
 String *stringRemoveOperator(String *str , char *containSet);
 void subStringToArray(char charArry[], String *str);
+String *stringSearchWordContaining(String *str , char *containSet);
 #endif // StringObject_H

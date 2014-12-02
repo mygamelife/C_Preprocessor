@@ -7,7 +7,7 @@
 char *numSet = "0123456789";
 char *opSet = "(~!@#$%^&*_-+{}=|;:)\'<,.>/?";
 char *alphaNumericSet = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-char *alphaNumericSetWithSymbol = " _abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789(~!@#$%^&*_-+{}=|;:)\'<,.>/?";
+char *alphaNumericSetWithSymbol = " _abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789(~!@#$%^&*_-+{}=|;:)\\'<,.>/?";
 char *alphaSet = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 /* Create a new String
@@ -273,6 +273,11 @@ char *stringSubStringInChars(String *str , int length)
 		if(strLength == 0)
       break;
     
+    if(str->string[strStart] == '\\') {
+      charStr[i++] = ' ';
+      strStart++;
+    }
+    
 		charStr[i] = str->string[strStart++];
 		strLength--;
 
@@ -477,4 +482,54 @@ void subStringToArray(char charArry[], String *str)
     charArry[i+1] = '\0'; //Create delimiter "\0" for the string
   }
 
+}
+
+/* To search words contain in ContainSet
+ * input :
+ *		ContainSet character that need to be search
+ * return:
+ *		Return target position if it inside containSet
+ */
+String *stringSearchWordContaining(String *str , char *containSet)
+{
+	int i = str->startindex , j = 0 , firstFound = 0 , notInSet = 0;
+
+	String *removedWord = stringNew(str->string); //create new String for removedWord
+	removedWord->length = 0;
+
+	while(i < strlen(str->string))
+	{
+		while(j != strlen(containSet))
+		{
+			if(str->string[i] == containSet[j]) //searching is containSet inside the string
+			{
+				if(!firstFound)
+				{
+					removedWord->startindex = i; //first character found
+					firstFound = 1; //make sure this statement wont run again when the first character is found
+				}
+				removedWord->length++; //one word is detected in ContainSet
+				// str->startindex = i+1;
+				notInSet = 0;
+
+				goto jump;
+			}
+
+			if(firstFound == 1)
+				notInSet = 1;
+
+			j++;
+		}
+
+		if(notInSet == 1)
+			goto end;
+
+jump:
+		i++;
+		j = 0;
+	}
+
+end:
+	// str->length = strlen(str->string) - str->startindex;
+	return removedWord;
 }

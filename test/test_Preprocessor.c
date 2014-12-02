@@ -268,8 +268,8 @@ void test_createMacroInfo_given_macro_name_but_empty_info_should_return_NULL(voi
  **/
 void test_createMacroInfo_given_string_contain_backslash_should_remove_backslash_can_get_macro_name(void)
 {
-	String *str = stringNew("\
-                           ABC");
+	String *str = stringNew("\\"
+                           "ABC");
   Macro *macro;
 
   printf("Start test_createMacroInfo_given_string_contain_backslash_should_remove_backslash_can_get_macro_name\n");
@@ -286,10 +286,10 @@ void test_createMacroInfo_given_string_contain_backslash_should_remove_backslash
 
 /** test createMacroInfo() given string contain backslash '\' behind macro content
  **/
-void Xtest_createMacroInfo_given_string_contain_backslash_behind_macroContent_should_remove_backslash_can_get_macro_content(void)
+void test_createMacroInfo_given_string_contain_backslash_behind_macroContent_should_remove_backslash_can_get_macro_content(void)
 {
-	String *str = stringNew("Clash Of\
-                                 Clan\n"
+	String *str = stringNew("Clash Of\\"
+                                 "Clan\n"
                                  "X = AB");
   Macro *macro;
 
@@ -299,6 +299,7 @@ void Xtest_createMacroInfo_given_string_contain_backslash_behind_macroContent_sh
 
   TEST_ASSERT_NOT_NULL(macro);
   TEST_ASSERT_EQUAL_STRING("Clash", macro->name->string);
+  TEST_ASSERT_EQUAL(7, macro->content->length); //empty content
   TEST_ASSERT_EQUAL_STRING("Of Clan", macro->content->string); //empty content
 
   delMacroNameAndContent(macro);
@@ -470,23 +471,23 @@ void test_findMacroInTree_given_added_macroNode_tree_and_find_findSomethingDoesn
   stringDel(str);
 }
 
-/** test subStringMacroInString():
+/** test macroPositionInString():
  ** macro :
  *          #define search Macro
  *
  ** String :
  *          X trying to search Macro;
  **/
-void Xtest_subStringMacroInString_given_string_X_trying_to_search_Macro_should_get_search_macroInfo(void) // <----- Problem
+void Xtest_macroPositionInString_given_string_X_trying_to_search_Macro_should_get_search_macroInfo(void) // <----- Problem
 {
 	String *str = stringNew("#define search Macro\n"
                            "X trying to search Macro\n");
   String *subString;
   LinkedList *head = NULL;
-  
-  printf("Start test_subStringMacroInString_given_string_X_trying_to_search_Macro_should_get_search_macroInfo\n");
+
+  printf("Start test_macroPositionInString_given_string_X_trying_to_search_Macro_should_get_search_macroInfo\n");
   Node *root = addAllMacroIntoTree(str, "define");
-  subString = subStringMacroInString(str, root, head);
+  subString = macroPositionInString(str, root);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(subString);
@@ -497,23 +498,23 @@ void Xtest_subStringMacroInString_given_string_X_trying_to_search_Macro_should_g
   stringDel(str);
 }
 
-/** test subStringMacroInString():
+/** test macroPositionInString():
  ** macro :
  *          #define Doesnt Exist
  *
  ** String :
  *          Search Something
  **/
-void Xtest_subStringMacroInString_given_Search_Something_should_return_NULL_pointer(void) // <----- Problem
+void Xtest_macroPositionInString_given_Search_Something_should_return_NULL_pointer(void) // <----- Problem
 {
 	String *str = stringNew("#define Doesnt Exist\n"
                            "Search Something\n");
   String *subString;
   LinkedList *head = NULL;
-  
-  printf("Start test_subStringMacroInString_given_string_X_trying_to_search_Macro_should_get_search_macroInfo\n");
+
+  printf("Start test_macroPositionInString_given_string_X_trying_to_search_Macro_should_get_search_macroInfo\n");
   Node *root = addAllMacroIntoTree(str, "define");
-  subString = subStringMacroInString(str, root, head);
+  subString = macroPositionInString(str, root);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(subString);
@@ -524,23 +525,23 @@ void Xtest_subStringMacroInString_given_Search_Something_should_return_NULL_poin
   stringDel(str);
 }
 
-/** test subStringMacroInString():
+/** test macroPositionInString():
  ** macro :
  *          #define Empty
  *
  ** String :
  *          Looking for Empty Macro
  **/
-void Xtest_subStringMacroInString_given_Looking_for_Empty_Macro_should_macro_pointer(void) // <----- Problem
+void Xtest_macroPositionInString_given_Looking_for_Empty_Macro_should_macro_pointer(void) // <----- Problem
 {
 	String *str = stringNew("#define Empty        \n"
                            "Looking for Empty Macro\n");
   String *subString;
   LinkedList *head = NULL;
-  
-  printf("Start test_subStringMacroInString_given_Looking_for_Empty_Macro_should_macro_pointer\n");
+
+  printf("Start test_macroPositionInString_given_Looking_for_Empty_Macro_should_macro_pointer\n");
   Node *root = addAllMacroIntoTree(str, "define");
-  subString = subStringMacroInString(str, root, head);
+  subString = macroPositionInString(str, root);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(subString);
@@ -568,7 +569,7 @@ void Xtest_replaceMacroInString_given_TEN_in_string_should_replace_it_with_10(vo
   int size = size = (str->length) - (macro->name->length) + (macro->content->length);
 
   printf("Start test_replaceMacroInString_given_TEN_in_string_should_replace_it_with_10\n");
-  result = replaceMacroInString(str, subStr, macro, size);
+  // result = replaceMacroInString(str, subStr, macro, size);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(result);
@@ -597,7 +598,7 @@ void Xtest_replaceMacroInString_given_Three_in_string_should_replace_it_with_3(v
   int size = size = (str->length) - (macro->name->length) + (macro->content->length);
 
   printf("Start test_replaceMacroInString_given_Three_in_string_should_replace_it_with_3\n");
-  result = replaceMacroInString(str, subStr, macro, size);
+  // result = replaceMacroInString(str, subStr, macro, size);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(result);
@@ -626,7 +627,7 @@ void Xtest_replaceMacroInString_given_ONEFIVE_in_string_should_replace_it_with_1
   int size = size = (str->length) - (macro->name->length) + (macro->content->length);
 
   printf("Start test_replaceMacroInString_given_ONEFIVE_in_string_should_replace_it_with_15_other_identifier_should_remain_same\n");
-  result = replaceMacroInString(str, subStr, macro, size);
+  // result = replaceMacroInString(str, subStr, macro, size);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(result);
@@ -655,7 +656,7 @@ void Xtest_replaceMacroInString_given_NINE_in_string_should_only_replace_it_with
   int size = size = (str->length) - (macro->name->length) + (macro->content->length);
 
   printf("Start test_replaceMacroInString_given_NINE_in_string_should_only_replace_it_with_99999_other_identifier_should_remain_same\n");
-  result = replaceMacroInString(str, subStr, macro, size);
+  // result = replaceMacroInString(str, subStr, macro, size);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(result);
@@ -684,7 +685,7 @@ void Xtest_replaceMacroInString_shouldnt_replace_anything_in_the_string(void)
   int size = size = (str->length) - 0 + 0;
 
   printf("Start test_replaceMacroInString_shouldnt_replace_anything_in_the_string\n");
-  result = replaceMacroInString(str, subStr, macro, size);
+  // result = replaceMacroInString(str, subStr, macro, size);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(result);
@@ -703,7 +704,7 @@ void Xtest_replaceMacroInString_shouldnt_replace_anything_in_the_string(void)
  ** result :
  *          A = 999;
  **/
-void Xtest_directiveDefine_given__MAX_999_and_A_equal__MAX_should_replace__MAX_to_999(void)
+void test_directiveDefine_given__MAX_999_and_A_equal__MAX_should_replace__MAX_to_999(void)
 {
 	String *str = stringNew("#define _MAX 999\n"
                           "A = _MAX");
@@ -730,11 +731,11 @@ void Xtest_directiveDefine_given__MAX_999_and_A_equal__MAX_should_replace__MAX_t
  ** result :
  *          S = Japan -->  S = ABC --> S = Ohaiyo
  **/
-void Xtest_directiveDefine_given_Japan_and_ABC_should_replace_Japan_with_Ohaiyo(void)
+void test_directiveDefine_given_Japan_and_ABC_should_replace_Japan_with_Ohaiyo(void)
 {
 	String *str = stringNew("#define Japan ABC\n"
                           "#define ABC Ohaiyo\n"
-                          "S = Japan");
+                          "S = Japan\n");
   String *result;
 
   printf("Start test_directiveDefine_given_Japan_and_ABC_should_replace_Japan_with_Ohaiyo\n");
@@ -759,7 +760,7 @@ void Xtest_directiveDefine_given_Japan_and_ABC_should_replace_Japan_with_Ohaiyo(
  *          X = 1 + TWO
  *          X = 1 + 2
  **/
-void Xtest_directiveDefine_given_ONE_plus_ONE_should_replace_two_ONE_with_1(void)
+void test_directiveDefine_given_ONE_plus_ONE_should_replace_two_ONE_with_1(void)
 {
 	String *str = stringNew("#define ONE 1\n"
                           "#define TWO 2\n"
@@ -788,7 +789,7 @@ void Xtest_directiveDefine_given_ONE_plus_ONE_should_replace_two_ONE_with_1(void
  ** result :
  *          S = blank * _someth1ng --> S =  * _someth1ng --> S =  * #Sur prise
  **/
-void Xtest_directiveDefine_should_replace_blank_with_empty_string_and_replace__something_with_sur_prise(void)
+void test_directiveDefine_should_replace_blank_with_empty_string_and_replace__something_with_sur_prise(void)
 {
 	String *str = stringNew("#define blank\n"
                           "#define _someth1ng #Sur prise\n"
@@ -818,7 +819,7 @@ void Xtest_directiveDefine_should_replace_blank_with_empty_string_and_replace__s
  ** result :
  *          X = 1 + TWO
  **/
-void Xtest_directiveDefine_given_BES123__Dumb__dumb2_should_replace_all_the_given_macro(void)
+void test_directiveDefine_given_BES123__Dumb__dumb2_should_replace_all_the_given_macro(void)
 {
 	String *str = stringNew("#define BES123 800X\n"
                           "#define _Dumb _dumb2 + 3\n"
@@ -845,7 +846,7 @@ void Xtest_directiveDefine_given_BES123__Dumb__dumb2_should_replace_all_the_give
  *
  *  A = _MAX
  **/
-void test_directiveDefine_with_cyclic_problem_01(void)
+void Xtest_directiveDefine_with_cyclic_problem_01(void)
 {
 	String *str = stringNew("#define _MAX _MIN\n"
                           "#define _MIN _MAX\n"

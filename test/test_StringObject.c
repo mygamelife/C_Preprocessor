@@ -966,3 +966,43 @@ void test2_stringTrimUntilEOL_should_stop_when_EOL_is_meet_else_keep_trim(void)
 
 	stringDel(str);
 }
+
+/*
+ * Given "Spiderman" and containSet "Spider" should return Spider position if found
+ */
+void test_stringSearchWordContaining_given_Spiderman_and_containSet_Spider_should_return_Spider_position(void)
+{
+	String *str = stringNew("Spiderman");
+	stringTrim(str);
+	String *result;
+	result = stringSearchWordContaining(str , "Spider");
+
+	/*Removed String*/
+	TEST_ASSERT_EQUAL(0 , result->startindex);
+	TEST_ASSERT_EQUAL(6 , result->length);
+	/*Original String after Removed Word Containing*/
+	TEST_ASSERT_EQUAL(0 , str->startindex);
+	TEST_ASSERT_EQUAL(9 , str->length);
+
+	stringDel(str);
+}
+
+/*
+ * Given "Super Woman" and containSet "Woman" should return Woman position if found
+ */
+void test_stringSearchWordContaining_given_SuperWoman_and_containSet_Woman_should_return_Woman_position(void)
+{
+	String *str = stringNew("Super Woman");
+	stringTrim(str);
+	String *result;
+	result = stringSearchWordContaining(str , "Woman");
+
+	/*Removed String*/
+	TEST_ASSERT_EQUAL(6 , result->startindex);
+	TEST_ASSERT_EQUAL(5 , result->length);
+	/*Original String after Removed Word Containing*/
+	TEST_ASSERT_EQUAL(0 , str->startindex);
+	TEST_ASSERT_EQUAL(11 , str->length);
+
+	stringDel(str);
+}

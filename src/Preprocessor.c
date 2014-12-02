@@ -42,11 +42,13 @@ int isDirective(String *string, char *directiveName) {
 
   if(strcmp(directiveName, tempString) == 0)  {
     subStringDel(tempString);
+    stringDel(directive);
     return 1;
   }
 
   else  {
     subStringDel(tempString);
+    stringDel(directive);
     Throw(ERR_INVALID_DIRECTIVE);
   }
 }
@@ -149,7 +151,7 @@ Macro *findMacroInTree(Node *root, char *targetMacro)  {
     macro = (Macro*)root->dataPtr;
     macroString = macro->name->string;
 
-    printf("FOUND Name %s\n", macroString);
+    // printf("FOUND Name %s\n", macroString);
     // printf("findMacroInTree()\n");
 
     if(strcmp(macroString, targetMacro) == 0) {
@@ -164,7 +166,7 @@ Macro *findMacroInTree(Node *root, char *targetMacro)  {
   }
 }
 
-/** *subStringMacroInString(String *str, Node *root)
+/** *macroPositionInString(String *str, Node *root)
  * This function is use to search pre-defined macro in string
  *
  ** input :
@@ -174,23 +176,23 @@ Macro *findMacroInTree(Node *root, char *targetMacro)  {
  *          If found return foundMacro pointer contain macro information
  *          Else return NULL
  **/
-String *subStringMacroInString(String *str, Node *root, LinkedList *head) {
+String *macroPositionInString(String *str, Node *root) {
   char *token;
   String *subString;
   Macro *foundMacro;
-  
+
   subString = stringRemoveWordContaining(str, alphaNumericSet);
   while(subString->length != 0)  {
     token = stringSubStringInChars(subString , subString->length); /**need free**/
-    puts(token);
     foundMacro = findMacroInTree(root, token);
-    
+
     if(foundMacro != NULL)  {
       break;
     }
+    // stringDel(subString);
+    subStringDel(token);
     
     subString = stringRemoveWordContaining(str, alphaNumericSet);
-    subStringDel(token);
   }
   return subString;
 }
@@ -199,22 +201,23 @@ String *subStringMacroInString(String *str, Node *root, LinkedList *head) {
  * This function is use to replace macro found inside the string
  *
  ** input :
- *          *oriString is a pointer pointing to string statement  (Example : X = A + B)
+ *          *latestString is a pointer pointing to latest update string statement
  *          *subString is a pointer pointing to the macro subString
  *          *macro is a pointer contain macro information
  *          size is the size of string after replaced with macro content
  ** output :
  *          return the character string after replaced macro name with macro content
  **/
-char *replaceMacroInString(String *oriString, String *subString, Macro *macro, int size) {
-  int i = 0, j = 0, start = oriString->startindex;
+char *replaceMacroInString(char *latestString, String *subString, Macro *macro, int size) {
+  int i = 0, j = 0, start = 0;
   char *replacedMacroInString = malloc(sizeof(char) * size + 1);
 
-  // printf("oriString start %d, length %d\n", oriString->startindex, oriString->length);
+  printf("latestString %s\n", latestString);
+  printf("subString start %d, length %d\n", subString->startindex, subString->length);
   if(macro != NULL)   {
     for(i; i< size ; i++) {
 
-      replacedMacroInString[i] = oriString->string[start++];
+      replacedMacroInString[i] = latestString[start++];
 
       if(start == subString->startindex) {
         for(j; j< macro->content->length ; j++)  {
@@ -223,14 +226,14 @@ char *replaceMacroInString(String *oriString, String *subString, Macro *macro, i
         }
         start += macro->name->length;
       }
-      replacedMacroInString[i+1] = '\0';
+      replacedMacroInString[i+1] = 0;
     }
   }
 
   else  {
     for(i; i< size ; i++) {
-      replacedMacroInString[i] = oriString->string[start++];
-      replacedMacroInString[i+1] = '\0';
+      replacedMacroInString[i] = latestString[start++];
+      replacedMacroInString[i+1] = 0;
     }
   }
   puts(replacedMacroInString);
@@ -240,27 +243,31 @@ char *replaceMacroInString(String *oriString, String *subString, Macro *macro, i
 
 String *directiveDefine(String *str, char *directiveName) {
   int size, count = 0, Cyclic = 0;
-  char *macroToken, *replacedMacroString;
-  String *subString, *tempString, *stringStatement;
+  char *macroToken, *stringStatement, *replacedMacroString = NULL;
+  String *macro, *latestString;
   Macro *foundMacro;
   LinkedList *head = NULL;
 
-  //add all available macro into tree
-  Node *root = addAllMacroIntoTree(str, directiveName); /**need free**/
-  printf("String Statement start %d, length %d \n", str->startindex, str->length);
-  stringStatement = stringSubString(str, str->startindex, str->length); /**need free**/
-  subString = subStringMacroInString(str, root, head);
-  printf("subString start %d, length %d \n", subString->startindex, subString->length);
+  Node *root = addAllMacroIntoTree(str, directiveName); //add all predefined macro into tree
+
+  stringStatement = stringSubStringInChars(str, str->length); //extract string statement
+  latestString = stringNew(stringStatement);
+  
+  printf("latestString start %d, length %d \n", latestString->startindex, latestString->length);
+
+  macro = macroPositionInString(latestString, root); //detect predefined macro in string and return the macro location
+  printf("macro start %d, length %d \n", macro->startindex, macro->length);
 
   /*--------------------------------------------------------------------------------------*/
-  while(subString->length != 0) {
-    macroToken = stringSubStringInChars(subString , subString->length); /**need free**/
-    if(findList(&head, macroToken))  {
-      printf("subString->string %s\n", subString->string);
-      printf("Cyclic Happen\n");
-      break;
-    }
-    foundMacro = findMacroInTree(root, macroToken);
+  while(macro->length != 0) {
+    
+    macroToken = stringSubStringInChars(macro, macro->length); //extract the macro as a token
+    // if(findList(&head, macroToken))  {
+      // printf("subString->string %s\n", subString->string);
+      // printf("Cyclic Happen\n");
+      // break;
+    // }
+    foundMacro = findMacroInTree(root, macroToken); 
 
     // if(foundMacro != NULL)  {
       // if(findList(&head, foundMacro->name->string)) {
@@ -271,55 +278,73 @@ String *directiveDefine(String *str, char *directiveName) {
       // else  {
         // LinkedList *newList = linkListNew(foundMacro->name->string);
         // addLinkedList(&head, newList);
-        
+
         // char *stringChar = (char*)head->data;
         // printf("newList %s\n", stringChar);
-        
+
         // if(head->next != NULL)
           // printf("head next not null\n");
-        
+
       // }
     // }
+    printf("macro start %d, length %d \n", macro->startindex, macro->length);
     if(foundMacro != NULL)  {
-      size = (stringStatement->length) - (foundMacro->name->length) + (foundMacro->content->length);
+      size = strlen(latestString->string) - (foundMacro->name->length) + (foundMacro->content->length);
       LinkedList *newList = linkListNew(foundMacro->name->string);
       addLinkedList(&head, newList);
+
       printf("Created new list for %s\n", foundMacro->name->string);
     }
-    else  size = stringStatement->length;
+    else  size = strlen(latestString->string);
 
-    printf("subString start %d, length %d \n", subString->startindex, subString->length);
+    printf("size %d \n", size);
+    // printf("2nd subString start %d, length %d \n", subString->startindex, subString->length);
 
-    replacedMacroString = replaceMacroInString(stringStatement, subString, foundMacro, size); /**need free**/
-    
-    /*free memory after replaced Macro*/
-    stringDel(stringStatement);
-    subStringDel(macroToken);
-    
-    //store the replacedMacroInstring for searching macro in string without modify original stringStatement
-    tempString = stringNew(replacedMacroString); /**need free**/
-
-    //Overwrite stringStatement with new replaced macro string
-    stringStatement = stringSubString(tempString, tempString->startindex, tempString->length); /**need free**/
-
-    //Overwrite subString with the latest replacedMacroString
-    subString = subStringMacroInString(tempString, root, head);
-    
-    
-    // break;
-
-    // if(Cyclic)
-      // break;
+    // printf("stringStatement string %s \n", stringStatement->string);
     // printf("stringStatement start %d, length %d \n", stringStatement->startindex, stringStatement->length);
-    // printf("tempString %s\n", tempString->string);
-    // printf("tempString start %d, length %d \n", tempString->startindex, tempString->length);
-    // printf("subString start %d, length %d \n", subString->startindex, subString->length);
+    // printf("foundMacro name %s, content %s \n", foundMacro->name->string, foundMacro->content->string);
+    
 
-    /*free memory*/
-    stringDel(tempString);
+    /* free malloc memory */
+    subStringDel(replacedMacroString);
+    replacedMacroString = replaceMacroInString(stringStatement, macro, foundMacro, size); /**need free**/
+
+    /* free malloc memory */
+    stringDel(latestString);
+    latestString = stringNew(replacedMacroString); //Overwrite previous string with latest replaced macro string
+    
+    /* free malloc memory */
+    subStringDel(stringStatement);
+    stringStatement = stringSubStringInChars(latestString, latestString->length); //extract the latest string statement
+    
+    printf("latestString start %d, length %d \n", latestString->startindex, latestString->length);
+    printf("stringStatement %s \n", stringStatement);
+    // store the replacedMacroInstring for searching macro in string without modify original stringStatement
+    // stringDel(latestString);
+    // latestString = stringNew(replacedMacroString); /**need free**/
+
+    // Overwrite stringStatement with new replaced macro string
+    // stringDel(stringStatement);
+    // stringStatement = stringSubString(latestString, latestString->startindex, latestString->length); /**need free**/
+
+    
+    /* free malloc memory */
+    stringDel(macro);
+    macro = macroPositionInString(latestString, root); //continue search macro in string
+    
+    printf("macro start %d, length %d \n", macro->startindex, macro->length);
+    
+    
+    
+    
+    
+    /* free malloc memory */
+    subStringDel(macroToken);
   }
 
   //free tree memory before exit this function
   destroyAllMacroInTree(root);
-  return stringStatement;
+  latestString->startindex = 0;
+  latestString->length = strlen(latestString->string);
+  return latestString;
 }
