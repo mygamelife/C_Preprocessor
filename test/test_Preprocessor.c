@@ -846,15 +846,13 @@ void test_directiveDefine_given_BES123__Dumb__dumb2_should_replace_all_the_given
 }
 
 /** test directiveDefine() with cyclic problem:
- *  #define _MAX _MIN
- *  #define _MIN _MAX
+ *  #define _MAX _MAX
  *
  *  A = _MAX
  **/
-void Xtest_directiveDefine_with_cyclic_problem_01(void)
+void test_directiveDefine_with_cyclic_problem_01(void)
 {
-	String *str = stringNew("#define _MAX _MIN\n"
-                          "#define _MIN _MAX\n"
+	String *str = stringNew("#define _MAX _MAX\n"
                           "A = _MAX");
   String *result;
 
@@ -863,10 +861,67 @@ void Xtest_directiveDefine_with_cyclic_problem_01(void)
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(result);
-  // TEST_ASSERT_EQUAL_STRING("Im 800X * (xox + DUMB DUMB + 3)", result->string);
-  // TEST_ASSERT_EQUAL(0, result->startindex);
-  // TEST_ASSERT_EQUAL(31, result->length);
+  TEST_ASSERT_EQUAL_STRING("A = _MAX", result->string);
+  TEST_ASSERT_EQUAL(0, result->startindex);
+  TEST_ASSERT_EQUAL(8, result->length);
 
+  subStringDel(result->string);
+  stringDel(result);
+  stringDel(str);
+}
+
+/** test directiveDefine() with cyclic problem:
+ *  #define _Sing Song
+ *  #define Song _Sing
+ *
+ *  i _Sing
+ **/
+void test_directiveDefine_with_cyclic_problem_02(void)
+{
+	String *str = stringNew("#define _Sing Song\n"
+                          "#define Song _Sing\n"
+                          "i _Sing");
+  String *result;
+
+  printf("Start test_directiveDefine_with_cyclic_problem_02\n");
+  result = directiveDefine(str, "define");
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(result);
+  TEST_ASSERT_EQUAL_STRING("i _Sing", result->string);
+  TEST_ASSERT_EQUAL(0, result->startindex);
+  TEST_ASSERT_EQUAL(7, result->length);
+
+  subStringDel(result->string);
+  stringDel(result);
+  stringDel(str);
+}
+
+/** test directiveDefine() with cyclic problem:
+ *  #define Start End
+ *  #define End Start
+ *  #define Cont $_$
+ *
+ *  Let's Start Cont
+ **/
+void test_directiveDefine_with_cyclic_problem_03(void)
+{
+	String *str = stringNew("#define Start End\n"
+                          "#define End Start\n"
+                          "#define Cont $_$\n"
+                          "Let's Start Cont");
+  String *result;
+
+  printf("Start test_directiveDefine_with_cyclic_problem_03\n");
+  result = directiveDefine(str, "define");
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(result);
+  TEST_ASSERT_EQUAL_STRING("Let's Start $_$", result->string);
+  TEST_ASSERT_EQUAL(0, result->startindex);
+  TEST_ASSERT_EQUAL(15, result->length);
+
+  subStringDel(result->string);
   stringDel(result);
   stringDel(str);
 }

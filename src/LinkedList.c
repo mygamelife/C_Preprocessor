@@ -25,7 +25,10 @@ LinkedList *linkListNew(void *data) {
  **/
 void destroyAllLinkedLists(LinkedList *firstList)  {
 
-  if(firstList->next != NULL)
+  if(firstList == NULL)
+    return;
+
+  else if(firstList->next != NULL)
     destroyAllLinkedLists(firstList->next);
 
   free(firstList);
@@ -45,9 +48,9 @@ void addLinkedList(LinkedList **listPtr, LinkedList *newList) {
     *listPtr  = newList;
     return;
   }
-    
+
   tail = head;
-  
+
   while(tail->next != NULL)
     tail = tail->next;
 
@@ -71,7 +74,7 @@ int compareChar(void *dataInCollection, void *targetData)  {
   //data1 is equal with data2
   if(strcmp(data1, data2) == 0)
     return 1;
-    
+
   else return 0;
 }
 
@@ -85,13 +88,14 @@ int compareChar(void *dataInCollection, void *targetData)  {
 int findLinkedList(LinkedList **listPtr, void *data, int(*compareChar)(void *dataInCollection, void *data))  {
   LinkedList *head = *listPtr;
   int result;
-    
+
   while(head != NULL) {
     if(compareChar(head->data, data))
       return 1;
-      
-    else 
+
+    else
       head = head->next;
   }
+
   return 0;
 }
