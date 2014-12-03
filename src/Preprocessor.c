@@ -262,11 +262,10 @@ String *directiveDefine(String *str, char *directiveName) {
   while(macro->length != 0) {
     
     macroToken = stringSubStringInChars(macro, macro->length); //extract the macro as a token
-    // if(findList(&head, macroToken))  {
-      // printf("subString->string %s\n", subString->string);
-      // printf("Cyclic Happen\n");
-      // break;
-    // }
+    if(findList(&head, macroToken))  {
+      printf("Cyclic Happen！ %s\n", macroToken);
+      break;
+    }
     foundMacro = findMacroInTree(root, macroToken); 
 
     // if(foundMacro != NULL)  {
@@ -333,11 +332,7 @@ String *directiveDefine(String *str, char *directiveName) {
     macro = macroPositionInString(latestString, root); //continue search macro in string
     
     printf("macro start %d, length %d \n", macro->startindex, macro->length);
-    
-    
-    
-    
-    
+      
     /* free malloc memory */
     subStringDel(macroToken);
   }

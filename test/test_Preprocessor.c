@@ -478,7 +478,7 @@ void test_findMacroInTree_given_added_macroNode_tree_and_find_findSomethingDoesn
  ** String :
  *          X trying to search Macro;
  **/
-void Xtest_macroPositionInString_given_string_X_trying_to_search_Macro_should_get_search_macroInfo(void) // <----- Problem
+void test_macroPositionInString_given_string_X_trying_to_search_Macro_should_get_search_macroInfo(void) // <----- Problem
 {
 	String *str = stringNew("#define search Macro\n"
                            "X trying to search Macro\n");
@@ -505,7 +505,7 @@ void Xtest_macroPositionInString_given_string_X_trying_to_search_Macro_should_ge
  ** String :
  *          Search Something
  **/
-void Xtest_macroPositionInString_given_Search_Something_should_return_NULL_pointer(void) // <----- Problem
+void test_macroPositionInString_given_Search_Something_should_return_NULL_pointer(void) // <----- Problem
 {
 	String *str = stringNew("#define Doesnt Exist\n"
                            "Search Something\n");
@@ -532,7 +532,7 @@ void Xtest_macroPositionInString_given_Search_Something_should_return_NULL_point
  ** String :
  *          Looking for Empty Macro
  **/
-void Xtest_macroPositionInString_given_Looking_for_Empty_Macro_should_macro_pointer(void) // <----- Problem
+void test_macroPositionInString_given_Looking_for_Empty_Macro_should_macro_pointer(void) // <----- Problem
 {
 	String *str = stringNew("#define Empty        \n"
                            "Looking for Empty Macro\n");
@@ -560,7 +560,7 @@ void Xtest_macroPositionInString_given_Looking_for_Empty_Macro_should_macro_poin
  ** result :
  *          X = 10;
  **/
-void Xtest_replaceMacroInString_given_TEN_in_string_should_replace_it_with_10(void) // <----- Problem
+void test_replaceMacroInString_given_TEN_in_string_should_replace_it_with_10(void) // <----- Problem
 {
 	String *str = stringNew("X = TEN;");
 	String *subStr = stringSubString(str, 4, 3);
@@ -569,7 +569,7 @@ void Xtest_replaceMacroInString_given_TEN_in_string_should_replace_it_with_10(vo
   int size = size = (str->length) - (macro->name->length) + (macro->content->length);
 
   printf("Start test_replaceMacroInString_given_TEN_in_string_should_replace_it_with_10\n");
-  // result = replaceMacroInString(str, subStr, macro, size);
+  result = replaceMacroInString(str->string, subStr, macro, size);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(result);
@@ -589,7 +589,7 @@ void Xtest_replaceMacroInString_given_TEN_in_string_should_replace_it_with_10(vo
  ** result :
  *          X = 10 + 3 + 5
  **/
-void Xtest_replaceMacroInString_given_Three_in_string_should_replace_it_with_3(void)
+void test_replaceMacroInString_given_Three_in_string_should_replace_it_with_3(void)
 {
 	String *str = stringNew("X = 10 + Three + 5");
   String *subStr = stringSubString(str, 9, 5);
@@ -598,7 +598,7 @@ void Xtest_replaceMacroInString_given_Three_in_string_should_replace_it_with_3(v
   int size = size = (str->length) - (macro->name->length) + (macro->content->length);
 
   printf("Start test_replaceMacroInString_given_Three_in_string_should_replace_it_with_3\n");
-  // result = replaceMacroInString(str, subStr, macro, size);
+  result = replaceMacroInString(str->string, subStr, macro, size);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(result);
@@ -618,7 +618,7 @@ void Xtest_replaceMacroInString_given_Three_in_string_should_replace_it_with_3(v
  ** result :
  *          X = 5 + 15 + Three + 5
  **/
-void Xtest_replaceMacroInString_given_ONEFIVE_in_string_should_replace_it_with_15_other_identifier_should_remain_same(void)
+void test_replaceMacroInString_given_ONEFIVE_in_string_should_replace_it_with_15_other_identifier_should_remain_same(void)
 {
 	String *str = stringNew("X = 5 + ONEFIVE + Three + 5");
   String *subStr = stringSubString(str, 8, 7);
@@ -627,7 +627,7 @@ void Xtest_replaceMacroInString_given_ONEFIVE_in_string_should_replace_it_with_1
   int size = size = (str->length) - (macro->name->length) + (macro->content->length);
 
   printf("Start test_replaceMacroInString_given_ONEFIVE_in_string_should_replace_it_with_15_other_identifier_should_remain_same\n");
-  // result = replaceMacroInString(str, subStr, macro, size);
+  result = replaceMacroInString(str->string, subStr, macro, size);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(result);
@@ -647,7 +647,7 @@ void Xtest_replaceMacroInString_given_ONEFIVE_in_string_should_replace_it_with_1
  ** result :
  *          X = HI + BYE + 1 + 99999
  **/
-void Xtest_replaceMacroInString_given_NINE_in_string_should_only_replace_it_with_99999_other_identifier_should_remain_same(void)
+void test_replaceMacroInString_given_NINE_in_string_should_only_replace_it_with_99999_other_identifier_should_remain_same(void)
 {
 	String *str = stringNew("X = HI + BYE + 1 + NINE");
   String *subStr = stringSubString(str, 19, 4);
@@ -656,7 +656,7 @@ void Xtest_replaceMacroInString_given_NINE_in_string_should_only_replace_it_with
   int size = size = (str->length) - (macro->name->length) + (macro->content->length);
 
   printf("Start test_replaceMacroInString_given_NINE_in_string_should_only_replace_it_with_99999_other_identifier_should_remain_same\n");
-  // result = replaceMacroInString(str, subStr, macro, size);
+  result = replaceMacroInString(str->string, subStr, macro, size);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(result);
@@ -676,7 +676,7 @@ void Xtest_replaceMacroInString_given_NINE_in_string_should_only_replace_it_with
  ** result :
  *          X = HAPPY * HAPPY / 1000
  **/
-void Xtest_replaceMacroInString_shouldnt_replace_anything_in_the_string(void)
+void test_replaceMacroInString_shouldnt_replace_anything_in_the_string(void)
 {
 	String *str = stringNew("X = HAPPY * HAPPY / 1000");
   String *subStr = stringSubString(str, 4, 2);
@@ -685,7 +685,7 @@ void Xtest_replaceMacroInString_shouldnt_replace_anything_in_the_string(void)
   int size = size = (str->length) - 0 + 0;
 
   printf("Start test_replaceMacroInString_shouldnt_replace_anything_in_the_string\n");
-  // result = replaceMacroInString(str, subStr, macro, size);
+  result = replaceMacroInString(str->string, subStr, macro, size);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(result);
@@ -719,6 +719,7 @@ void test_directiveDefine_given__MAX_999_and_A_equal__MAX_should_replace__MAX_to
   TEST_ASSERT_EQUAL(0, result->startindex);
   TEST_ASSERT_EQUAL(7, result->length);
 
+  subStringDel(result->string);
   stringDel(result);
   stringDel(str);
 }
@@ -747,6 +748,7 @@ void test_directiveDefine_given_Japan_and_ABC_should_replace_Japan_with_Ohaiyo(v
   TEST_ASSERT_EQUAL(0, result->startindex);
   TEST_ASSERT_EQUAL(10, result->length);
 
+  subStringDel(result->string);
   stringDel(result);
   stringDel(str);
 }
@@ -777,6 +779,7 @@ void test_directiveDefine_given_ONE_plus_ONE_should_replace_two_ONE_with_1(void)
   TEST_ASSERT_EQUAL(0, result->startindex);
   TEST_ASSERT_EQUAL(13, result->length);
 
+  subStringDel(result->string);
   stringDel(result);
   stringDel(str);
 }
@@ -805,6 +808,7 @@ void test_directiveDefine_should_replace_blank_with_empty_string_and_replace__so
   TEST_ASSERT_EQUAL(0, result->startindex);
   TEST_ASSERT_EQUAL(17, result->length);
 
+  subStringDel(result->string);
   stringDel(result);
   stringDel(str);
 }
@@ -836,6 +840,7 @@ void test_directiveDefine_given_BES123__Dumb__dumb2_should_replace_all_the_given
   TEST_ASSERT_EQUAL(0, result->startindex);
   TEST_ASSERT_EQUAL(31, result->length);
 
+  subStringDel(result->string);
   stringDel(result);
   stringDel(str);
 }
