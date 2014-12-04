@@ -27,16 +27,17 @@ void tearDown(void) {}
  **/
 void test_createMacroInfo_given_macroName_with_bracket_symbol(void)
 {
-	String *str = stringNew("Add (X) X + 3");
+	String *str = stringNew("Add(X) X + 3");
   Macro *macro;
+  Argument *argu;
 
   printf("Start test_createMacroInfo_given_macroName_with_bracket_symbol\n");
-  macro = createMacroInfo(str);
+  argu = createMacroArguments(str);
   printf("------------------------------------------------------------\n");
 
-  TEST_ASSERT_NOT_NULL(macro);
-  TEST_ASSERT_EQUAL_STRING("Add", macro->name->string);
-  TEST_ASSERT_EQUAL_STRING("X + 3", macro->content->string); //empty content
+  TEST_ASSERT_NOT_NULL(argu);
+  // TEST_ASSERT_EQUAL_STRING("Add", macro->name->string);
+  // TEST_ASSERT_EQUAL_STRING("X + 3", macro->content->string); //empty content
 
   delMacroNameAndContent(macro);
   stringDel(str);
@@ -46,7 +47,7 @@ void test_createMacroInfo_given_macroName_with_bracket_symbol(void)
  **/
 void Xtest_createMacroInfo_given_macroName_with_several_argument(void)
 {
-	String *str = stringNew("Sam (a,b) a + b");
+	String *str = stringNew("Sam(a,b) a + b");
   Macro *macro;
 
   printf("Start test_createMacroInfo_given_macroName_with_several_argument\n");

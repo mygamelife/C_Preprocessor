@@ -331,7 +331,7 @@ void test_createMacroInfo_given_string_contain_backslash_behind_macroName_should
  *
  ** result : free all the malloc memory in tree
  **/
-void Xtest_destroyAllMacroInTree_given_BYE_HI_macroNode_added_into_tree_should_remove_all_and_become_NULL(void)
+void test_destroyAllMacroInTree_given_BYE_HI_macroNode_added_into_tree_should_remove_all_and_become_NULL(void)
 {
 	String *str = stringNew("#define BYE BY3\n"
                           "#define HI H1\n");
@@ -360,7 +360,7 @@ void Xtest_destroyAllMacroInTree_given_BYE_HI_macroNode_added_into_tree_should_r
  *
  ** result : should add macroNode which contain macro name but empty content
  **/
-void Xtest_addAllMacroIntoTree_given_macroNode_contain_macro_name_but_empty_content_should_add_into_tree(void)
+void test_addAllMacroIntoTree_given_macroNode_contain_macro_name_but_empty_content_should_add_into_tree(void)
 {
 	String *str = stringNew("#define empty_content\n");
 
@@ -393,7 +393,7 @@ void Xtest_addAllMacroIntoTree_given_macroNode_contain_macro_name_but_empty_cont
  *                                    /
  *                                 LENGTH
  **/
-void Xtest_addAllMacroIntoTree_given_HEIGHT_WIDTH_LENGTH_AREA_and_directive_name_define_should_add_all_into_tree(void)
+void test_addAllMacroIntoTree_given_HEIGHT_WIDTH_LENGTH_AREA_and_directive_name_define_should_add_all_into_tree(void)
 {
 	String *str = stringNew("#define HEIGHT 50cm\n"
                           "#define WIDTH 70cm\n"
@@ -435,7 +435,7 @@ void Xtest_addAllMacroIntoTree_given_HEIGHT_WIDTH_LENGTH_AREA_and_directive_name
  *
  ** result : should add macroNode which contain macro name but empty content
  **/
-void Xtest_addAllMacroIntoTree_given_redefined_macro_name_should_throw_error(void)
+void test_addAllMacroIntoTree_given_redefined_macro_name_should_throw_error(void)
 {
   String *str;
 	Node *root;

@@ -85,7 +85,7 @@ int isIdentifier(String *string)  {
  *			return macroArgument if bracket "()" is found
  *			else return NULL
  **/
-char *createMacroArguments(String *str) {
+Argument *createMacroArguments(String *str) {
   int size = 0, iden = 0;
   char *macroArgument;
   String *arguments, *argu;
