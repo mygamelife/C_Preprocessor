@@ -190,15 +190,15 @@ String *macroPositionInString(String *str, Node *root) {
 
   subString = stringRemoveWordContaining(str, alphaNumericSet);
   while(subString->length != 0)  {
-    token = stringSubStringInChars(subString , subString->length); /**need free**/
+    token = stringSubStringInChars(subString , subString->length);
     foundMacro = findMacroInTree(root, token);
 
     if(foundMacro != NULL)  {
       break;
     }
-    // stringDel(subString);
+    stringDel(subString);
     subStringDel(token);
-
+    printf("subString start %d, length %d\n", subString->startindex, subString->length);
     subString = stringRemoveWordContaining(str, alphaNumericSet);
   }
   return subString;
@@ -265,6 +265,7 @@ String *directiveDefine(String *str, char *directiveName) {
   stringStatement = stringSubStringInChars(str, str->length); //extract string statement
   latestString = stringNew(stringStatement);
 
+  printf("latestString %s \n", latestString->string);
   printf("latestString start %d, length %d \n", latestString->startindex, latestString->length);
 
   macro = macroPositionInString(latestString, root); //detect predefined macro in string and return the macro location

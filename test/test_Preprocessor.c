@@ -853,7 +853,7 @@ void test_directiveDefine_should_replace_blank_with_empty_string_and_replace__so
  *  Im BES123 * (xox + _Dumb)
  *
  ** result :
- *          X = 1 + TWO
+ *          Im 800X * (xox + DUMB DUMB + 3)
  **/
 void test_directiveDefine_given_BES123__Dumb__dumb2_should_replace_all_the_given_macro(void)
 {
