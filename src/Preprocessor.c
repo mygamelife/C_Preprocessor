@@ -121,11 +121,18 @@ Macro *createMacroInfo(String *str) {
  **/
 Node *addAllMacroIntoTree(String *string, char *directiveName) {
   Node *macroNode, *root = NULL;
+  Macro *macro, *foundMacro;
 
   while(isHashTag(string)) {
     if(isDirective(string, directiveName))  {
       if(isIdentifier(string))  {
-        macroNode = macroNodeNew(createMacroInfo(string)); //need to free malloc
+        macro = createMacroInfo(string);
+        foundMacro = findMacroInTree(root, macro->name->string);
+        if(foundMacro != NULL)  { //check redefined macro
+          printf("Warning %s redefined\n", macro->name->string);
+          Throw(ERR_MACRO_REDEFINED);
+        }
+        macroNode = macroNodeNew(macro); //need to free malloc
         addMacro(&root, macroNode);
       }
     }
@@ -264,14 +271,13 @@ String *directiveDefine(String *str, char *directiveName) {
     macroToken = stringSubStringInChars(macro, macro->length); //extract the macro as a token
     foundMacro = findMacroInTree(root, macroToken);
 
-    printf("macro start %d, length %d \n", macro->startindex, macro->length);
+    // printf("macro start %d, length %d \n", macro->startindex, macro->length);
     if(foundMacro != NULL)  {
-      // puts(foundMacro->content->string);
       size = strlen(latestString->string) - (foundMacro->name->length) + (foundMacro->content->length);
 
-      Cyclic = findList(&head, foundMacro->name->string);     
-      //if Cyclic happen destroy previous list and store location after cyclic problem
-      if(Cyclic)  {
+      Cyclic = findList(&head, foundMacro->name->string);
+
+      if(Cyclic)  { //if Cyclic happen destroy previous list and store location after cyclic problem
         printf("Cyclic Happen at %s\n", macroToken);
         printf("latestString start %d, length %d \n", latestString->startindex, latestString->length);
         nextToCyclic = latestString->startindex;
@@ -285,7 +291,7 @@ String *directiveDefine(String *str, char *directiveName) {
         if(head != NULL)
           printf("Created new list for %s\n", foundMacro->name->string);
       }
-      
+
 
     }
     else  size = strlen(latestString->string);
@@ -317,22 +323,22 @@ String *directiveDefine(String *str, char *directiveName) {
     if(nextToCyclic)  //always start at next to cyclic happen
       latestString->startindex = nextToCyclic;
     /* free malloc memory */
-    stringDel(macro);   
+    stringDel(macro);
     macro = macroPositionInString(latestString, root); //continue search macro in string
-    
-    printf("macro start %d, length %d \n", macro->startindex, macro->length);
-    printf("latestString->string %c\n", latestString->string[latestString->startindex]);
-    printf("nextToCyclic start %d, length %d \n", latestString->startindex, latestString->length);
+
+    // printf("macro start %d, length %d \n", macro->startindex, macro->length);
+    // printf("latestString->string %c\n", latestString->string[latestString->startindex]);
+    // printf("nextToCyclic start %d, length %d \n", latestString->startindex, latestString->length);
     /* free malloc memory */
-    subStringDel(macroToken);  
+    subStringDel(macroToken);
   }
 
   /* free tree memory before exit this function */
-  stringDel(macro); 
+  stringDel(macro);
   subStringDel(stringStatement);
   destroyAllLinkedLists(head);
   destroyAllMacroInTree(root);
-  
+
   latestString->startindex = 0;
   latestString->length = strlen(latestString->string);
   return latestString;

@@ -410,6 +410,40 @@ void test_addAllMacroIntoTree_given_HEIGHT_WIDTH_LENGTH_AREA_and_directive_name_
   stringDel(str);
 }
 
+/** test directiveDefine() redefined macro name
+ *  #define Samuel gay
+ *  #define Samuel isGay
+ *
+ ** result : should add macroNode which contain macro name but empty content
+ **/
+void test_addAllMacroIntoTree_given_redefined_macro_name_should_throw_error(void)
+{
+  String *str;
+	Node *root;
+  CEXCEPTION_T err;
+
+  printf("Start test_addAllMacroIntoTree_given_redefined_macro_name_should_throw_error\n");
+  Try {
+    str = stringNew("#define Samuel gay\n"
+                    "#define Samuel isGay\n");
+    root = addAllMacroIntoTree(str, "define");
+    TEST_FAIL_MESSAGE("Should throw ERR_MACRO_REDEFINED exception");
+  }
+  Catch(err)  {
+    TEST_ASSERT_EQUAL_MESSAGE(ERR_MACRO_REDEFINED, err, "Expect ERR_MACRO_REDEFINED exception");
+    TEST_ASSERT_NOT_NULL(root);
+    Macro *m1 = (Macro*)root->dataPtr;
+    TEST_ASSERT_EQUAL_STRING("Samuel", m1->name->string);
+    TEST_ASSERT_EQUAL_STRING("gay", m1->content->string);
+    TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', root);
+  }
+  printf("------------------------------------------------------------\n");
+
+  //free all malloc memory in tree
+  destroyAllMacroInTree(root);
+  stringDel(str);
+}
+
 /** test findMacroInTree() given added macroNode tree:
  ** Given random macroName and content contain symbol/spaces should add into tree
  **/
