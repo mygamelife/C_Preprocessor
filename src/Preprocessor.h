@@ -17,7 +17,7 @@ int isIdentifier(String *string);
 Macro *createMacroInfo(String *str);
 Node *addAllMacroIntoTree(String *string, char *directiveName);
 Macro *findMacroInTree(Node *root, char *targetMacro);
-char *replaceMacroInString(char *latestString, String *subString, Macro *macro, int size);
+char *replaceMacroInString(char *latestString, String *subString, Macro *foundMacro, int size);
 String *macroPositionInString(String *str, Node *root);
 String *directiveDefine(String *str, char *directiveName);
 #endif // Preprocessor_H

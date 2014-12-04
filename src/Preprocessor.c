@@ -72,7 +72,7 @@ int isIdentifier(String *string)  {
   stringTrim(identifier);
   // printf("Identifier startindex %d, length %d\n", identifier->startindex, identifier->length);
 
-  if(!stringCharAtInSet(identifier, identifier->startindex, numSet))
+  if(stringCharAtInSet(identifier, identifier->startindex, alphaSet))
     return 1;
 
   else Throw(ERR_INVALID_IDENTIFIER);
@@ -90,7 +90,7 @@ Macro *createMacroInfo(String *str) {
   String *name, *content;
   Macro *macroInfo;
 
-  name = stringRemoveWordContaining(str, alphaNumericSet);
+  name = stringRemoveWordContaining(str, alphaNumericSetWithBracket);
 
   if(name->length == 0)
     Throw(ERR_EMPTY_MACRO_NAME);
@@ -215,39 +215,44 @@ String *macroPositionInString(String *str, Node *root) {
  ** output :
  *          return the character string after replaced macro name with macro content
  **/
-char *replaceMacroInString(char *latestString, String *subString, Macro *macro, int size) {
+char *replaceMacroInString(char *latestString, String *subString, Macro *foundMacro, int size) {
   int i = 0, j = 0, start = 0;
   char *replacedMacroInString = malloc(sizeof(char) * size + 1);
 
   printf("latestString %s\n", latestString);
   printf("subString start %d, length %d\n", subString->startindex, subString->length);
-  if(macro != NULL)   {
+  
+  if(foundMacro != NULL)   {
     for(i; i< size ; i++) {
-
-      replacedMacroInString[i] = latestString[start++];
-
+    
       if(start == subString->startindex) {
-        for(j; j< macro->content->length ; j++)  {
+        for(j; j< strlen(foundMacro->content->string) ; j++)  {
+          replacedMacroInString[i] = foundMacro->content->string[j];
           i++;
-          replacedMacroInString[i] = macro->content->string[j];
         }
-        start += macro->name->length;
+        start += foundMacro->name->length;
       }
-      replacedMacroInString[i+1] = 0;
+      replacedMacroInString[i] = latestString[start++];     
     }
+    replacedMacroInString[i] = '\0';
   }
 
   else  {
     for(i; i< size ; i++) {
       replacedMacroInString[i] = latestString[start++];
-      replacedMacroInString[i+1] = 0;
     }
+    replacedMacroInString[i] = '\0';
   }
   puts(replacedMacroInString);
   return replacedMacroInString;
 }
 
-
+/** String *directiveDefine(String *str, char *directiveName)
+ * This function is
+ *
+ ** input :
+ ** output :
+ **/
 String *directiveDefine(String *str, char *directiveName) {
   int size, count = 0, Cyclic = 0, nextToCyclic = 0;
   char *macroToken, *stringStatement, *replacedMacroString = NULL;
@@ -291,14 +296,18 @@ String *directiveDefine(String *str, char *directiveName) {
         if(head != NULL)
           printf("Created new list for %s\n", foundMacro->name->string);
       }
-
-
     }
     else  size = strlen(latestString->string);
 
+    printf("size %d\n", size);
+    printf("Strlen %d\n", strlen(latestString->string));
+
+    
     if(!Cyclic) {
       /* free malloc memory */
       subStringDel(replacedMacroString);
+      printf("foundMacro->name->string %s\n", foundMacro->name->string);
+      printf("foundMacro->content->string %s\n", foundMacro->content->string);
       replacedMacroString = replaceMacroInString(stringStatement, macro, foundMacro, size); /**need free**/
 
       /* free malloc memory */

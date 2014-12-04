@@ -4,6 +4,7 @@
 extern char *numSet;
 extern char *opSet;
 extern char *alphaNumericSet;
+extern char *alphaNumericSetWithBracket;
 extern char *alphaNumericSetWithSymbol;
 extern char *alphaSet;
 

@@ -12,8 +12,6 @@
 #include "CustomAssertions.h"
 #include "LinkedList.h"
 
-#define \
-        define
 void setUp(void)  {}
 
 void tearDown(void) {}
@@ -879,18 +877,18 @@ void test_directiveDefine_given_BES123__Dumb__dumb2_should_replace_all_the_given
   stringDel(str);
 }
 
-/** test directiveDefine() with cyclic problem:
+/** test directiveDefine() with cyclic problem (Happen in beginning):
  *  #define _MAX _MAX
  *
  *  A = _MAX
  **/
-void test_directiveDefine_with_cyclic_problem_01(void)
+void test_directiveDefine_with_cyclic_problem_happen_in_beginning(void)
 {
 	String *str = stringNew("#define _MAX _MAX\n"
                           "A = _MAX");
   String *result;
 
-  printf("Start test_directiveDefine_with_cyclic_problem_01\n");
+  printf("Start test_directiveDefine_with_cyclic_problem_happen_in_beginning\n");
   result = directiveDefine(str, "define");
   printf("------------------------------------------------------------\n");
 
@@ -904,7 +902,7 @@ void test_directiveDefine_with_cyclic_problem_01(void)
   stringDel(str);
 }
 
-/** test directiveDefine() with cyclic problem:
+/** test directiveDefine() with cyclic problem (Happen in end):
  *  #define _Sing Song
  *  #define Song _Sing
  *
@@ -954,6 +952,31 @@ void test_directiveDefine_with_cyclic_problem_03(void)
   TEST_ASSERT_EQUAL_STRING("Let's Start $_$", result->string);
   TEST_ASSERT_EQUAL(0, result->startindex);
   TEST_ASSERT_EQUAL(15, result->length);
+
+  subStringDel(result->string);
+  stringDel(result);
+  stringDel(str);
+}
+
+/** test directiveDefine() with cyclic problem:
+ **/
+void test_directiveDefine_with_multiple_cyclic_happen_problem_04(void)
+{
+	String *str = stringNew("#define Samuel Gay\n"
+                          "#define Gay Samuel\n"
+                          "#define VeryGay Samuel\n"
+                          "#define Who Samuel\n"
+                          "Who is Gay VeryGay");
+  String *result;
+
+  printf("Start test_directiveDefine_with_multiple_cyclic_happen_problem_04\n");
+  result = directiveDefine(str, "define");
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(result);
+  TEST_ASSERT_EQUAL_STRING("Samuel is Gay Samuel", result->string);
+  TEST_ASSERT_EQUAL(0, result->startindex);
+  TEST_ASSERT_EQUAL(20, result->length);
 
   subStringDel(result->string);
   stringDel(result);
