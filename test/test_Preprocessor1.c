@@ -25,7 +25,7 @@ void tearDown(void) {}
  **/
 void test_createMacroInfo_given_macroName_with_bracket_symbol(void)
 {
-	String *str = stringNew("Add(X) X + 3");
+	String *str = stringNew("Add (X) X + 3");
   Macro *macro;
 
   printf("Start test_createMacroInfo_given_macroName_with_bracket_symbol\n");
@@ -33,8 +33,27 @@ void test_createMacroInfo_given_macroName_with_bracket_symbol(void)
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(macro);
-  TEST_ASSERT_EQUAL_STRING("Add(X)", macro->name->string);
+  TEST_ASSERT_EQUAL_STRING("Add", macro->name->string);
   TEST_ASSERT_EQUAL_STRING("X + 3", macro->content->string); //empty content
+
+  delMacroNameAndContent(macro);
+  stringDel(str);
+}
+
+/** test createMacroInfo() given macroName with bracket symbol, space between identifier and arguments
+ **/
+void test_createMacroInfo_given_macroName_with_bracket_symbol_space_between_identifier_and_arguments(void)
+{
+	String *str = stringNew("Multi   (X) X*50");
+  Macro *macro;
+
+  printf("Start test_createMacroInfo_given_macroName_with_bracket_symbol_space_between_identifier_and_arguments\n");
+  macro = createMacroInfo(str);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(macro);
+  TEST_ASSERT_EQUAL_STRING("Multi", macro->name->string);
+  TEST_ASSERT_EQUAL_STRING("X*50", macro->content->string); //empty content
 
   delMacroNameAndContent(macro);
   stringDel(str);

@@ -28,3 +28,16 @@ void test_newMacro_given_name_A_and_content_123(void)
   //free malloc
   delMacro(macro);
 }
+
+/* test newMacroArgument given arguments size
+ */
+void test_newMacroArgument_given_arguments_size_3(void)
+{
+  Argument *argu = newMacroArgument(3);
+
+  TEST_ASSERT_EQUAL(3, argu->size);
+  TEST_ASSERT_NULL(argu->entries[0]);
+
+  //free malloc
+  delMacroArgument(argu);
+}

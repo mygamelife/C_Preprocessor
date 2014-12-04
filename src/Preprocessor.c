@@ -78,6 +78,44 @@ int isIdentifier(String *string)  {
   else Throw(ERR_INVALID_IDENTIFIER);
 }
 
+/** Create *createMacroArguments(String *str)
+ * input :
+ *			*string is a given String
+ * output :
+ *			return macroArgument if bracket "()" is found
+ *			else return NULL
+ **/
+char *createMacroArguments(String *str) {
+  int size = 0;
+  char *macroArgument;
+  String *arguments;
+  
+  stringTrim(str);
+  if(str->string[str->startindex] == '(') {
+    printf("str start %d, length %d\n", str->startindex, str->length);
+    arguments = stringRemoveWordContaining(str, alphaNumericSet);
+    printf("arguments start %d, length %d\n", arguments->startindex, arguments->length);
+    if(arguments->length)
+      size++;
+      
+    stringTrim(str);
+    if(str->string[str->startindex] == ')') {
+      printf("Bracket () is found\n");
+      macroArgument = stringSubStringInChars(arguments , arguments->length);
+      str->startindex++;
+    }
+    else
+      printf("Bracket ')' not found throw error\n");
+  }
+    
+  else
+    return NULL;
+    
+  printf("Arguments size %d\n", size);
+  printf("macroArgument %s\n", macroArgument);
+  return  macroArgument;
+}
+
 /** Extract the MacroInfo out from the given string
  * input :
  *			*string is String type pointer
@@ -86,17 +124,19 @@ int isIdentifier(String *string)  {
  *			return NULL if macro information is not found
  **/
 Macro *createMacroInfo(String *str) {
-  char *macroName, *macroContent, EOL = '\n';
+  char *macroName, *macroContent, *macroArguments, EOL = '\n';
   String *name, *content;
   Macro *macroInfo;
 
   name = stringRemoveWordContaining(str, alphaNumericSetWithBracket);
 
-  if(name->length == 0)
+  if(name->length == 0) //Throw error name is empty
     Throw(ERR_EMPTY_MACRO_NAME);
 
   macroName = stringSubStringInChars(name , name->length);
-
+  macroArguments = createMacroArguments(str);
+  
+  /*------------------------------------------------------------------------------*/
   stringTrimUntilEOL(str);
 
   if(str->string[str->startindex] == EOL || str->string[str->startindex] == '\0') {
@@ -104,9 +144,7 @@ Macro *createMacroInfo(String *str) {
     macroContent[0] = '\0';
     return macroInfo = newMacro(macroName, macroContent); //" " this space indicate it is empty content
   }
-
   content = stringRemoveWordContaining(str, alphaNumericSetWithSymbol);
-
   macroContent = stringSubStringInChars(content , content->length);
 
   return macroInfo = newMacro(macroName, macroContent); //need to free malloc
@@ -221,10 +259,10 @@ char *replaceMacroInString(char *latestString, String *subString, Macro *foundMa
 
   printf("latestString %s\n", latestString);
   printf("subString start %d, length %d\n", subString->startindex, subString->length);
-  
+
   if(foundMacro != NULL)   {
     for(i; i< size ; i++) {
-    
+
       if(start == subString->startindex) {
         for(j; j< strlen(foundMacro->content->string) ; j++)  {
           replacedMacroInString[i] = foundMacro->content->string[j];
@@ -232,7 +270,7 @@ char *replaceMacroInString(char *latestString, String *subString, Macro *foundMa
         }
         start += foundMacro->name->length;
       }
-      replacedMacroInString[i] = latestString[start++];     
+      replacedMacroInString[i] = latestString[start++];
     }
     replacedMacroInString[i] = '\0';
   }
@@ -303,7 +341,7 @@ String *directiveDefine(String *str, char *directiveName) {
     printf("size %d\n", size);
     printf("Strlen %d\n", strlen(latestString->string));
 
-    
+
     if(!Cyclic) {
       /* free malloc memory */
       subStringDel(replacedMacroString);

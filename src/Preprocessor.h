@@ -15,6 +15,7 @@ int isDirective(String *string, char *directiveName);
 int isHashTag(String *string);
 int isIdentifier(String *string);
 Macro *createMacroInfo(String *str);
+char *createMacroArguments(String *str);
 Node *addAllMacroIntoTree(String *string, char *directiveName);
 Macro *findMacroInTree(Node *root, char *targetMacro);
 char *replaceMacroInString(char *latestString, String *subString, Macro *foundMacro, int size);
