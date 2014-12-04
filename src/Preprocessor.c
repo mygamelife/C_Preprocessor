@@ -86,34 +86,33 @@ int isIdentifier(String *string)  {
  *			else return NULL
  **/
 char *createMacroArguments(String *str) {
-  int size = 0;
+  int size = 0, iden = 0;
   char *macroArgument;
-  String *arguments;
-  
+  String *arguments, *argu;
+
   stringTrim(str);
-  if(str->string[str->startindex] == '(') {
-    printf("str start %d, length %d\n", str->startindex, str->length);
-    arguments = stringRemoveWordContaining(str, alphaNumericSet);
-    printf("arguments start %d, length %d\n", arguments->startindex, arguments->length);
+  printf("str startindex %d, length %d\n", str->startindex, str->length);
+  arguments = stringRemoveWordContaining(str, alphaNumericSetWithBracket);
+
+  macroArgument = stringSubStringInChars(arguments, arguments->length);
+  argu = stringNew(macroArgument);
+
+  printf("argu string %s\n", argu->string);
+  printf("argu startindex %d, length %d\n", argu->startindex, argu->length);
+
+  if(argu->string[argu->startindex++] == '(')
+    iden = isIdentifier(argu);
+
+  arguments = stringRemoveWordContaining(argu, alphaNumericSet);
+  printf("arguments startindex %d, length %d\n", arguments->startindex, arguments->length);
+  printf("argu startindex %d, length %d\n", argu->startindex, argu->length);
+  
+  if(argu->string[argu->startindex++] == '(') {
     if(arguments->length)
       size++;
-      
-    stringTrim(str);
-    if(str->string[str->startindex] == ')') {
-      printf("Bracket () is found\n");
-      macroArgument = stringSubStringInChars(arguments , arguments->length);
-      str->startindex++;
-    }
-    else
-      printf("Bracket ')' not found throw error\n");
   }
-    
-  else
-    return NULL;
-    
-  printf("Arguments size %d\n", size);
-  printf("macroArgument %s\n", macroArgument);
-  return  macroArgument;
+  stringDel(arguments);
+  return NULL;
 }
 
 /** Extract the MacroInfo out from the given string
@@ -124,7 +123,7 @@ char *createMacroArguments(String *str) {
  *			return NULL if macro information is not found
  **/
 Macro *createMacroInfo(String *str) {
-  char *macroName, *macroContent, *macroArguments, EOL = '\n';
+  char *macroName, *macroContent, *macroContentPart, *macroArguments, EOL = '\n';
   String *name, *content;
   Macro *macroInfo;
 
@@ -134,8 +133,8 @@ Macro *createMacroInfo(String *str) {
     Throw(ERR_EMPTY_MACRO_NAME);
 
   macroName = stringSubStringInChars(name , name->length);
-  macroArguments = createMacroArguments(str);
-  
+  // macroArguments = createMacroArguments(str);
+
   /*------------------------------------------------------------------------------*/
   stringTrimUntilEOL(str);
 
@@ -146,7 +145,16 @@ Macro *createMacroInfo(String *str) {
   }
   content = stringRemoveWordContaining(str, alphaNumericSetWithSymbol);
   macroContent = stringSubStringInChars(content , content->length);
+  // printf("macroContent %s\n", macroContent);
 
+  if(str->string[str->startindex] == '\\')  {
+    // printf("found backslash\n");
+    content = stringRemoveWordContaining(str, alphaNumericSetWithSymbol);
+    macroContentPart = stringSubStringInChars(content , content->length);
+    // printf("macroContentPart %s\n", macroContentPart);
+    strcat(macroContent, macroContentPart);
+  }
+  
   return macroInfo = newMacro(macroName, macroContent); //need to free malloc
 }
 
@@ -236,7 +244,7 @@ String *macroPositionInString(String *str, Node *root) {
     }
     stringDel(subString);
     subStringDel(token);
-    printf("subString start %d, length %d\n", subString->startindex, subString->length);
+    // printf("subString start %d, length %d\n", subString->startindex, subString->length);
     subString = stringRemoveWordContaining(str, alphaNumericSet);
   }
   return subString;
@@ -257,8 +265,8 @@ char *replaceMacroInString(char *latestString, String *subString, Macro *foundMa
   int i = 0, j = 0, start = 0;
   char *replacedMacroInString = malloc(sizeof(char) * size + 1);
 
-  printf("latestString %s\n", latestString);
-  printf("subString start %d, length %d\n", subString->startindex, subString->length);
+  // printf("latestString %s\n", latestString);
+  // printf("subString start %d, length %d\n", subString->startindex, subString->length);
 
   if(foundMacro != NULL)   {
     for(i; i< size ; i++) {
@@ -303,11 +311,11 @@ String *directiveDefine(String *str, char *directiveName) {
   stringStatement = stringSubStringInChars(str, str->length); //extract string statement
   latestString = stringNew(stringStatement);
 
-  printf("latestString %s \n", latestString->string);
-  printf("latestString start %d, length %d \n", latestString->startindex, latestString->length);
+  // printf("latestString %s \n", latestString->string);
+  // printf("latestString start %d, length %d \n", latestString->startindex, latestString->length);
 
   macro = macroPositionInString(latestString, root); //detect predefined macro in string and return the macro location
-  printf("macro start %d, length %d \n", macro->startindex, macro->length);
+  // printf("macro start %d, length %d \n", macro->startindex, macro->length);
 
   /*--------------------------------------------------------------------------------------*/
   while(macro->length != 0) {
@@ -322,8 +330,8 @@ String *directiveDefine(String *str, char *directiveName) {
       Cyclic = findList(&head, foundMacro->name->string);
 
       if(Cyclic)  { //if Cyclic happen destroy previous list and store location after cyclic problem
-        printf("Cyclic Happen at %s\n", macroToken);
-        printf("latestString start %d, length %d \n", latestString->startindex, latestString->length);
+        // printf("Cyclic Happen at %s\n", macroToken);
+        // printf("latestString start %d, length %d \n", latestString->startindex, latestString->length);
         nextToCyclic = latestString->startindex;
         destroyAllLinkedLists(head); //free the old list
         head = NULL;
@@ -332,21 +340,21 @@ String *directiveDefine(String *str, char *directiveName) {
       else  {
         LinkedList *newList = linkListNew(foundMacro->name->string); //Create new list
         addLinkedList(&head, newList);
-        if(head != NULL)
-          printf("Created new list for %s\n", foundMacro->name->string);
+        // if(head != NULL)
+          // printf("Created new list for %s\n", foundMacro->name->string);
       }
     }
     else  size = strlen(latestString->string);
 
-    printf("size %d\n", size);
-    printf("Strlen %d\n", strlen(latestString->string));
+    // printf("size %d\n", size);
+    // printf("Strlen %d\n", strlen(latestString->string));
 
 
     if(!Cyclic) {
       /* free malloc memory */
       subStringDel(replacedMacroString);
-      printf("foundMacro->name->string %s\n", foundMacro->name->string);
-      printf("foundMacro->content->string %s\n", foundMacro->content->string);
+      // printf("foundMacro->name->string %s\n", foundMacro->name->string);
+      // printf("foundMacro->content->string %s\n", foundMacro->content->string);
       replacedMacroString = replaceMacroInString(stringStatement, macro, foundMacro, size); /**need free**/
 
       /* free malloc memory */
@@ -358,15 +366,8 @@ String *directiveDefine(String *str, char *directiveName) {
       stringStatement = stringSubStringInChars(latestString, latestString->length); //extract the latest string statement
     }
 
-    printf("latestString start %d, length %d \n", latestString->startindex, latestString->length);
-    printf("stringStatement %s \n", stringStatement);
-    // store the replacedMacroInstring for searching macro in string without modify original stringStatement
-    // stringDel(latestString);
-    // latestString = stringNew(replacedMacroString); /**need free**/
-
-    // Overwrite stringStatement with new replaced macro string
-    // stringDel(stringStatement);
-    // stringStatement = stringSubString(latestString, latestString->startindex, latestString->length); /**need free**/
+    // printf("latestString start %d, length %d \n", latestString->startindex, latestString->length);
+    // printf("stringStatement %s \n", stringStatement);
 
     if(nextToCyclic)  //always start at next to cyclic happen
       latestString->startindex = nextToCyclic;
