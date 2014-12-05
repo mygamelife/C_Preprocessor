@@ -31,7 +31,7 @@ void test_newMacro_given_name_A_and_content_123(void)
 
 /* test newMacroArgument given arguments size
  */
-void test_newMacroArgument_given_arguments_size_3(void)
+void Xtest_newMacroArgument_given_arguments_size_3(void)
 {
   Argument *argu = newMacroArgument(3);
 

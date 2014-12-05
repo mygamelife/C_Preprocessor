@@ -25,7 +25,7 @@ void tearDown(void) {}
 
 /** test createMacroInfo() given macroName with bracket symbol
  **/
-void test_createMacroInfo_given_macroName_with_bracket_symbol(void)
+void Xtest_createMacroInfo_given_macroName_with_bracket_symbol(void)
 {
 	String *str = stringNew("Add(X) X + 3");
   Macro *macro;
