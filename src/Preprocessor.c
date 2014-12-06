@@ -347,7 +347,7 @@ String *directiveDefine(String *str, char *directiveName) {
       cyclic = findList(&head, foundMacro->name->string);
       if(cyclic)  {
         nextToCyclic = latestString->startindex;
-        destroyAllLinkedLists(head);
+        // destroyAllLinkedLists(head);
         head = NULL;
       }
       else  {
@@ -378,7 +378,7 @@ String *directiveDefine(String *str, char *directiveName) {
     macroSubString = macroPositionInString(latestString, root);
     // printf("macroString start %d, length %d\n", macroString->startindex, macroString->length);
       // return NULL;
-    // subStringDel(macroToken);
+    subStringDel(macroToken);
   }
   destroyAllMacroInTree(root);
   destroyAllLinkedLists(head);
