@@ -768,9 +768,9 @@ void test_directiveDefine_given__MAX_999_and_A_equal__MAX_should_replace__MAX_to
   TEST_ASSERT_EQUAL(0, result->startindex);
   TEST_ASSERT_EQUAL(7, result->length);
 
-  subStringDel(result->string);
-  stringDel(result);
-  stringDel(str);
+  // subStringDel(result->string);
+  // stringDel(result);
+  // stringDel(str);
 }
 
 /** test directiveDefine() given string:
@@ -781,7 +781,7 @@ void test_directiveDefine_given__MAX_999_and_A_equal__MAX_should_replace__MAX_to
  ** result :
  *          S = Japan -->  S = ABC --> S = Ohaiyo
  **/
-void Xtest_directiveDefine_given_Japan_and_ABC_should_replace_Japan_with_Ohaiyo(void)
+void test_directiveDefine_given_Japan_and_ABC_should_replace_Japan_with_Ohaiyo(void)
 {
 	String *str = stringNew("#define Japan ABC\n"
                           "#define ABC Ohaiyo\n"
@@ -811,7 +811,7 @@ void Xtest_directiveDefine_given_Japan_and_ABC_should_replace_Japan_with_Ohaiyo(
  *          X = 1 + TWO
  *          X = 1 + 2
  **/
-void Xtest_directiveDefine_given_ONE_plus_ONE_should_replace_two_ONE_with_1(void)
+void test_directiveDefine_given_ONE_plus_ONE_should_replace_two_ONE_with_1(void)
 {
 	String *str = stringNew("#define ONE 1\n"
                           "#define TWO 2\n"
@@ -841,7 +841,7 @@ void Xtest_directiveDefine_given_ONE_plus_ONE_should_replace_two_ONE_with_1(void
  ** result :
  *          S = blank * _someth1ng --> S =  * _someth1ng --> S =  * #Sur prise
  **/
-void Xtest_directiveDefine_should_replace_blank_with_empty_string_and_replace__something_with_sur_prise(void)
+void test_directiveDefine_should_replace_blank_with_empty_string_and_replace__something_with_sur_prise(void)
 {
 	String *str = stringNew("#define blank\n"
                           "#define _someth1ng #Sur prise\n"
@@ -872,7 +872,7 @@ void Xtest_directiveDefine_should_replace_blank_with_empty_string_and_replace__s
  ** result :
  *          Im 800X * (xox + DUMB DUMB + 3)
  **/
-void Xtest_directiveDefine_given_BES123__Dumb__dumb2_should_replace_all_the_given_macro(void)
+void test_directiveDefine_given_BES123__Dumb__dumb2_should_replace_all_the_given_macro(void)
 {
 	String *str = stringNew("#define BES123 800X\n"
                           "#define _Dumb _dumb2 + 3\n"
@@ -899,7 +899,7 @@ void Xtest_directiveDefine_given_BES123__Dumb__dumb2_should_replace_all_the_give
  *
  *  A = _MAX
  **/
-void Xtest_directiveDefine_with_cyclic_problem_happen_in_beginning(void)
+void test_directiveDefine_with_cyclic_problem_happen_in_beginning(void)
 {
 	String *str = stringNew("#define _MAX _MAX\n"
                           "A = _MAX");
@@ -925,7 +925,7 @@ void Xtest_directiveDefine_with_cyclic_problem_happen_in_beginning(void)
  *
  *  i _Sing
  **/
-void Xtest_directiveDefine_with_cyclic_problem_02(void)
+void test_directiveDefine_with_cyclic_problem_02(void)
 {
 	String *str = stringNew("#define _Sing Song\n"
                           "#define Song _Sing\n"
@@ -953,7 +953,7 @@ void Xtest_directiveDefine_with_cyclic_problem_02(void)
  *
  *  Let's Start Cont
  **/
-void Xtest_directiveDefine_with_cyclic_problem_03(void)
+void test_directiveDefine_with_cyclic_problem_03(void)
 {
 	String *str = stringNew("#define Start End\n"
                           "#define End Start\n"
@@ -977,7 +977,7 @@ void Xtest_directiveDefine_with_cyclic_problem_03(void)
 
 /** test directiveDefine() with cyclic problem:
  **/
-void Xtest_directiveDefine_with_multiple_cyclic_happen_problem_04(void)
+void test_directiveDefine_with_multiple_cyclic_happen_problem_04(void)
 {
 	String *str = stringNew("#define Samuel Gay\n"
                           "#define Gay Samuel\n"
