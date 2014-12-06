@@ -217,6 +217,8 @@ Macro *findMacroInTree(Node *root, char *targetMacro)  {
 
     else findMacroInTree(root->right, targetMacro);
   }
+  
+  else  return NULL;
 }
 
 /** *macroPositionInString(String *str, Node *root)
@@ -230,23 +232,24 @@ Macro *findMacroInTree(Node *root, char *targetMacro)  {
  *          Else return NULL
  **/
 String *macroPositionInString(String *str, Node *root) {
-  char *token;
-  String *subString;
-  Macro *foundMacro;
+  char *token = NULL;
+  String *subString = NULL;
+  Macro *foundMacro = NULL;
 
   subString = stringRemoveWordContaining(str, alphaNumericSet);
   while(subString->length != 0)  {
-    token = stringSubStringInChars(subString , subString->length);
+    token = stringSubStringInChars(subString , subString->length); /**need free**/
     foundMacro = findMacroInTree(root, token);
-
+    
     if(foundMacro != NULL)  {
       break;
     }
-    stringDel(subString);
+    
     subStringDel(token);
-    // printf("subString start %d, length %d\n", subString->startindex, subString->length);
+    stringDel(subString);
     subString = stringRemoveWordContaining(str, alphaNumericSet);
   }
+  
   return subString;
 }
 
@@ -261,34 +264,42 @@ String *macroPositionInString(String *str, Node *root) {
  ** output :
  *          return the character string after replaced macro name with macro content
  **/
-char *replaceMacroInString(char *latestString, String *subString, Macro *foundMacro, int size) {
+char *replaceMacroInString(String *latestString, String *macroSubString, Macro *foundMacro, int size) {
   int i = 0, j = 0, start = 0;
   char *replacedMacroInString = malloc(sizeof(char) * size + 1);
 
-  // printf("latestString %s\n", latestString);
-  // printf("subString start %d, length %d\n", subString->startindex, subString->length);
+  printf("latestString %s\n", latestString->string);
+  printf("macroSubString start %d, length %d\n", macroSubString->startindex, macroSubString->length);
 
   if(foundMacro != NULL)   {
+    printf("enter\n");
     for(i; i< size ; i++) {
 
-      if(start == subString->startindex) {
+      if(start == macroSubString->startindex) {
         for(j; j< strlen(foundMacro->content->string) ; j++)  {
           replacedMacroInString[i] = foundMacro->content->string[j];
           i++;
         }
         start += foundMacro->name->length;
       }
-      replacedMacroInString[i] = latestString[start++];
+      replacedMacroInString[i] = latestString->string[start++];
     }
     replacedMacroInString[i] = '\0';
   }
 
   else  {
     for(i; i< size ; i++) {
-      replacedMacroInString[i] = latestString[start++];
+      replacedMacroInString[i] = latestString->string[start++];
     }
     replacedMacroInString[i] = '\0';
   }
+  
+  // printf("latestString %p\n", latestString);
+  // printf("subString %p\n", subString);
+  stringDel(macroSubString);
+  subStringDel(latestString->string);
+  stringDel(latestString);
+
   puts(replacedMacroInString);
   return replacedMacroInString;
 }
@@ -300,94 +311,61 @@ char *replaceMacroInString(char *latestString, String *subString, Macro *foundMa
  ** output :
  **/
 String *directiveDefine(String *str, char *directiveName) {
-  int size, count = 0, Cyclic = 0, nextToCyclic = 0;
+  int size, count = 0, cyclic = 0, nextToCyclic = 0;
   char *macroToken, *stringStatement, *replacedMacroString = NULL;
-  String *macro, *latestString;
+  String *macroString, *latestString;
   Macro *foundMacro;
-  LinkedList *head = NULL;
+  LinkedList *head = NULL, *newList = NULL;
 
   Node *root = addAllMacroIntoTree(str, directiveName); //add all predefined macro into tree
-
-  stringStatement = stringSubStringInChars(str, str->length); //extract string statement
+  printf("str startindex %d, length %d\n", str->startindex, str->length);
+  stringStatement = stringSubStringInChars(str, str->length);
+  printf("stringStatement %s\n", stringStatement);
   latestString = stringNew(stringStatement);
-
-  // printf("latestString %s \n", latestString->string);
-  // printf("latestString start %d, length %d \n", latestString->startindex, latestString->length);
-
-  macro = macroPositionInString(latestString, root); //detect predefined macro in string and return the macro location
-  // printf("macro start %d, length %d \n", macro->startindex, macro->length);
-
-  /*--------------------------------------------------------------------------------------*/
-  while(macro->length != 0) {
-
-    macroToken = stringSubStringInChars(macro, macro->length); //extract the macro as a token
+  printf("latestString string %s, start %d, length %d\n", latestString->string, latestString->startindex, latestString->length);
+  // printf("latestString %p\n", latestString);
+  macroString = macroPositionInString(latestString, root);
+  printf("macroString start %d, length %d\n", macroString->startindex, macroString->length);
+  /*******************************************************************************************/
+  while(macroString->length != 0) {
+    macroToken = stringSubStringInChars(macroString, macroString->length);
+    // printf("macroToken %s\n", macroToken);
     foundMacro = findMacroInTree(root, macroToken);
-
-    // printf("macro start %d, length %d \n", macro->startindex, macro->length);
-    if(foundMacro != NULL)  {
+    // printf("foundMacro name %s, content %s\n", foundMacro->name->string, foundMacro->content->string);
+  
+    if(foundMacro != NULL)  {//get size of replace macro string
       size = strlen(latestString->string) - (foundMacro->name->length) + (foundMacro->content->length);
-
-      Cyclic = findList(&head, foundMacro->name->string);
-
-      if(Cyclic)  { //if Cyclic happen destroy previous list and store location after cyclic problem
-        // printf("Cyclic Happen at %s\n", macroToken);
-        // printf("latestString start %d, length %d \n", latestString->startindex, latestString->length);
-        nextToCyclic = latestString->startindex;
-        destroyAllLinkedLists(head); //free the old list
-        head = NULL;
-      }
-
-      else  {
-        LinkedList *newList = linkListNew(foundMacro->name->string); //Create new list
-        addLinkedList(&head, newList);
-        // if(head != NULL)
-          // printf("Created new list for %s\n", foundMacro->name->string);
-      }
     }
     else  size = strlen(latestString->string);
-
-    // printf("size %d\n", size);
-    // printf("Strlen %d\n", strlen(latestString->string));
-
-
-    if(!Cyclic) {
-      /* free malloc memory */
-      subStringDel(replacedMacroString);
-      // printf("foundMacro->name->string %s\n", foundMacro->name->string);
-      // printf("foundMacro->content->string %s\n", foundMacro->content->string);
-      replacedMacroString = replaceMacroInString(stringStatement, macro, foundMacro, size); /**need free**/
-
-      /* free malloc memory */
-      stringDel(latestString);
-      latestString = stringNew(replacedMacroString); //Overwrite previous string with latest replaced macro string
-
-      /* free malloc memory */
-      subStringDel(stringStatement);
-      stringStatement = stringSubStringInChars(latestString, latestString->length); //extract the latest string statement
-    }
-
-    // printf("latestString start %d, length %d \n", latestString->startindex, latestString->length);
-    // printf("stringStatement %s \n", stringStatement);
-
-    if(nextToCyclic)  //always start at next to cyclic happen
-      latestString->startindex = nextToCyclic;
-    /* free malloc memory */
-    stringDel(macro);
-    macro = macroPositionInString(latestString, root); //continue search macro in string
-
-    // printf("macro start %d, length %d \n", macro->startindex, macro->length);
-    // printf("latestString->string %c\n", latestString->string[latestString->startindex]);
-    // printf("nextToCyclic start %d, length %d \n", latestString->startindex, latestString->length);
-    /* free malloc memory */
+    
+          // cyclic = findList(&head, foundMacro->name->string);
+      // printf("cyclic %d\n", cyclic);
+   // if(foundMacro != NULL) {
+      // newList = linkListNew(foundMacro->name->string); //Create new list
+      // addLinkedList(&head, newList);
+      // printf("create new list for %s\n", foundMacro->name->string);
+   // }
+   
+   // printf("size %d\n", size);
+   // printf("latestString string %s, start %d, length %d\n", latestString->string, latestString->startindex, latestString->length);
+   // printf("macroString start %d, length %d\n", macroString->startindex, macroString->length);
+   if(!cyclic)  {
+      replacedMacroString = replaceMacroInString(latestString, macroString, foundMacro, size);
+      latestString = stringNew(replacedMacroString);
+      // printf("latestString %s\n", latestString->string);
+   }
+    
+    // if(nextToCyclic)  //always start at next to cyclic happen
+      // latestString->startindex = nextToCyclic;
+      
+    macroString = macroPositionInString(latestString, root);
+    // printf("macroString start %d, length %d\n", macroString->startindex, macroString->length);
     subStringDel(macroToken);
   }
-
-  /* free tree memory before exit this function */
-  stringDel(macro);
-  subStringDel(stringStatement);
-  destroyAllLinkedLists(head);
+  
+  stringDel(macroString);
   destroyAllMacroInTree(root);
-
+  
   latestString->startindex = 0;
   latestString->length = strlen(latestString->string);
   return latestString;

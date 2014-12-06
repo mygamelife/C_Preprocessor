@@ -618,7 +618,7 @@ void test_replaceMacroInString_given_TEN_in_string_should_replace_it_with_10(voi
   int size = size = (str->length) - (macro->name->length) + (macro->content->length);
 
   printf("Start test_replaceMacroInString_given_TEN_in_string_should_replace_it_with_10\n");
-  result = replaceMacroInString(str->string, subStr, macro, size);
+  result = replaceMacroInString(str, subStr, macro, size);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(result);
@@ -647,7 +647,7 @@ void test_replaceMacroInString_given_Three_in_string_should_replace_it_with_3(vo
   int size = size = (str->length) - (macro->name->length) + (macro->content->length);
 
   printf("Start test_replaceMacroInString_given_Three_in_string_should_replace_it_with_3\n");
-  result = replaceMacroInString(str->string, subStr, macro, size);
+  result = replaceMacroInString(str, subStr, macro, size);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(result);
@@ -676,7 +676,7 @@ void test_replaceMacroInString_given_ONEFIVE_in_string_should_replace_it_with_15
   int size = size = (str->length) - (macro->name->length) + (macro->content->length);
 
   printf("Start test_replaceMacroInString_given_ONEFIVE_in_string_should_replace_it_with_15_other_identifier_should_remain_same\n");
-  result = replaceMacroInString(str->string, subStr, macro, size);
+  result = replaceMacroInString(str, subStr, macro, size);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(result);
@@ -705,7 +705,7 @@ void test_replaceMacroInString_given_NINE_in_string_should_only_replace_it_with_
   int size = size = (str->length) - (macro->name->length) + (macro->content->length);
 
   printf("Start test_replaceMacroInString_given_NINE_in_string_should_only_replace_it_with_99999_other_identifier_should_remain_same\n");
-  result = replaceMacroInString(str->string, subStr, macro, size);
+  result = replaceMacroInString(str, subStr, macro, size);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(result);
@@ -734,7 +734,7 @@ void test_replaceMacroInString_shouldnt_replace_anything_in_the_string(void)
   int size = size = (str->length) - 0 + 0;
 
   printf("Start test_replaceMacroInString_shouldnt_replace_anything_in_the_string\n");
-  result = replaceMacroInString(str->string, subStr, macro, size);
+  result = replaceMacroInString(str, subStr, macro, size);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(result);
@@ -753,7 +753,7 @@ void test_replaceMacroInString_shouldnt_replace_anything_in_the_string(void)
  ** result :
  *          A = 999;
  **/
-void Xtest_directiveDefine_given__MAX_999_and_A_equal__MAX_should_replace__MAX_to_999(void)
+void test_directiveDefine_given__MAX_999_and_A_equal__MAX_should_replace__MAX_to_999(void)
 {
 	String *str = stringNew("#define _MAX 999\n"
                           "A = _MAX");
