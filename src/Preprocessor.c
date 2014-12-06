@@ -374,12 +374,13 @@ String *directiveDefine(String *str, char *directiveName) {
     if(nextToCyclic)  //always start at next to cyclic happen
       latestString->startindex = nextToCyclic;
       
-    // stringDel(macroString);
+    stringDel(macroSubString);
     macroSubString = macroPositionInString(latestString, root);
     // printf("macroString start %d, length %d\n", macroString->startindex, macroString->length);
       // return NULL;
     subStringDel(macroToken);
   }
+  stringDel(macroSubString);
   destroyAllMacroInTree(root);
   destroyAllLinkedLists(head);
   
