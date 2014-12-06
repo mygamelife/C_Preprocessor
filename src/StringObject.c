@@ -308,7 +308,7 @@ int subStringToInteger(char *subString)
  */
 void stringDel(String *str)
 {
-	if(str) {
+	if(str != NULL) {
 		free(str);
   }
 }

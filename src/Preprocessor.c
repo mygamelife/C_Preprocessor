@@ -248,7 +248,7 @@ String *macroPositionInString(String *str, Node *root) {
       break;
     }
     
-    stringDel(subString);
+    // stringDel(subString);
     subString = stringRemoveWordContaining(str, alphaNumericSet);
     
     // token = NULL;
@@ -300,8 +300,8 @@ char *replaceMacroInString(String *latestString, String *macroSubString, Macro *
   
   // printf("latestString %p\n", latestString);
   // printf("subString %p\n", subString);
-
   puts(replacedMacroInString);
+
   return replacedMacroInString;
 }
 
@@ -336,7 +336,7 @@ String *directiveDefine(String *str, char *directiveName) {
     
     // printf("macroToken %s\n", macroToken);
     foundMacro = findMacroInTree(root, macroToken);
-    printf("foundMacro %p\n", foundMacro);
+    // printf("foundMacro %p\n", foundMacro);
     // printf("foundMacro name %s, content %s\n", foundMacro->name->string, foundMacro->content->string);
     if(foundMacro != NULL)  {//get size of replace macro string
       size = strlen(latestString->string) - (foundMacro->name->length) + (foundMacro->content->length);
@@ -363,24 +363,30 @@ String *directiveDefine(String *str, char *directiveName) {
    // printf("latestString string %s, start %d, length %d\n", latestString->string, latestString->startindex, latestString->length);
    // printf("macroString start %d, length %d\n", macroString->startindex, macroString->length);
    if(!cyclic)  {
+      
       replacedMacroString = replaceMacroInString(latestString, macroSubString, foundMacro, size);
+      
       // stringDel(macroSubString);
-      subStringDel(latestString->string);
+      
+      
       stringDel(latestString);
       latestString = stringNew(replacedMacroString);
       // printf("latestString %s\n", latestString->string);
+      // printf("latestString %p\n", latestString);
    }
     
     if(nextToCyclic)  //always start at next to cyclic happen
       latestString->startindex = nextToCyclic;
       
-    stringDel(macroSubString);
+    
     macroSubString = macroPositionInString(latestString, root);
+    // printf("macroSubString %p\n", macroSubString);
     // printf("macroString start %d, length %d\n", macroString->startindex, macroString->length);
       // return NULL;
     subStringDel(macroToken);
   }
-  stringDel(macroSubString);
+  
+  // free(macroSubString);
   destroyAllMacroInTree(root);
   destroyAllLinkedLists(head);
   
