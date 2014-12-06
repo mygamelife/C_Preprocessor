@@ -300,9 +300,6 @@ char *replaceMacroInString(String *latestString, String *macroSubString, Macro *
   
   // printf("latestString %p\n", latestString);
   // printf("subString %p\n", subString);
-  // stringDel(macroSubString);
-  // subStringDel(latestString->string);
-  // stringDel(latestString);
 
   puts(replacedMacroInString);
   return replacedMacroInString;
@@ -367,6 +364,9 @@ String *directiveDefine(String *str, char *directiveName) {
    // printf("macroString start %d, length %d\n", macroString->startindex, macroString->length);
    if(!cyclic)  {
       replacedMacroString = replaceMacroInString(latestString, macroSubString, foundMacro, size);
+      // stringDel(macroSubString);
+      subStringDel(latestString->string);
+      stringDel(latestString);
       latestString = stringNew(replacedMacroString);
       // printf("latestString %s\n", latestString->string);
    }
