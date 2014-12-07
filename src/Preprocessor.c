@@ -117,13 +117,15 @@ int getSizeOfArgu(String *str) {
  *			else return NULL
  **/
 Argument *createMacroArguments(String *str) {
-  int sizeOfArgu = 0, i = 0;
+  int sizeOfArgu = 0, i = 0, start = 0, end = 0;
   char *macroArgument;
   String *arguments;
   Argument *argu;
 
-  if(str->string[str->startindex++] == '(') {
+  if(str->string[str->startindex] == '(') {
     printf("Open bracket found\n");
+    str->startindex++;
+    start = str->startindex;
     // printf("argument start %d, length %d\n", arguments->startindex, arguments->length);
     // printf("str start %d, length %d\n", str->startindex, str->length);
     sizeOfArgu = getSizeOfArgu(str);
@@ -132,7 +134,8 @@ Argument *createMacroArguments(String *str) {
     if(str->string[str->startindex] == ')') {
       printf("Closed bracket found\n");
       /* reset string position to initial */
-      str->startindex = 0;
+      end = str->startindex;
+      str->startindex = start;
       str->length = strlen(str->string);
 
       if(sizeOfArgu == 0)
@@ -145,11 +148,12 @@ Argument *createMacroArguments(String *str) {
         arguments = stringRemoveWordContaining(str, alphaNumericSet); /**need free**/
         macroArgument = stringSubStringInChars(arguments , arguments->length);
         argu->entries[i] = stringNew(macroArgument);
-        // printf("macroArgument %s\n", macroArgument);
-        // printf("argument start %d, length %d\n", arguments->startindex, arguments->length);
-        // printf("str start %d, length %d\n", str->startindex, str->length);
         stringDel(arguments);
       }
+      /* string position after done with the argument */
+      str->startindex = end + 1;
+      str->length = strlen(str->string) - str->startindex;
+      printf("str->length %d\n", strlen(str->string));
     }
     
     else if(str->string[str->startindex] == ',')
@@ -157,7 +161,8 @@ Argument *createMacroArguments(String *str) {
       
     else Throw(ERR_EXPECT_CLOSED_BRACKET);
   }
-
+  else return NULL;
+  
   return argu;
 }
 
@@ -180,9 +185,8 @@ Macro *createMacroInfo(String *str) {
     Throw(ERR_EMPTY_MACRO_NAME);
 
   macroName = stringSubStringInChars(name , name->length);
+  macroArguments = createMacroArguments(str);
   printf("str after removed name, start %d, length %d\n", str->startindex, str->length);
-  // macroArguments = createMacroArguments(str);
-
   /*------------------------------------------------------------------------------*/
   stringTrimUntilEOL(str);
 
@@ -193,16 +197,12 @@ Macro *createMacroInfo(String *str) {
   }
   content = stringRemoveWordContaining(str, alphaNumericSetWithSymbol);
   macroContent = stringSubStringInChars(content , content->length);
-  // printf("macroContent %s\n", macroContent);
 
   if(str->string[str->startindex] == '\\')  {
-    // printf("found backslash\n");
     content = stringRemoveWordContaining(str, alphaNumericSetWithSymbol);
     macroContentPart = stringSubStringInChars(content , content->length);
-    // printf("macroContentPart %s\n", macroContentPart);
     strcat(macroContent, macroContentPart);
   }
-
   return macroInfo = newMacro(macroName, macroContent, macroArguments); //need to free malloc
 }
 
