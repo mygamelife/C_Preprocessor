@@ -78,7 +78,39 @@ int isIdentifier(String *string)  {
   else Throw(ERR_INVALID_IDENTIFIER);
 }
 
-/** Create *createMacroArguments(String *str)
+/** getSizeOfArgu(String *str)
+ *  This function is used to determine how many argument that macro content had
+ * input :
+ *			*str is the macro arugment list in string form
+ * output :
+ *			return sizeOfArgu if found
+ *      else return 0
+ **/
+int getSizeOfArgu(String *str) {
+  int sizeOfMacro = 0;
+  String *arguments;
+
+  do  {
+  arguments = stringRemoveWordContaining(str, alphaNumericSet); /**need free**/
+  // printf("argument start %d, length %d\n", arguments->startindex, arguments->length);
+  // printf("str start %d, length %d\n", str->startindex, str->length);
+  if(arguments->length == 0)  {
+    stringDel(arguments);
+    break;
+  }
+  else if(isIdentifier(arguments)) {
+    // printf("valid argument\n");
+    sizeOfMacro++;
+  }
+
+  stringTrim(str);
+  stringDel(arguments);
+  }while(str->string[str->startindex] == ',');
+
+  return sizeOfMacro;
+}
+
+/** *createMacroArguments(String *str)
  * input :
  *			*string is a given String
  * output :
@@ -86,33 +118,40 @@ int isIdentifier(String *string)  {
  *			else return NULL
  **/
 Argument *createMacroArguments(String *str) {
-  int size = 0, iden = 0;
+  int sizeOfArgu = 0, i = 0;
   char *macroArgument;
-  String *arguments, *argu;
+  String *arguments;
+  Argument *argu;
 
-  stringTrim(str);
-  printf("str startindex %d, length %d\n", str->startindex, str->length);
-  arguments = stringRemoveWordContaining(str, alphaNumericSetWithBracket);
+  if(str->string[str->startindex++] == '(') {
+    printf("Open bracket found\n");
+    // printf("argument start %d, length %d\n", arguments->startindex, arguments->length);
+    // printf("str start %d, length %d\n", str->startindex, str->length);
+    sizeOfArgu = getSizeOfArgu(str);
+    // printf("str start %d, length %d\n", str->startindex, str->length);
 
-  macroArgument = stringSubStringInChars(arguments, arguments->length);
-  argu = stringNew(macroArgument);
-
-  printf("argu string %s\n", argu->string);
-  printf("argu startindex %d, length %d\n", argu->startindex, argu->length);
-
-  if(argu->string[argu->startindex++] == '(')
-    iden = isIdentifier(argu);
-
-  arguments = stringRemoveWordContaining(argu, alphaNumericSet);
-  printf("arguments startindex %d, length %d\n", arguments->startindex, arguments->length);
-  printf("argu startindex %d, length %d\n", argu->startindex, argu->length);
-
-  if(argu->string[argu->startindex++] == '(') {
-    if(arguments->length)
-      size++;
+    if(str->string[str->startindex] == ')') {
+      printf("Closed bracket found\n");
+      /* reset string position to initial */
+      str->startindex = 0;
+      str->length = strlen(str->string);
+      
+      if(sizeOfArgu)  //create only sizeOfArgu not zero
+        argu = newMacroArgument(sizeOfArgu);
+      
+      for(i ; i < sizeOfArgu ; i++) {
+        arguments = stringRemoveWordContaining(str, alphaNumericSet); /**need free**/     
+        macroArgument = stringSubStringInChars(arguments , arguments->length);
+        argu->entries[i] = stringNew(macroArgument);
+        // printf("macroArgument %s\n", macroArgument);
+        // printf("argument start %d, length %d\n", arguments->startindex, arguments->length);
+        // printf("str start %d, length %d\n", str->startindex, str->length);
+        stringDel(arguments);
+      }
+    }
   }
-  stringDel(arguments);
-  return NULL;
+
+  return argu;
 }
 
 /** Extract the MacroInfo out from the given string
@@ -127,12 +166,13 @@ Macro *createMacroInfo(String *str) {
   String *name, *content;
   Macro *macroInfo;
 
-  name = stringRemoveWordContaining(str, alphaNumericSetWithBracket);
+  name = stringRemoveWordContaining(str, alphaNumericSet);
 
   if(name->length == 0) //Throw error name is empty
     Throw(ERR_EMPTY_MACRO_NAME);
 
   macroName = stringSubStringInChars(name , name->length);
+  printf("str after removed name, start %d, length %d\n", str->startindex, str->length);
   // macroArguments = createMacroArguments(str);
 
   /*------------------------------------------------------------------------------*/
@@ -238,15 +278,16 @@ String *macroPositionInString(String *str, Node *root) {
 
   subString = stringRemoveWordContaining(str, alphaNumericSet);
   while(subString->length != 0)  {
-    token = stringSubStringInChars(subString , subString->length); /**need free**/
+
+    token = stringSubStringInChars(subString, subString->length); /**need free**/
     foundMacro = findMacroInTree(root, token);
+
     if(foundMacro != NULL)  {
       break;
     }
-    // stringDel(subString);
-    // subStringDel(token);
     subString = stringRemoveWordContaining(str, alphaNumericSet);
   }
+
   return subString;
 }
 
@@ -269,9 +310,7 @@ char *replaceMacroInString(String *latestString, String *macroSubString, Macro *
   printf("macroSubString start %d, length %d\n", macroSubString->startindex, macroSubString->length);
 
   if(foundMacro != NULL)   {
-    printf("enter\n");
     for(i; i< size ; i++) {
-
       if(start == macroSubString->startindex) {
         for(j; j< strlen(foundMacro->content->string) ; j++)  {
           replacedMacroInString[i] = foundMacro->content->string[j];
@@ -294,7 +333,6 @@ char *replaceMacroInString(String *latestString, String *macroSubString, Macro *
   // printf("latestString %p\n", latestString);
   // printf("subString %p\n", subString);
   puts(replacedMacroInString);
-
   return replacedMacroInString;
 }
 

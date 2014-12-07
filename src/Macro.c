@@ -25,10 +25,13 @@ Macro *newMacro(char *macroName, char *macroContent)  {
  *			    return Argument pointer that pointing to this structure
  **/
 Argument *newMacroArgument(int size)  {
+  int i = 0;
   Argument *argu = malloc(sizeof(Argument) + (sizeof(String*) * size));
  
   argu->size = size;
-  argu->entries[0] = NULL;
+  argu->entries[size];
+  for(i; i<size ; i++)
+    argu->entries[i] = NULL;
   return argu;
 }
 
@@ -43,7 +46,8 @@ void delMacroArgument(Argument *argu)  {
   
   for(i ; i< argu->size ; i++)  {
     if(argu->entries[i] != NULL)
-      free(argu->entries[i]);
+      free(argu->entries[i]->string);
+    free(argu->entries[i]);
   }
   free(argu);
 }
