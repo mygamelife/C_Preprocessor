@@ -1,3 +1,4 @@
+#include <malloc.h>
 #include "unity.h"
 #include "Macro.h"
 #include "StringObject.h"
@@ -12,8 +13,8 @@ void tearDown(void) {}
  *            --> String *content = "123"
  */
 void test_newMacro_given_name_A_and_content_123(void)
-{
-  Macro *macro = newMacro("A", "123");
+{ 
+  Macro *macro = newMacro("A", "123", newMacroArgument(1));
 
   //Name
   TEST_ASSERT_EQUAL("A", macro->name->string);
@@ -24,7 +25,11 @@ void test_newMacro_given_name_A_and_content_123(void)
   TEST_ASSERT_EQUAL("123", macro->content->string);
   TEST_ASSERT_EQUAL(0, macro->content->startindex);
   TEST_ASSERT_EQUAL(3, macro->content->length);
-
+  
+  //Argument
+  TEST_ASSERT_EQUAL(1, macro->argument->size);
+  TEST_ASSERT_NULL(macro->argument->entries[0]);
+  
   //free malloc
   delMacro(macro);
 }

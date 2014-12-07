@@ -91,20 +91,19 @@ int getSizeOfArgu(String *str) {
   String *arguments;
 
   do  {
-  arguments = stringRemoveWordContaining(str, alphaNumericSet); /**need free**/
-  // printf("argument start %d, length %d\n", arguments->startindex, arguments->length);
-  // printf("str start %d, length %d\n", str->startindex, str->length);
-  if(arguments->length == 0)  {
+    arguments = stringRemoveWordContaining(str, alphaNumericSet); /**need free**/
+    // printf("argument start %d, length %d\n", arguments->startindex, arguments->length);
+    // printf("str start %d, length %d\n", str->startindex, str->length);
+    if(arguments->length == 0)  {
+      stringDel(arguments);
+      break;
+    }
+    else if(isIdentifier(arguments)) {
+      // printf("valid argument\n");
+      sizeOfMacro++;
+    }
+    stringTrim(str);
     stringDel(arguments);
-    break;
-  }
-  else if(isIdentifier(arguments)) {
-    // printf("valid argument\n");
-    sizeOfMacro++;
-  }
-
-  stringTrim(str);
-  stringDel(arguments);
   }while(str->string[str->startindex] == ',');
 
   return sizeOfMacro;
@@ -135,12 +134,15 @@ Argument *createMacroArguments(String *str) {
       /* reset string position to initial */
       str->startindex = 0;
       str->length = strlen(str->string);
-      
-      if(sizeOfArgu)  //create only sizeOfArgu not zero
-        argu = newMacroArgument(sizeOfArgu);
-      
+
+      if(sizeOfArgu == 0)
+        return NULL;
+        
+      argu = newMacroArgument(sizeOfArgu);
+
       for(i ; i < sizeOfArgu ; i++) {
-        arguments = stringRemoveWordContaining(str, alphaNumericSet); /**need free**/     
+        printf("enter\n");
+        arguments = stringRemoveWordContaining(str, alphaNumericSet); /**need free**/
         macroArgument = stringSubStringInChars(arguments , arguments->length);
         argu->entries[i] = stringNew(macroArgument);
         // printf("macroArgument %s\n", macroArgument);
@@ -149,6 +151,11 @@ Argument *createMacroArguments(String *str) {
         stringDel(arguments);
       }
     }
+    
+    else if(str->string[str->startindex] == ',')
+      Throw(ERR_EXPECT_IDENTIFIER);
+      
+    else Throw(ERR_EXPECT_CLOSED_BRACKET);
   }
 
   return argu;
@@ -162,9 +169,10 @@ Argument *createMacroArguments(String *str) {
  *			return NULL if macro information is not found
  **/
 Macro *createMacroInfo(String *str) {
-  char *macroName, *macroContent, *macroContentPart, *macroArguments, EOL = '\n';
+  char *macroName, *macroContent, *macroContentPart, EOL = '\n';
   String *name, *content;
   Macro *macroInfo;
+  Argument *macroArguments = NULL;
 
   name = stringRemoveWordContaining(str, alphaNumericSet);
 
@@ -181,7 +189,7 @@ Macro *createMacroInfo(String *str) {
   if(str->string[str->startindex] == EOL || str->string[str->startindex] == '\0') {
     macroContent = malloc(sizeof(char) * 1);
     macroContent[0] = '\0';
-    return macroInfo = newMacro(macroName, macroContent); //" " this space indicate it is empty content
+    return macroInfo = newMacro(macroName, macroContent, macroArguments); //" " this space indicate it is empty content
   }
   content = stringRemoveWordContaining(str, alphaNumericSetWithSymbol);
   macroContent = stringSubStringInChars(content , content->length);
@@ -195,7 +203,7 @@ Macro *createMacroInfo(String *str) {
     strcat(macroContent, macroContentPart);
   }
 
-  return macroInfo = newMacro(macroName, macroContent); //need to free malloc
+  return macroInfo = newMacro(macroName, macroContent, macroArguments); //need to free malloc
 }
 
 /** Replace all the words if it is a macro

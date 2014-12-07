@@ -18,7 +18,7 @@ struct Argument  {
 	String *entries[0];
 };
 
-Macro *newMacro(char *macroName, char *macroContent);
+Macro *newMacro(char *macroName, char *macroContent, Argument *arguList);
 Argument *newMacroArgument(int size);
 void delMacroArgument(Argument *argu);
 void delMacro(Macro *macro);

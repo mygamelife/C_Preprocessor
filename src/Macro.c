@@ -9,11 +9,12 @@
  * output :
  *			return macro pointer that pointing to this structure
  **/
-Macro *newMacro(char *macroName, char *macroContent)  {
+Macro *newMacro(char *macroName, char *macroContent, Argument *arguList)  {
   Macro *macro = malloc(sizeof(Macro));
 
   macro->name = stringNew(macroName);
   macro->content = stringNew(macroContent);
+  macro->argument = arguList;
 
   return macro;
 }
@@ -44,12 +45,14 @@ Argument *newMacroArgument(int size)  {
 void delMacroArgument(Argument *argu)  {
   int i = 0;
   
-  for(i ; i< argu->size ; i++)  {
-    if(argu->entries[i] != NULL)
-      free(argu->entries[i]->string);
-    free(argu->entries[i]);
+  if(argu != NULL)  {
+    for(i ; i< argu->size ; i++)  {
+      if(argu->entries[i] != NULL)
+        free(argu->entries[i]->string);
+      free(argu->entries[i]);
+    }
+    free(argu);
   }
-  free(argu);
 }
 
 /** Create new macroNode to store the Node structure
@@ -71,7 +74,7 @@ Node *macroNodeNew(Macro *macroInfo)
 
 /** Free the malloc memory in name/content->string
  * input :
- *			*string is a pointer pointing to name/content->string
+ *			*string is a pointer pointing to name/content->string and argument
  * output :
  *			free the malloc memory
  **/
@@ -86,6 +89,7 @@ void delMacroNameAndContent(Macro *macro)
       subStringDel(macro->content->string);
       free(macro->content);
     }
+    delMacroArgument(macro->argument);
     free(macro);
   }
 }
@@ -101,6 +105,7 @@ void delMacro(Macro *macro) {
   if(macro) {
     stringDel(macro->name);
     stringDel(macro->content);
+    delMacroArgument(macro->argument);
     free(macro);
   }
 }

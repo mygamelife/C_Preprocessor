@@ -613,7 +613,7 @@ void test_replaceMacroInString_given_TEN_in_string_should_replace_it_with_10(voi
 {
 	String *str = stringNew("X = TEN;");
 	String *subStr = stringSubString(str, 4, 3);
-  Macro *macro = newMacro("TEN", "10");
+  Macro *macro = newMacro("TEN", "10", newMacroArgument(0));
   char *result;
   int size = size = (str->length) - (macro->name->length) + (macro->content->length);
 
@@ -642,7 +642,7 @@ void test_replaceMacroInString_given_Three_in_string_should_replace_it_with_3(vo
 {
 	String *str = stringNew("X = 10 + Three + 5");
   String *subStr = stringSubString(str, 9, 5);
-  Macro *macro = newMacro("Three", "3");
+  Macro *macro = newMacro("Three", "3", newMacroArgument(0));
   char *result;
   int size = size = (str->length) - (macro->name->length) + (macro->content->length);
 
@@ -671,7 +671,7 @@ void test_replaceMacroInString_given_ONEFIVE_in_string_should_replace_it_with_15
 {
 	String *str = stringNew("X = 5 + ONEFIVE + Three + 5");
   String *subStr = stringSubString(str, 8, 7);
-  Macro *macro = newMacro("ONEFIVE", "15");
+  Macro *macro = newMacro("ONEFIVE", "15", newMacroArgument(0));
   char *result;
   int size = size = (str->length) - (macro->name->length) + (macro->content->length);
 
@@ -700,7 +700,7 @@ void test_replaceMacroInString_given_NINE_in_string_should_only_replace_it_with_
 {
 	String *str = stringNew("X = HI + BYE + 1 + NINE");
   String *subStr = stringSubString(str, 19, 4);
-  Macro *macro = newMacro("NINE", "99999");
+  Macro *macro = newMacro("NINE", "99999", newMacroArgument(0));
   char *result;
   int size = size = (str->length) - (macro->name->length) + (macro->content->length);
 

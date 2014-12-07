@@ -1,3 +1,4 @@
+#include <string.h>
 #include <malloc.h>
 #include "unity.h"
 #include "Preprocessor.h"
@@ -135,6 +136,49 @@ void test_createMacroInfo_given_argument_ABC_should_store_ABC(void)
   TEST_ASSERT_EQUAL_STRING("ABC", argu->entries[0]->string);
   TEST_ASSERT_EQUAL(0, argu->entries[0]->startindex);
   TEST_ASSERT_EQUAL(3, argu->entries[0]->length);
+
+  delMacroArgument(argu);
+  stringDel(str);
+}
+
+/** test createMacroInfo() given argument list ( _X_Men, dragon, ball_ ) should get 3 arguments info
+ **/
+void test_createMacroInfo_given_X_Men_dragon_and_ball__3_argument_should_store_these_3_arguments(void)
+{
+	String *str = stringNew("( _X_Men, dragon, ball_ )");
+  Argument *argu;
+  
+  printf("Start test_createMacroInfo_given_X_Men_dragon_and_ball__3_argument_should_store_these_3_arguments\n");
+  argu = createMacroArguments(str);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(argu);
+  TEST_ASSERT_EQUAL_STRING("_X_Men", argu->entries[0]->string);
+  TEST_ASSERT_EQUAL(0, argu->entries[0]->startindex);
+  TEST_ASSERT_EQUAL(strlen(argu->entries[0]->string), argu->entries[0]->length);
+  TEST_ASSERT_EQUAL_STRING("dragon", argu->entries[1]->string);
+  TEST_ASSERT_EQUAL(0, argu->entries[1]->startindex);
+  TEST_ASSERT_EQUAL(strlen(argu->entries[1]->string), argu->entries[1]->length);
+  TEST_ASSERT_EQUAL_STRING("ball_", argu->entries[2]->string);
+  TEST_ASSERT_EQUAL(0, argu->entries[2]->startindex);
+  TEST_ASSERT_EQUAL(strlen(argu->entries[2]->string), argu->entries[2]->length);
+
+  delMacroArgument(argu);
+  stringDel(str);
+}
+
+/** test createMacroInfo() given argument list 0 should return NULL
+ **/
+void test_createMacroInfo_given_zero_argument_should_return_NULL(void)
+{
+	String *str = stringNew("()");
+  Argument *argu = NULL;
+
+  printf("Start test_createMacroInfo_given_zero_argument_should_return_NULL\n");
+  argu = createMacroArguments(str);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NULL(argu);
 
   delMacroArgument(argu);
   stringDel(str);

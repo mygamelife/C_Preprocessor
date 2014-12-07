@@ -21,8 +21,8 @@ void tearDown(void) {}
  *  compare "Apple" and "Orange" should return 0
  **/
 void test_compare_given_Apple_Orange_should_return_0(void)  {
-  Macro *macro1 = newMacro("Apple", "50");
-	Macro *macro2 = newMacro("Orange", "100");
+  Macro *macro1 = newMacro("Apple", "50", newMacroArgument(0));
+	Macro *macro2 = newMacro("Orange", "100", newMacroArgument(0));
   resetGenericNode(&nodeA, macro1);
   resetGenericNode(&nodeB, macro2);
   Node *root = &nodeA;
@@ -42,8 +42,8 @@ void test_compare_given_Apple_Orange_should_return_0(void)  {
  *  compare "Girl" and "Boy" should return 1
  **/
 void test_compare_given_Girl_and_Boy_should_return_1(void)  {
-  Macro *macro1 = newMacro("Girl", "75");
-	Macro *macro2 = newMacro("Boy", "999");
+  Macro *macro1 = newMacro("Girl", "75", newMacroArgument(0));
+	Macro *macro2 = newMacro("Boy", "999", newMacroArgument(0));
   resetGenericNode(&nodeA, macro1);
   resetGenericNode(&nodeB, macro2);
   Node *root = &nodeA;
@@ -72,8 +72,8 @@ void test_compare_given_Girl_and_Boy_should_return_1(void)  {
  *       -        -
 **/
 void test_genericAddRedBlackTree_given_macroName_and_macroContent_should_store_at_left_side_of_RedBlackTree(void)	{
-	Macro *macro1 = newMacro("Cat", "10");
-	Macro *macro2 = newMacro("Bird", "20");
+	Macro *macro1 = newMacro("Cat", "10", newMacroArgument(0));
+	Macro *macro2 = newMacro("Bird", "20", newMacroArgument(0));
   resetGenericNode(&nodeA, macro1);
   resetGenericNode(&nodeB, macro2);
   Node *root = &nodeA;
@@ -123,9 +123,9 @@ void test_genericAddRedBlackTree_given_macroName_and_macroContent_should_store_a
  *       -        -    -      -
 **/
 void test_genericAddRedBlackTree_given_macroName_and_macroContent_should_store_at_right_side_of_RedBlackTree(void)	{
-  Macro *macro1 = newMacro("Dragon", "200");
-	Macro *macro2 = newMacro("Bear", "300");
-	Macro *macro3 = newMacro("Mouse", "400");
+  Macro *macro1 = newMacro("Dragon", "200", newMacroArgument(0));
+	Macro *macro2 = newMacro("Bear", "300", newMacroArgument(0));
+	Macro *macro3 = newMacro("Mouse", "400", newMacroArgument(0));
   resetGenericNode(&nodeA, macro1);
   resetGenericNode(&nodeB, macro2);
   resetGenericNode(&nodeC, macro3);
