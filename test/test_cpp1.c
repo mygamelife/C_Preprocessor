@@ -255,3 +255,25 @@ void test_createMacroInfo_given_random_argument_but_missing_closed_bracket_shoul
   //free all malloc memory in tree
   stringDel(str);
 }
+
+/** test macroPositionInString() given sum(5) should get this macro position in it inside the tree
+ **/
+void test_macroPositionInString_given_string_sum_bracket_5_should_get_macro_position(void) // <----- Problem
+{
+	String *str = stringNew("#define sum(X) 10+X\n"
+                           "sum(5)\n");
+  String *subString;
+  LinkedList *head = NULL;
+
+  printf("Start test_macroPositionInString_given_string_sum_bracket_5_should_get_macro_position\n");
+  Node *root = addAllMacroIntoTree(str, "define");
+  subString = macroPositionInString(str, root);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(subString);
+  TEST_ASSERT_EQUAL(20, subString->startindex);
+  TEST_ASSERT_EQUAL(6, subString->length);
+
+  destroyAllMacroInTree(root);
+  stringDel(str);
+}

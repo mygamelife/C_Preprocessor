@@ -140,11 +140,11 @@ Argument *createMacroArguments(String *str) {
 
       if(sizeOfArgu == 0)
         return NULL;
-        
+
       argu = newMacroArgument(sizeOfArgu);
 
       for(i ; i < sizeOfArgu ; i++) {
-        printf("enter\n");
+        // printf("enter\n");
         arguments = stringRemoveWordContaining(str, alphaNumericSet); /**need free**/
         macroArgument = stringSubStringInChars(arguments , arguments->length);
         argu->entries[i] = stringNew(macroArgument);
@@ -153,16 +153,16 @@ Argument *createMacroArguments(String *str) {
       /* string position after done with the argument */
       str->startindex = end + 1;
       str->length = strlen(str->string) - str->startindex;
-      printf("str->length %d\n", strlen(str->string));
+      // printf("str->length %d\n", strlen(str->string));
     }
-    
+
     else if(str->string[str->startindex] == ',')
       Throw(ERR_EXPECT_IDENTIFIER);
-      
+
     else Throw(ERR_EXPECT_CLOSED_BRACKET);
   }
   else return NULL;
-  
+
   return argu;
 }
 
@@ -186,7 +186,7 @@ Macro *createMacroInfo(String *str) {
 
   macroName = stringSubStringInChars(name , name->length);
   macroArguments = createMacroArguments(str);
-  printf("str after removed name, start %d, length %d\n", str->startindex, str->length);
+  // printf("str after removed name, start %d, length %d\n", str->startindex, str->length);
   /*------------------------------------------------------------------------------*/
   stringTrimUntilEOL(str);
 
@@ -281,7 +281,7 @@ Macro *findMacroInTree(Node *root, char *targetMacro)  {
  **/
 String *macroPositionInString(String *str, Node *root) {
   char *token;
-  String *subString = NULL;
+  String *subString = NULL, *arguList = NULL;
   Macro *foundMacro = NULL;
 
   subString = stringRemoveWordContaining(str, alphaNumericSet);
@@ -291,6 +291,14 @@ String *macroPositionInString(String *str, Node *root) {
     foundMacro = findMacroInTree(root, token);
 
     if(foundMacro != NULL)  {
+      if(foundMacro->argument != NULL) {
+        if(foundMacro->argument->size != 0 && str->string[str->startindex] == '(') {
+          arguList = stringRemoveWordContaining(str, alphaNumericSetWithSymbol);
+          // printf("arguList start %d, length %d\n", arguList->startindex, arguList->length);
+          subString->length = subString->length + arguList->length;
+          stringDel(arguList);
+        }
+      }
       break;
     }
     subString = stringRemoveWordContaining(str, alphaNumericSet);
