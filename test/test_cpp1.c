@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <string.h>
 #include <malloc.h>
 #include "unity.h"
@@ -12,6 +13,10 @@
 #include "InitNode.h"
 #include "CustomAssertions.h"
 #include "LinkedList.h"
+
+#define Something(ABC) "ABC.com"
+
+
 
 void setUp(void)  {}
 
@@ -30,7 +35,7 @@ void test_getSizeOfArgu_given_1_argument_should_return_1(void)
   int sizeOfArgu = 0;
 
   printf("Start test_createMacroInfo_given_macroName_with_bracket_symbol\n");
-  sizeOfArgu = getSizeOfArgu(str);
+  sizeOfArgu = getSizeOfArgu(str, alphaNumericSet);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_EQUAL(1, sizeOfArgu);
@@ -45,7 +50,7 @@ void test_getSizeOfArgu_given_2_argument_should_return_2(void)
   int sizeOfArgu = 0;
 
   printf("Start test_getSizeOfArgu_given_2_argument_should_return_2\n");
-  sizeOfArgu = getSizeOfArgu(str);
+  sizeOfArgu = getSizeOfArgu(str, alphaNumericSet);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_EQUAL(2, sizeOfArgu);
@@ -60,7 +65,7 @@ void test_getSizeOfArgu_given_multiple_arguments_should_return_4(void)
   int sizeOfArgu = 0;
 
   printf("Start test_getSizeOfArgu_given_multiple_arguments_should_return_4\n");
-  sizeOfArgu = getSizeOfArgu(str);
+  sizeOfArgu = getSizeOfArgu(str, alphaNumericSet);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_EQUAL(4, sizeOfArgu);
@@ -79,7 +84,7 @@ void test_getSizeOfArgu_given_nonIdentifier_arguments_should_throw_an_error(void
 
   Try {
     str = stringNew(" onlyOne, 123_max");
-    sizeOfArgu = getSizeOfArgu(str);
+    sizeOfArgu = getSizeOfArgu(str, alphaNumericSet);
     TEST_FAIL_MESSAGE("Should throw ERR_INVALID_IDENTIFIER exception");
   }
   Catch(err) {
@@ -99,7 +104,8 @@ void test_getSizeOfArgu_given_spaces_between_arguments_should_able_to_get_the_si
   int sizeOfArgu = 0;
 
   printf("Start test_getSizeOfArgu_given_spaces_between_arguments_should_able_to_get_the_size_of_argu\n");
-  sizeOfArgu = getSizeOfArgu(str);
+  sizeOfArgu = getSizeOfArgu(str, alphaNumericSet);
+  printf("start %d, length %d\n", str->startindex, str->length);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_EQUAL(2, sizeOfArgu);
@@ -114,22 +120,37 @@ void test_getSizeOfArgu_given_arguments_end_with_symbol_comma_should_return_size
   int sizeOfArgu = 0;
 
   printf("Start test_getSizeOfArgu_given_arguments_end_with_symbol_comma_should_return_size_of_arguments\n");
-  sizeOfArgu = getSizeOfArgu(str);
+  sizeOfArgu = getSizeOfArgu(str, alphaNumericSet);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_EQUAL(1, sizeOfArgu);
   stringDel(str);
 }
 
+/** test getSizeOfArguInString() given non-identifier arguments with alphaNumericSetWithSymbol
+ **/
+void test_getSizeOfArguInString_given_nonIdentifier_arguments_should_get_the_size_of_arguments(void)
+{
+	String *str = stringNew("3_AX$ , ^920_AS, X_X)");
+  int sizeOfArgu = 0;
+
+  printf("Start test_getSizeOfArguInString_given_nonIdentifier_arguments_should_get_the_size_of_arguments\n");
+  sizeOfArgu = getSizeOfArguInString(str, alphaNumericSetWithSymbolWithoutBracket);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_EQUAL(3, sizeOfArgu);
+  stringDel(str);
+}
+
 /** test createMacroInfo() given argument list ( ABC ) should get the argument ABC
  **/
-void test_createMacroInfo_given_argument_ABC_should_store_ABC(void)
+void test_createMacroArguments_given_argument_ABC_should_store_ABC(void)
 {
 	String *str = stringNew("( ABC )");
   Argument *argu;
 
-  printf("Start test_createMacroInfo_given_argument_ABC_should_store_ABC\n");
-  argu = createMacroArguments(str);
+  printf("Start test_createMacroArguments_given_argument_ABC_should_store_ABC\n");
+  argu = createMacroArguments(str, alphaNumericSet);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(argu);
@@ -143,13 +164,13 @@ void test_createMacroInfo_given_argument_ABC_should_store_ABC(void)
 
 /** test createMacroInfo() given argument list ( _X_Men, dragon, ball_ ) should get 3 arguments info
  **/
-void test_createMacroInfo_given_X_Men_dragon_and_ball__3_argument_should_store_these_3_arguments(void)
+void test_createMacroArguments_given_X_Men_dragon_and_ball__3_argument_should_store_these_3_arguments(void)
 {
 	String *str = stringNew("( _X_Men, dragon, ball_ )");
   Argument *argu;
 
-  printf("Start test_createMacroInfo_given_X_Men_dragon_and_ball__3_argument_should_store_these_3_arguments\n");
-  argu = createMacroArguments(str);
+  printf("Start test_createMacroArguments_given_X_Men_dragon_and_ball__3_argument_should_store_these_3_arguments\n");
+  argu = createMacroArguments(str, alphaNumericSet);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(argu);
@@ -167,15 +188,15 @@ void test_createMacroInfo_given_X_Men_dragon_and_ball__3_argument_should_store_t
   stringDel(str);
 }
 
-/** test createMacroInfo() given argument list 0 should return NULL
+/** test createMacroArguments() given argument list 0 should return NULL
  **/
-void test_createMacroInfo_given_zero_argument_should_return_NULL(void)
+void test_createMacroArguments_given_zero_argument_should_return_NULL(void)
 {
 	String *str = stringNew("()");
   Argument *argu = NULL;
 
-  printf("Start test_createMacroInfo_given_zero_argument_should_return_NULL\n");
-  argu = createMacroArguments(str);
+  printf("Start test_createMacroArguments_given_zero_argument_should_return_NULL\n");
+  argu = createMacroArguments(str, alphaNumericSet);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NULL(argu);
@@ -275,5 +296,59 @@ void test_macroPositionInString_given_string_sum_bracket_5_should_get_macro_posi
   TEST_ASSERT_EQUAL(6, subString->length);
 
   destroyAllMacroInTree(root);
+  stringDel(str);
+}
+
+/** test createMacroArguments() given stringStatement contain macro function with nonIdentifier arguments
+ **/
+void test_createNonIdentifierArgumentsInString_given_nonIdentifier_arguments_should_store_into_macroInfo(void)
+{
+  String *str = stringNew("sum(50)\n");
+  Argument *argu;
+
+  printf("Start test_createNonIdentifierArgumentsInString_given_nonIdentifier_arguments_should_store_into_macroInfo\n");
+  stringSkip(str , 3);
+  argu = createNonIdentifierArgumentsInString(str, alphaNumericSetWithSymbolWithoutBracket);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(argu);
+  TEST_ASSERT_EQUAL_STRING("50", argu->entries[0]->string);
+  TEST_ASSERT_EQUAL(0, argu->entries[0]->startindex);
+  TEST_ASSERT_EQUAL(2, argu->entries[0]->length);
+  TEST_ASSERT_EQUAL(7, str->startindex);
+  TEST_ASSERT_EQUAL(1, str->length);
+
+  //free all malloc memory in tree
+  delMacroArgument(argu);
+  stringDel(str);
+}
+
+/** test createMacroArguments() given stringStatement contain macro function with multiple random non-Identifier arguments
+ **/
+void test_createNonIdentifierArgumentsInString_given_multiple_nonIdentifier_arguments_should_store_into_macroInfo(void)
+{
+  String *str = stringNew("foooool(  #$%^, ABC @!!  , code_{++} \t)\n");
+  Argument *argu;
+  char a = 'a';
+  printf("Start test_createNonIdentifierArgumentsInString_given_multiple_nonIdentifier_arguments_should_store_into_macroInfo\n");
+  stringSkip(str , 7);
+  argu = createNonIdentifierArgumentsInString(str, alphaNumericSetWithSymbolWithoutBracket);
+  printf("------------------------------------------------------------\n");
+  printf("%s\n", Something(a));
+  TEST_ASSERT_NOT_NULL(argu);
+  TEST_ASSERT_EQUAL_STRING("#$%^", argu->entries[0]->string);
+  TEST_ASSERT_EQUAL(0, argu->entries[0]->startindex);
+  TEST_ASSERT_EQUAL(4, argu->entries[0]->length);
+  TEST_ASSERT_EQUAL_STRING("ABC @!!", argu->entries[1]->string);
+  TEST_ASSERT_EQUAL(0, argu->entries[1]->startindex);
+  TEST_ASSERT_EQUAL(6, argu->entries[1]->length);
+  TEST_ASSERT_EQUAL_STRING("code_{++}", argu->entries[2]->string);
+  TEST_ASSERT_EQUAL(0, argu->entries[2]->startindex);
+  TEST_ASSERT_EQUAL(9, argu->entries[2]->length);
+  TEST_ASSERT_EQUAL(34, str->startindex);
+  TEST_ASSERT_EQUAL(1, str->length);
+
+  //free all malloc memory in tree
+  delMacroArgument(argu);
   stringDel(str);
 }

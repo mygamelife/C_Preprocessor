@@ -8,7 +8,8 @@ char *numSet = "0123456789";
 char *opSet = "(~!@#$%^&*_-+{}=|;:)\'<,.>/?";
 char *alphaNumericSet = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 char *alphaNumericSetWithBracket = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789()";
-char *alphaNumericSetWithSymbol = " _abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789(~!@#$%^&*_-+{}=|;:)\'<,.>/?";
+char *alphaNumericSetWithSymbol = " _abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~!@#$%^&*_-+{}=|;:()\'<.>/?";
+char *alphaNumericSetWithSymbolWithoutBracket = " _abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~!@#$%^&*_-+{}=|;:\'<.>/?";
 char *alphaSet = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 /* Create a new String
@@ -87,14 +88,14 @@ void stringTrim(String *str)
  *		string after remove all spaces on left and right side
  */
 void stringTrimUntilEOL(String *str)
-{ 
+{
 	while(isspace(str->string[str->startindex]))  {
 		if(str->length == 0)
 		break;
-    
+
     if(str->string[str->startindex] == '\n')
       return;
-      
+
 		str->startindex++;
     str->length--;
 	}
@@ -273,12 +274,12 @@ char *stringSubStringInChars(String *str , int length)
 	{
 		if(strLength == 0)
       break;
-    
+
     if(str->string[strStart] == '\\') {
       charStr[i++] = ' ';
       strStart++;
     }
-    
+
 		charStr[i] = str->string[strStart++];
 		strLength--;
 

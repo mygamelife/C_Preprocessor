@@ -20,6 +20,8 @@ Macro *findMacroInTree(Node *root, char *targetMacro);
 char *replaceMacroInString(String *latestString, String *macroSubString, Macro *foundMacro, int size);
 String *macroPositionInString(String *str, Node *root);
 String *directiveDefine(String *str, char *directiveName);
-int getSizeOfArgu(String *str);
-Argument *createMacroArguments(String *str);
+int getSizeOfArgu(String *str, char *containSet);
+int getSizeOfArguInString(String *str, char *containSet);
+Argument *createMacroArguments(String *str, char *containSet);
+Argument *createNonIdentifierArgumentsInString(String *str, char *containSet);
 #endif // Preprocessor_H
