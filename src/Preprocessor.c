@@ -289,7 +289,7 @@ String *macroPositionInString(String *str, Node *root) {
 
     token = stringSubStringInChars(subString, subString->length); /**need free**/
     foundMacro = findMacroInTree(root, token);
-
+    free(token);
     if(foundMacro != NULL)  {
       if(foundMacro->argument != NULL) {
         if(foundMacro->argument->size != 0 && str->string[str->startindex] == '(') {
@@ -301,9 +301,9 @@ String *macroPositionInString(String *str, Node *root) {
       }
       break;
     }
+    free(subString);
     subString = stringRemoveWordContaining(str, alphaNumericSet);
   }
-
   return subString;
 }
 
@@ -312,7 +312,7 @@ String *macroPositionInString(String *str, Node *root) {
  *
  ** input :
  *          *latestString is a pointer pointing to latest update string statement
- *          *subString is a pointer pointing to the macro subString
+ *          *macroSubString is the position of macro inside string
  *          *macro is a pointer contain macro information
  *          size is the size of string after replaced with macro content
  ** output :
@@ -322,33 +322,29 @@ char *replaceMacroInString(String *latestString, String *macroSubString, Macro *
   int i = 0, j = 0, start = 0;
   char *replacedMacroInString = malloc(sizeof(char) * size + 1);
 
-  printf("latestString %s\n", latestString->string);
-  printf("macroSubString start %d, length %d\n", macroSubString->startindex, macroSubString->length);
-
   if(foundMacro != NULL)   {
     for(i; i< size ; i++) {
       if(start == macroSubString->startindex) {
         for(j; j< strlen(foundMacro->content->string) ; j++)  {
-          replacedMacroInString[i] = foundMacro->content->string[j];
-          i++;
+          replacedMacroInString[i++] = foundMacro->content->string[j];
         }
         start += foundMacro->name->length;
       }
+      if(latestString->string[start] == '\0')
+        break;
       replacedMacroInString[i] = latestString->string[start++];
     }
     replacedMacroInString[i] = '\0';
   }
 
   else  {
+
     for(i; i< size ; i++) {
       replacedMacroInString[i] = latestString->string[start++];
     }
     replacedMacroInString[i] = '\0';
   }
-
-  // printf("latestString %p\n", latestString);
-  // printf("subString %p\n", subString);
-  puts(replacedMacroInString);
+  printf("replacedMacroInString %s\n", replacedMacroInString);
   return replacedMacroInString;
 }
 
@@ -379,7 +375,7 @@ String *directiveDefine(String *str, char *directiveName) {
   /*******************************************************************************************/
   while(macroSubString->length != 0) {
     macroToken = stringSubStringInChars(macroSubString, macroSubString->length);
-    printf("macroToken %p\n", macroToken);
+    // printf("macroToken %p\n", macroToken);
 
     // printf("macroToken %s\n", macroToken);
     foundMacro = findMacroInTree(root, macroToken);
@@ -402,28 +398,25 @@ String *directiveDefine(String *str, char *directiveName) {
     }
     else  size = strlen(latestString->string);
 
-          // cyclic = findList(&head, foundMacro->name->string);
-      // printf("cyclic %d\n", cyclic);
-
-
    // printf("size %d\n", size);
    // printf("latestString string %s, start %d, length %d\n", latestString->string, latestString->startindex, latestString->length);
-   // printf("macroString start %d, length %d\n", macroString->startindex, macroString->length);
+   // printf("macroSubString start %d, length %d\n", macroSubString->startindex, macroSubString->length);
    if(!cyclic)  {
       replacedMacroString = replaceMacroInString(latestString, macroSubString, foundMacro, size);
+
+      /* free before re-use latestString */
       subStringDel(latestString->string);
       stringDel(latestString);
-      latestString = stringNew(replacedMacroString);
-      // printf("latestString %s\n", latestString->string);
-      // printf("latestString %p\n", latestString);
-   }
 
+      latestString = stringNew(replacedMacroString);
+   }
+       // return NULL;
     if(nextToCyclic)  //always start at next to cyclic happen
       latestString->startindex = nextToCyclic;
 
     stringDel(macroSubString);
     macroSubString = macroPositionInString(latestString, root);
-    printf("macroSubString %p\n", macroSubString);
+    // printf("macroSubString %p\n", macroSubString);
     // printf("macroString start %d, length %d\n", macroString->startindex, macroString->length);
       // return NULL;
     subStringDel(macroToken);
