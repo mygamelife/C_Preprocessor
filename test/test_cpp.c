@@ -1031,7 +1031,7 @@ void test_createMacroInfo_given_backslash_btwn_name_and_content_should_able_crea
 
 /** test directiveDefine() given string with backslash:
  **/
-void Xtest_directiveDefine_given_string_contain_backslash(void)
+void test_directiveDefine_given_string_contain_backslash(void)
 {
 	String *str = stringNew("#define min_123\\\n"
                           "max_321 + 4\n"
