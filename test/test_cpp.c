@@ -1002,7 +1002,7 @@ void Xtest_directiveDefine_with_multiple_cyclic_happen_problem_04(void)
 
 /** test createMacroInfo() given string contain backslash '\' btwn macro name and content
  **/
-void Xtest_createMacroInfo_given_backslash_btwn_name_and_content_should_able_create_MacorInfo(void)
+void test_createMacroInfo_given_backslash_btwn_name_and_content_should_able_create_MacorInfo(void)
 {
 	String *str = stringNew("random\\\n"
                           "(max)%100\n"
