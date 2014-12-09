@@ -551,8 +551,6 @@ String *directiveDefine(String *str, char *directiveName) {
       // return NULL;
     subStringDel(macroToken);
   }
-
-  stringDel(macroSubString);
   stringDel(macroSubString);
   destroyAllMacroInTree(root);
   destroyAllLinkedLists(head);
