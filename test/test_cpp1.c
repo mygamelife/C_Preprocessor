@@ -466,6 +466,44 @@ void test_macroPositionInString_given_macroName_with_arguments_size_zero(void)
   stringDel(str);
 }
 
+void test_macroPositionInString_given_statement_with_argument_should_get_the_position(void)
+{
+	String *str = stringNew("#define mult(A, B) A*B\n"
+                          "Ans = mult(A, B)");
+
+  printf("Start test_macroPositionInString_given_statement_with_argument_should_get_the_position\n");
+  Node *root = addAllMacroIntoTree(str, "define");
+  String *subString = macroPositionInString(str, root);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(subString);
+  TEST_ASSERT_EQUAL(29, subString->startindex);
+  TEST_ASSERT_EQUAL(10, subString->length);
+
+  destroyAllMacroInTree(root);
+  stringDel(str);
+}
+
+void Xtest_directiveDefine_given_statement_and_macro_with_argument(void)
+{
+	String *str = stringNew("#define divide(A) A/123\n"
+                          "total = divide(5)");
+  String *result;
+
+  printf("Start test_directiveDefine_given_statement_and_macro_with_argument\n");
+  result = directiveDefine(str, "define");
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(result);
+  TEST_ASSERT_EQUAL_STRING("i _Sing", result->string);
+  TEST_ASSERT_EQUAL(0, result->startindex);
+  TEST_ASSERT_EQUAL(7, result->length);
+
+  subStringDel(result->string);
+  stringDel(result);
+  stringDel(str);
+}
+
 /** test createMacroArguments() given stringStatement contain macro function with multiple random non-Identifier arguments
  **/
 void Xtest_createNonIdentifierArgumentsInString_given_multiple_nonIdentifier_arguments_should_store_into_macroInfo(void)
