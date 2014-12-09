@@ -14,6 +14,7 @@ struct Macro  {
 };
 
 struct Argument  {
+	int withArgument;
 	int size;
 	String *entries[0];
 };

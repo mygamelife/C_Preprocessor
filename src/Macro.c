@@ -28,7 +28,7 @@ Macro *newMacro(char *macroName, char *macroContent, Argument *arguList)  {
 Argument *newMacroArgument(int size)  {
   int i = 0;
   Argument *argu = malloc(sizeof(Argument) + (sizeof(String*) * size));
- 
+
   argu->size = size;
   argu->entries[size];
   for(i; i<size ; i++)
@@ -44,7 +44,7 @@ Argument *newMacroArgument(int size)  {
  **/
 void delMacroArgument(Argument *argu)  {
   int i = 0;
-  
+
   if(argu != NULL)  {
     for(i ; i< argu->size ; i++)  {
       if(argu->entries[i] != NULL)

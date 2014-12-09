@@ -768,9 +768,9 @@ void test_directiveDefine_given__MAX_999_and_A_equal__MAX_should_replace__MAX_to
   TEST_ASSERT_EQUAL(0, result->startindex);
   TEST_ASSERT_EQUAL(7, result->length);
 
-  // subStringDel(result->string);
-  // stringDel(result);
-  // stringDel(str);
+  subStringDel(result->string);
+  stringDel(result);
+  stringDel(str);
 }
 
 /** test directiveDefine() given string:
@@ -994,6 +994,58 @@ void test_directiveDefine_with_multiple_cyclic_happen_problem_04(void)
   TEST_ASSERT_EQUAL_STRING("Samuel is Gay Samuel", result->string);
   TEST_ASSERT_EQUAL(0, result->startindex);
   TEST_ASSERT_EQUAL(20, result->length);
+
+  subStringDel(result->string);
+  stringDel(result);
+  stringDel(str);
+}
+
+/** test createMacroInfo() given string contain backslash '\' btwn macro name and content
+ **/
+void test_createMacroInfo_given_backslash_btwn_name_and_content_should_able_create_MacorInfo(void)
+{
+	String *str = stringNew("random\\\n"
+                          "(max)%100\n"
+                          "maximum\\\n"
+                          "nothing * something\n");
+  Macro *macro;
+
+  printf("Start test_createMacroInfo_given_backslash_btwn_name_and_content_should_able_create_MacorInfo\n");
+  macro = createMacroInfo(str);
+  TEST_ASSERT_NOT_NULL(macro);
+  TEST_ASSERT_EQUAL_STRING("random", macro->name->string);
+  TEST_ASSERT_EQUAL_STRING("(max)%100", macro->content->string);
+  delMacroNameAndContent(macro);
+
+  macro = createMacroInfo(str);
+  TEST_ASSERT_NOT_NULL(macro);
+  TEST_ASSERT_EQUAL_STRING("maximum", macro->name->string);
+  TEST_ASSERT_EQUAL_STRING("nothing * something", macro->content->string);
+  delMacroNameAndContent(macro);
+  printf("------------------------------------------------------------\n");
+
+  stringDel(str);
+}
+
+/** test directiveDefine() given string with backslash:
+ **/
+void test_directiveDefine_given_string_contain_backslash(void)
+{
+	String *str = stringNew("#define min_123\\\n"
+                          "max_321 + 4\n"
+                          "#define max_321\\\n"
+                          "min_123 / ABC\n"
+                          "min_123 + max_321");
+  String *result;
+
+  printf("Start test_directiveDefine_given_string_contain_backslash\n");
+  result = directiveDefine(str, "define");
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(result);
+  TEST_ASSERT_EQUAL_STRING("min_123 / ABC + 4 + max_321 + 4 / ABC", result->string);
+  TEST_ASSERT_EQUAL(0, result->startindex);
+  TEST_ASSERT_EQUAL(37, result->length);
 
   subStringDel(result->string);
   stringDel(result);

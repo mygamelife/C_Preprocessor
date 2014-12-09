@@ -22,6 +22,7 @@ String *macroPositionInString(String *str, Node *root);
 String *directiveDefine(String *str, char *directiveName);
 int getSizeOfArgu(String *str, char *containSet);
 int getSizeOfArguInString(String *str, char *containSet);
+int verifyRedifineArguments(Macro *macro);
 Argument *createMacroArguments(String *str, char *containSet);
 Argument *createNonIdentifierArgumentsInString(String *str, char *containSet);
 #endif // Preprocessor_H

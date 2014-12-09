@@ -14,10 +14,6 @@
 #include "CustomAssertions.h"
 #include "LinkedList.h"
 
-#define Something(ABC) "ABC.com"
-
-
-
 void setUp(void)  {}
 
 void tearDown(void) {}
@@ -199,7 +195,8 @@ void test_createMacroArguments_given_zero_argument_should_return_NULL(void)
   argu = createMacroArguments(str, alphaNumericSet);
   printf("------------------------------------------------------------\n");
 
-  TEST_ASSERT_NULL(argu);
+  TEST_ASSERT_NOT_NULL(argu);
+  TEST_ASSERT_EQUAL(0, argu->size);
 
   delMacroArgument(argu);
   stringDel(str);
@@ -279,7 +276,7 @@ void test_createMacroInfo_given_random_argument_but_missing_closed_bracket_shoul
 
 /** test macroPositionInString() given sum(5) should get this macro position in it inside the tree
  **/
-void test_macroPositionInString_given_string_sum_bracket_5_should_get_macro_position(void) // <----- Problem
+void test_macroPositionInString_given_string_sum_bracket_5_should_get_macro_position(void)
 {
 	String *str = stringNew("#define sum(X) 10+X\n"
                            "sum(5)\n");
@@ -323,9 +320,155 @@ void test_createNonIdentifierArgumentsInString_given_nonIdentifier_arguments_sho
   stringDel(str);
 }
 
+void test_createMacroInfo_given_string_contain_space_between_name_and_argument_shouldnt_get_any_argument(void)
+{
+  String *str = stringNew("min_max (high ,  low) abc\n");
+  Macro *macro;
+
+  printf("Start test_createMacroInfo_given_string_contain_space_between_name_and_argument_shouldnt_get_any_argument\n");
+  macro = createMacroInfo(str);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(macro);
+  TEST_ASSERT_EQUAL_STRING("min_max", macro->name->string);
+  TEST_ASSERT_EQUAL_STRING("(high ,  low) abc", macro->content->string);
+
+  //free all malloc memory in tree
+  delMacroNameAndContent(macro);
+  stringDel(str);
+}
+
+/** test verifyRedifineArguments() given redefined macro arguments should return 1
+ **/
+void test_verifyRedifineArguments_given_redefined_macro_argument_should_return_1(void)
+{
+  String *str = stringNew("dota2(creep, creep) GGWP\n");
+  Macro *macro = NULL;
+  int result = 0;
+
+  printf("Start test_verifyRedifineArguments_given_redefined_macro_argument_should_return_1\n");
+  macro = createMacroInfo(str);
+  result = verifyRedifineArguments(macro);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_EQUAL(1, result);
+  //free all malloc memory in tree
+  delMacroNameAndContent(macro);
+  stringDel(str);
+}
+
+/** test verifyRedifineArguments() given redefined macro arguments should return 1
+ **/
+void test_verifyRedifineArguments_given_multiple_arguments_should_able_verify_redefined_macro_and_return_1(void)
+{
+  String *str = stringNew("hero(cm, ta, dk, ta, golem) GGWP\n");
+  Macro *macro = NULL;
+  int result = 0;
+
+  printf("Start test_verifyRedifineArguments_given_multiple_arguments_should_able_verify_redefined_macro_and_return_1\n");
+  macro = createMacroInfo(str);
+  result = verifyRedifineArguments(macro);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_EQUAL(1, result);
+  //free all malloc memory in tree
+  delMacroNameAndContent(macro);
+  stringDel(str);
+}
+
+/** test verifyRedifineArguments() given each unique macro arguments should return 0
+ **/
+void test_verifyRedifineArguments_given_each_unique_arguments_should_return_0(void)
+{
+  String *str = stringNew("Alphabets(X, Y, Z, A) alpha\n");
+  Macro *macro = NULL;
+  int result = 0;
+
+  printf("Start test_verifyRedifineArguments_given_each_unique_arguments_should_return_0\n");
+  macro = createMacroInfo(str);
+  result = verifyRedifineArguments(macro);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_EQUAL(0, result);
+  //free all malloc memory in tree
+  delMacroNameAndContent(macro);
+  stringDel(str);
+}
+
+/** test directiveDefine() redefined macro arguments
+ **/
+void test_addAllMacroIntoTree_given_redefined_macro_argument_should_throw_error(void)
+{
+  String *str;
+	Node *root = NULL;
+  CEXCEPTION_T err;
+
+  printf("Start test_addAllMacroIntoTree_given_redefined_macro_argument_should_throw_error\n");
+  Try {
+    str = stringNew("#define Baymax(hero ,bay ,max ,hero) BigHero6\n");
+    root = addAllMacroIntoTree(str, "define");
+    TEST_FAIL_MESSAGE("Should throw ERR_MACRO_ARGUMENTS_REDEFINED exception");
+  }
+  Catch(err)  {
+    TEST_ASSERT_EQUAL_MESSAGE(ERR_MACRO_ARGUMENTS_REDEFINED, err, "Expect ERR_MACRO_ARGUMENTS_REDEFINED exception");
+    TEST_ASSERT_NULL(root);
+  }
+  printf("------------------------------------------------------------\n");
+
+  //free all malloc memory in tree
+  destroyAllMacroInTree(root);
+  stringDel(str);
+}
+
+/** test createMacroInfo() given macroName with argument size zero
+ **/
+void test_createMacroInfo_given_string_contain_macro_argument_size_zero_should_store_into_macroInfo(void)
+{
+  String *str = stringNew("Hungry() eat\n");
+  Macro *macro;
+
+  printf("Start test_createMacroInfo_given_string_contain_macro_argument_size_zero_should_store_into_macroInfo\n");
+  macro = createMacroInfo(str);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(macro);
+  TEST_ASSERT_EQUAL_STRING("Hungry", macro->name->string);
+  TEST_ASSERT_EQUAL_STRING("eat", macro->content->string);
+  TEST_ASSERT_EQUAL(0, macro->argument->size);
+
+  //free all malloc memory in tree
+  delMacroNameAndContent(macro);
+  stringDel(str);
+}
+
+void test_macroPositionInString_given_macroName_with_arguments_size_zero(void)
+{
+	String *str;
+  String *subString;
+  Node *root;
+  LinkedList *head = NULL;
+  CEXCEPTION_T err;
+
+  printf("Start test_macroPositionInString_given_macroName_with_arguments_size_zero\n");
+  Try {
+    str = stringNew("#define XYZ() X + W\n"
+                           "HELLO *(XYZ)\n");
+    root = addAllMacroIntoTree(str, "define");
+    subString = macroPositionInString(str, root);
+    TEST_FAIL_MESSAGE("Should throw ERR_EXPECT_ARGUMENT exception");
+  }
+  Catch(err)  {
+    TEST_ASSERT_EQUAL_MESSAGE(ERR_EXPECT_ARGUMENT, err, "Expect ERR_EXPECT_ARGUMENT exception");
+  }
+  printf("------------------------------------------------------------\n");
+
+  destroyAllMacroInTree(root);
+  stringDel(str);
+}
+
 /** test createMacroArguments() given stringStatement contain macro function with multiple random non-Identifier arguments
  **/
-void test_createNonIdentifierArgumentsInString_given_multiple_nonIdentifier_arguments_should_store_into_macroInfo(void)
+void Xtest_createNonIdentifierArgumentsInString_given_multiple_nonIdentifier_arguments_should_store_into_macroInfo(void)
 {
   String *str = stringNew("foooool(  #$%^, ABC @!!  , code_{++} \t)\n");
   Argument *argu;
@@ -334,7 +477,6 @@ void test_createNonIdentifierArgumentsInString_given_multiple_nonIdentifier_argu
   stringSkip(str , 7);
   argu = createNonIdentifierArgumentsInString(str, alphaNumericSetWithSymbolWithoutBracket);
   printf("------------------------------------------------------------\n");
-  printf("%s\n", Something(a));
   TEST_ASSERT_NOT_NULL(argu);
   TEST_ASSERT_EQUAL_STRING("#$%^", argu->entries[0]->string);
   TEST_ASSERT_EQUAL(0, argu->entries[0]->startindex);

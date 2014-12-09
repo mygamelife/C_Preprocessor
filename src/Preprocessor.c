@@ -88,6 +88,9 @@ int getSizeOfArgu(String *str, char *containSet) {
   int sizeOfMacro = 0;
   String *arguments;
 
+  if(str->string[str->startindex] == ')')
+    return sizeOfMacro;
+
   do  {
     arguments = stringRemoveWordContaining(str, containSet); /**need free**/
     // printf("argument start %d, length %d\n", arguments->startindex, arguments->length);
@@ -123,8 +126,8 @@ int getSizeOfArguInString(String *str, char *containSet) {
   do  {
     stringTrim(str);
     arguments = stringRemoveWordContaining(str, containSet);
-    printf("argument start %d, length %d\n", arguments->startindex, arguments->length);
-    printf("str start %d, length %d\n", str->startindex, str->length);
+    // printf("argument start %d, length %d\n", arguments->startindex, arguments->length);
+    // printf("str start %d, length %d\n", str->startindex, str->length);
     if(arguments->length == 0)  {
       stringDel(arguments);
       break;
@@ -152,12 +155,13 @@ Argument *createMacroArguments(String *str, char *containSet) {
   String *arguments;
   Argument *argu;
 
+  printf("str->string[str->startindex] %c\n", str->string[str->startindex]);
   if(str->string[str->startindex] == '(') {
     printf("Open bracket found\n");
     str->startindex++;
     start = str->startindex;
     // printf("argument start %d, length %d\n", arguments->startindex, arguments->length);
-    // printf("str start %d, length %d\n", str->startindex, str->length);
+    printf("str start %d, length %d\n", str->startindex, str->length);
 
     sizeOfArgu = getSizeOfArgu(str, containSet);
     // printf("sizeOfArgu %d\n", sizeOfArgu);
@@ -170,10 +174,13 @@ Argument *createMacroArguments(String *str, char *containSet) {
       str->startindex = start;
       str->length = strlen(str->string);
 
-      if(sizeOfArgu == 0)
-        return NULL;
-
       argu = newMacroArgument(sizeOfArgu);
+      if(sizeOfArgu == 0) {
+        if(str->string[end] == ')')
+          str->startindex++;
+        argu->withArgument = 1;
+        return argu;
+      }
 
       for(i ; i < sizeOfArgu ; i++) {
         // printf("enter\n");
@@ -182,6 +189,7 @@ Argument *createMacroArguments(String *str, char *containSet) {
         argu->entries[i] = stringNew(macroArgument);
         stringDel(arguments);
       }
+
       /* string position after done with the argument */
       str->startindex = end + 1;
       str->length = strlen(str->string) - str->startindex;
@@ -191,10 +199,10 @@ Argument *createMacroArguments(String *str, char *containSet) {
       Throw(ERR_EXPECT_IDENTIFIER);
 
     else Throw(ERR_EXPECT_CLOSED_BRACKET);
+
+    return argu;
   }
   else return NULL;
-
-  return argu;
 }
 
 /** *createNonIdentifierArgumentsInString(String *str, char *containSet)
@@ -220,8 +228,7 @@ Argument *createNonIdentifierArgumentsInString(String *str, char *containSet) {
     // printf("str start %d, length %d\n", str->startindex, str->length);
 
     sizeOfArgu = getSizeOfArguInString(str, containSet);
-    printf("sizeOfArgu %d\n", sizeOfArgu);
-    printf("str start %d, length %d\n", str->startindex, str->length);
+    // printf("sizeOfArgu %d\n", sizeOfArgu);
 
     if(str->string[str->startindex] == ')') {
       printf("Closed bracket found\n");
@@ -230,8 +237,11 @@ Argument *createNonIdentifierArgumentsInString(String *str, char *containSet) {
       str->startindex = start;
       str->length = strlen(str->string);
 
-      if(sizeOfArgu == 0)
-        return NULL;
+      if(sizeOfArgu == 0) {
+        if(str->string[end] == ')')
+          str->startindex++;
+        return argu;
+      }
 
       argu = newMacroArgument(sizeOfArgu);
 
@@ -247,15 +257,14 @@ Argument *createNonIdentifierArgumentsInString(String *str, char *containSet) {
       str->startindex = end + 1;
       str->length = strlen(str->string) - str->startindex;
     }
-
     else if(str->string[str->startindex] == ',')
       Throw(ERR_EXPECT_IDENTIFIER);
 
-    else Throw(ERR_EXPECT_CLOSED_BRACKET);
+    else  Throw(ERR_EXPECT_CLOSED_BRACKET);
+
+    return argu;
   }
   else return NULL;
-
-  return argu;
 }
 
 /** Extract the MacroInfo out from the given string
@@ -277,8 +286,9 @@ Macro *createMacroInfo(String *str) {
     Throw(ERR_EMPTY_MACRO_NAME);
 
   macroName = stringSubStringInChars(name , name->length);
+  printf("str after removed name, start %d, length %d\n", str->startindex, str->length);
   macroArguments = createMacroArguments(str, alphaNumericSet);
-  // printf("str after removed name, start %d, length %d\n", str->startindex, str->length);
+
   /*------------------------------------------------------------------------------*/
   stringTrimUntilEOL(str);
 
@@ -298,6 +308,33 @@ Macro *createMacroInfo(String *str) {
   return macroInfo = newMacro(macroName, macroContent, macroArguments); //need to free malloc
 }
 
+/** verifyRedifineArguments(Macro *macro)
+ * This function is to verify redifined arguments in macro
+ * input :
+ *			*macro contain macroName, macroContent, macroArguments
+ * output :
+ *      return 1 if redifined arguments is found
+ *      return 0 if redifined arguments is not found
+ **/
+int verifyRedifineArguments(Macro *macro) {
+  int i = 0, j = 0;
+
+  if(macro->argument != NULL) {
+    if(macro->argument->size != 0)  {
+      for(i ; i < macro->argument->size ; i++)  {
+        for(j ; j < (macro->argument->size - i - 1); j++)  {
+          if(!strcmp(macro->argument->entries[i]->string, macro->argument->entries[j+i+1]->string))  {
+            printf("Warning redefine argument %s\n", macro->argument->entries[j]->string);
+            return 1;
+          }
+        }
+        j = 0;
+      }
+    }
+  }
+  return 0;
+}
+
 /** Replace all the words if it is a macro
  * input :
  *			*string is String type pointer
@@ -306,6 +343,7 @@ Macro *createMacroInfo(String *str) {
  *      return the address of root pointer
  **/
 Node *addAllMacroIntoTree(String *string, char *directiveName) {
+  int i = 0, j = 0;
   Node *macroNode, *root = NULL;
   Macro *macro, *foundMacro;
 
@@ -314,7 +352,11 @@ Node *addAllMacroIntoTree(String *string, char *directiveName) {
       if(isIdentifier(string))  {
         macro = createMacroInfo(string);
         foundMacro = findMacroInTree(root, macro->name->string);
-        if(foundMacro != NULL)  { //check redefined macro
+
+        if(verifyRedifineArguments(macro))
+          Throw(ERR_MACRO_ARGUMENTS_REDEFINED);
+
+        else if(foundMacro != NULL)  { //check redefined macro
           printf("Warning %s redefined\n", macro->name->string);
           Throw(ERR_MACRO_REDEFINED);
         }
@@ -372,6 +414,7 @@ String *macroPositionInString(String *str, Node *root) {
   Macro *foundMacro = NULL;
 
   subString = stringRemoveWordContaining(str, alphaNumericSet);
+  printf("subString start %d, length %d\n", subString->startindex, subString->length);
   while(subString->length != 0)  {
 
     token = stringSubStringInChars(subString, subString->length); /**need free**/
@@ -379,7 +422,9 @@ String *macroPositionInString(String *str, Node *root) {
     free(token);
     if(foundMacro != NULL)  {
       if(foundMacro->argument != NULL) {
-        if(foundMacro->argument->size != 0 && str->string[str->startindex] == '(') {
+        if(foundMacro->argument->withArgument == 1 && str->string[str->startindex] != '(')
+          Throw(ERR_EXPECT_ARGUMENT);
+        else if(foundMacro->argument->size != 0 && str->string[str->startindex] == '(') {
           arguList = stringRemoveWordContaining(str, alphaNumericSetWithSymbol);
           subString->length = subString->length + arguList->length;
           stringDel(arguList);
@@ -430,7 +475,7 @@ char *replaceMacroInString(String *latestString, String *macroSubString, Macro *
     }
     replacedMacroInString[i] = '\0';
   }
-  printf("replacedMacroInString %s\n", replacedMacroInString);
+  // printf("replacedMacroInString %s\n", replacedMacroInString);
   return replacedMacroInString;
 }
 
@@ -448,22 +493,20 @@ String *directiveDefine(String *str, char *directiveName) {
   LinkedList *head = NULL, *newList = NULL;
 
   Node *root = addAllMacroIntoTree(str, directiveName); //add all predefined macro into tree
-  printf("str startindex %d, length %d\n", str->startindex, str->length);
+  // printf("str startindex %d, length %d\n", str->startindex, str->length);
   stringStatement = stringSubStringInChars(str, str->length);
-  printf("stringStatement %p\n", stringStatement);
-  printf("stringStatement %s\n", stringStatement);
+  // printf("stringStatement %p\n", stringStatement);
+  // printf("stringStatement %s\n", stringStatement);
   latestString = stringNew(stringStatement);
-  printf("latestString %p\n", latestString);
-  printf("latestString string %s, start %d, length %d\n", latestString->string, latestString->startindex, latestString->length);
+  // printf("latestString %p\n", latestString);
+  // printf("latestString string %s, start %d, length %d\n", latestString->string, latestString->startindex, latestString->length);
   // printf("latestString %p\n", latestString);
   macroSubString = macroPositionInString(latestString, root);
-  printf("macroSubString start %d, length %d\n", macroSubString->startindex, macroSubString->length);
+  // printf("macroSubString start %d, length %d\n", macroSubString->startindex, macroSubString->length);
   /*******************************************************************************************/
   while(macroSubString->length != 0) {
     macroToken = stringSubStringInChars(macroSubString, macroSubString->length);
     // printf("macroToken %p\n", macroToken);
-
-    // printf("macroToken %s\n", macroToken);
     foundMacro = findMacroInTree(root, macroToken);
     // printf("foundMacro %p\n", foundMacro);
     // printf("foundMacro name %s, content %s\n", foundMacro->name->string, foundMacro->content->string);
@@ -471,7 +514,9 @@ String *directiveDefine(String *str, char *directiveName) {
       size = strlen(latestString->string) - (foundMacro->name->length) + (foundMacro->content->length);
 
       cyclic = findList(&head, foundMacro->name->string);
+      // printf("cyclic %d\n", cyclic);
       if(cyclic)  {
+        // printf("cyclic happen at %s\n", foundMacro->name->string);
         nextToCyclic = latestString->startindex;
         destroyAllLinkedLists(head);
         head = NULL;
@@ -479,7 +524,7 @@ String *directiveDefine(String *str, char *directiveName) {
       else  {
         newList = linkListNew(foundMacro->name->string); //Create new list
         addLinkedList(&head, newList);
-        printf("create new list for %s\n", foundMacro->name->string);
+        // printf("create new list for %s\n", foundMacro->name->string);
       }
     }
     else  size = strlen(latestString->string);
@@ -508,6 +553,7 @@ String *directiveDefine(String *str, char *directiveName) {
     subStringDel(macroToken);
   }
 
+  stringDel(macroSubString);
   stringDel(macroSubString);
   destroyAllMacroInTree(root);
   destroyAllLinkedLists(head);
