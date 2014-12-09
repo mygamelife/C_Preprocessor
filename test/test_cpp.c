@@ -1002,7 +1002,7 @@ void Xtest_directiveDefine_with_multiple_cyclic_happen_problem_04(void)
 
 /** test createMacroInfo() given string contain backslash '\' btwn macro name and content
  **/
-void test_createMacroInfo_given_backslash_btwn_name_and_content_should_able_create_MacorInfo(void)
+void Xtest_createMacroInfo_given_backslash_btwn_name_and_content_should_able_create_MacorInfo(void)
 {
 	String *str = stringNew("random\\\n"
                           "(max)%100\n"
@@ -1015,12 +1015,14 @@ void test_createMacroInfo_given_backslash_btwn_name_and_content_should_able_crea
   TEST_ASSERT_NOT_NULL(macro);
   TEST_ASSERT_EQUAL_STRING("random", macro->name->string);
   TEST_ASSERT_EQUAL_STRING("(max)%100", macro->content->string);
+  TEST_ASSERT_NULL(macro->argument);
   delMacroNameAndContent(macro);
 
   macro = createMacroInfo(str);
   TEST_ASSERT_NOT_NULL(macro);
   TEST_ASSERT_EQUAL_STRING("maximum", macro->name->string);
   TEST_ASSERT_EQUAL_STRING("nothing * something", macro->content->string);
+  TEST_ASSERT_NULL(macro->argument);
   delMacroNameAndContent(macro);
   printf("------------------------------------------------------------\n");
 
@@ -1029,7 +1031,7 @@ void test_createMacroInfo_given_backslash_btwn_name_and_content_should_able_crea
 
 /** test directiveDefine() given string with backslash:
  **/
-void test_directiveDefine_given_string_contain_backslash(void)
+void Xtest_directiveDefine_given_string_contain_backslash(void)
 {
 	String *str = stringNew("#define min_123\\\n"
                           "max_321 + 4\n"
