@@ -154,7 +154,7 @@ void test_createMacroArguments_given_argument_ABC_should_store_ABC(void)
   TEST_ASSERT_EQUAL(0, argu->entries[0]->name->startindex);
   TEST_ASSERT_EQUAL(3, argu->entries[0]->name->length);
 
-  delMacroArgument(argu);
+  // delMacroArgument(argu);
   stringDel(str);
 }
 
