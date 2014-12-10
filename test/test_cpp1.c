@@ -478,6 +478,86 @@ void test_macroPositionInString_given_statement_with_argument_should_get_the_pos
   stringDel(str);
 }
 
+void test_storeArgumentsInString_given_statement_with_argument_should_store_into_argument_value(void)
+{
+	String *str = stringNew("#define max(A , B) A + B\n");
+  String *str2 = stringNew("max(100, 2000)");
+  String *macroSubString;
+  Macro *foundMacro;
+
+  printf("Start test_storeArgumentsInString_given_statement_with_argument_should_store_into_argument_value\n");
+  Node *root = addAllMacroIntoTree(str, "define");
+  foundMacro = findMacroInTree(root, "max");
+  macroSubString = macroPositionInString(str2, root);
+  storeArgumentsInString(macroSubString, foundMacro);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(foundMacro);
+  TEST_ASSERT_EQUAL(2, foundMacro->argument->size);
+  TEST_ASSERT_EQUAL_STRING("100", foundMacro->argument->entries[0]->value->string);
+  TEST_ASSERT_EQUAL_STRING("2000", foundMacro->argument->entries[1]->value->string);
+
+  destroyAllMacroInTree(root);
+  stringDel(macroSubString);
+  stringDel(str);
+  stringDel(str2);
+}
+
+void test_storeArgumentsInString_given_statement_with_mismatch_argument_size_should_throw_an_error(void)
+{
+	String *str;
+  String *str2;
+  String *macroSubString;
+  Macro *foundMacro;
+  Node *root;
+  CEXCEPTION_T err;
+
+  printf("Start test_storeArgumentsInString_given_statement_with_mismatch_argument_size_should_throw_an_error\n");
+  Try {
+    str = stringNew("#define test(_A32, SS2, mon3y) A + B\n");
+    str2 = stringNew("test(#24, ^7&, *88%, @#$, ())");
+    root = addAllMacroIntoTree(str, "define");
+    foundMacro = findMacroInTree(root, "test");
+    macroSubString = macroPositionInString(str2, root);
+    storeArgumentsInString(macroSubString, foundMacro);
+    TEST_FAIL_MESSAGE("Should throw ERR_MISMATCH_ARGUMENT_SIZE exception");
+  }
+  Catch(err)  {
+    TEST_ASSERT_EQUAL_MESSAGE(ERR_MISMATCH_ARGUMENT_SIZE, err, "Expect ERR_MISMATCH_ARGUMENT_SIZE exception");
+  }
+  printf("------------------------------------------------------------\n");
+
+  destroyAllMacroInTree(root);
+  stringDel(macroSubString);
+  stringDel(str);
+  stringDel(str2);
+}
+
+void test_storeArgumentsInString_given_statement_with_closed_bracket_inside_argument_should_store_into_argument_value(void)
+{
+	String *str = stringNew("#define kanji(Oracle, ohaiyo) orange\n");
+  String *str2 = stringNew("kanji(&_&,^_^))+432");
+  String *macroSubString;
+  Macro *foundMacro;
+
+  printf("Start test_storeArgumentsInString_given_statement_with_closed_bracket_inside_argument_should_store_into_argument_value\n");
+  Node *root = addAllMacroIntoTree(str, "define");
+  foundMacro = findMacroInTree(root, "kanji");
+  macroSubString = macroPositionInString(str2, root);
+  storeArgumentsInString(macroSubString, foundMacro);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(foundMacro);
+  TEST_ASSERT_EQUAL(2, foundMacro->argument->size);
+  TEST_ASSERT_EQUAL_STRING("&_&", foundMacro->argument->entries[0]->value->string);
+  TEST_ASSERT_EQUAL_STRING("^_^", foundMacro->argument->entries[1]->value->string);
+
+  destroyAllMacroInTree(root);
+  stringDel(macroSubString);
+  stringDel(str);
+  stringDel(str2);
+}
+
 void Xtest_directiveDefine_given_statement_and_macro_with_argument(void)
 {
 	String *str = stringNew("#define divide(A) A/123\n"

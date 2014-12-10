@@ -126,7 +126,7 @@ int getSizeOfArguInString(String *str, char *containSet) {
   do  {
     stringTrim(str);
     arguments = stringRemoveWordContaining(str, containSet);
-    // printf("argument start %d, length %d\n", arguments->startindex, arguments->length);
+    printf("argument start %d, length %d\n", arguments->startindex, arguments->length);
     // printf("str start %d, length %d\n", str->startindex, str->length);
     if(arguments->length == 0)  {
       stringDel(arguments);
@@ -155,30 +155,31 @@ Argument *createMacroArguments(String *str, char *containSet) {
   String *arguments;
   Argument *argu;
 
-  printf("str->string[str->startindex] %c\n", str->string[str->startindex]);
+  // printf("str->string[str->startindex] %c\n", str->string[str->startindex]);
   if(str->string[str->startindex] == '(') {
-    printf("Open bracket found\n");
+    // printf("Open bracket found\n");
     str->startindex++;
     start = str->startindex;
     // printf("argument start %d, length %d\n", arguments->startindex, arguments->length);
-    printf("str start %d, length %d\n", str->startindex, str->length);
+    // printf("str start %d, length %d\n", str->startindex, str->length);
 
     sizeOfArgu = getSizeOfArgu(str, containSet);
     // printf("sizeOfArgu %d\n", sizeOfArgu);
     // printf("str start %d, length %d\n", str->startindex, str->length);
 
     if(str->string[str->startindex] == ')') {
-      printf("Closed bracket found\n");
+      // printf("Closed bracket found\n");
       /* reset string position to initial */
       end = str->startindex;
       str->startindex = start;
       str->length = strlen(str->string);
 
       argu = newMacroArgument(sizeOfArgu);
+      argu->withArgument = 1;
+
       if(sizeOfArgu == 0) {
         if(str->string[end] == ')')
           str->startindex++;
-        argu->withArgument = 1;
         return argu;
       }
 
@@ -481,6 +482,50 @@ char *replaceMacroInString(String *latestString, String *macroSubString, Macro *
   return replacedMacroInString;
 }
 
+/** storeArgumentsInString(Macro *macro)
+ * This function is to store arguments in string statement into macro structure
+ ** input :
+ *          *str is a pointer pointing to the string statement
+ *          *macro is a pointer contain macro information
+ ** output :
+ *          store arguments into macro structure
+ **/
+void storeArgumentsInString(String *str, Macro *macro) {
+  int sizeOfArgu = 0, start = 0, length = 0, i = 0;
+  char *macroArgument;
+  String *arguments;
+
+  if(macro->argument != NULL) {
+    if(macro->argument->withArgument == 1)  {
+      stringSkip(str , macro->name->length);
+      start = str->startindex;
+      length = str->length;
+
+      if(str->string[str->startindex] == '(') {
+        str->startindex++;
+        sizeOfArgu = getSizeOfArguInString(str, alphaNumericSetWithSymbolWithoutBracket);
+        // printf("size %d\n", sizeOfArgu);
+        // printf("%c\n", str->string[str->startindex]);
+        if(sizeOfArgu == macro->argument->size) {
+          if(str->string[str->startindex] == ')') {
+            str->startindex = start;
+            str->length = length;
+            for(i; i < sizeOfArgu; i++) {
+              arguments = stringRemoveWordContaining(str, alphaNumericSetWithSymbolWithoutBracket);
+              macroArgument = stringSubStringInChars(arguments , arguments->length);
+              macro->argument->entries[i]->value = stringNew(macroArgument);
+              printf("%s\n", macro->argument->entries[i]->value->string);
+              stringDel(arguments);
+            }
+          }
+          else Throw(ERR_EXPECT_CLOSED_BRACKET);
+        }
+        else Throw(ERR_MISMATCH_ARGUMENT_SIZE);
+      }
+      else Throw(ERR_EXPECT_ARGUMENT);
+    }
+  }
+}
 /** String *directiveDefine(String *str, char *directiveName)
  * This function is
  *
