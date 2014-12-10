@@ -47,8 +47,10 @@ void delMacroArgument(Argument *argu)  {
 
   if(argu != NULL)  {
     for(i ; i< argu->size ; i++)  {
-      free(argu->entries[i]->name);
-      free(argu->entries[i]->value);
+      if(argu->entries[i]->name)
+        free(argu->entries[i]->name);
+      if(argu->entries[i]->value)
+        free(argu->entries[i]->value);
       free(argu->entries[i]);
     }
     free(argu);

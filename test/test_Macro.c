@@ -43,6 +43,8 @@ void test_newMacroArgument_given_arguments_size_3(void)
   TEST_ASSERT_NOT_NULL(argu);
   TEST_ASSERT_EQUAL(3, argu->size);
   TEST_ASSERT_NOT_NULL(argu->entries[0]);
+  TEST_ASSERT_NOT_NULL(argu->entries[0]->name);
+  TEST_ASSERT_NOT_NULL(argu->entries[0]->value);
 
   //free malloc
   for(i ; i< argu->size ; i++)
