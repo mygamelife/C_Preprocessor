@@ -186,7 +186,7 @@ Argument *createMacroArguments(String *str, char *containSet) {
         // printf("enter\n");
         arguments = stringRemoveWordContaining(str, containSet); /**need free**/
         macroArgument = stringSubStringInChars(arguments , arguments->length);
-        argu->entries[i] = stringNew(macroArgument);
+        argu->entries[i]->name = stringNew(macroArgument);
         stringDel(arguments);
       }
 
@@ -250,7 +250,7 @@ Argument *createNonIdentifierArgumentsInString(String *str, char *containSet) {
         stringTrim(str);
         arguments = stringRemoveWordContaining(str, containSet); /**need free**/
         macroArgument = stringSubStringInChars(arguments , arguments->length);
-        argu->entries[i] = stringNew(macroArgument);
+        argu->entries[i]->name = stringNew(macroArgument);
         stringDel(arguments);
       }
       /* string position after done with the argument */
@@ -323,8 +323,8 @@ int verifyRedifineArguments(Macro *macro) {
     if(macro->argument->size != 0)  {
       for(i ; i < macro->argument->size ; i++)  {
         for(j ; j < (macro->argument->size - i - 1); j++)  {
-          if(!strcmp(macro->argument->entries[i]->string, macro->argument->entries[j+i+1]->string))  {
-            printf("Warning redefine argument %s\n", macro->argument->entries[j]->string);
+          if(!strcmp(macro->argument->entries[i]->name->string, macro->argument->entries[j+i+1]->name->string))  {
+            printf("Warning redefine argument %s\n", macro->argument->entries[j]->name);
             return 1;
           }
         }

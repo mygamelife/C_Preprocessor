@@ -150,9 +150,9 @@ void test_createMacroArguments_given_argument_ABC_should_store_ABC(void)
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(argu);
-  TEST_ASSERT_EQUAL_STRING("ABC", argu->entries[0]->string);
-  TEST_ASSERT_EQUAL(0, argu->entries[0]->startindex);
-  TEST_ASSERT_EQUAL(3, argu->entries[0]->length);
+  TEST_ASSERT_EQUAL_STRING("ABC", argu->entries[0]->name->string);
+  TEST_ASSERT_EQUAL(0, argu->entries[0]->name->startindex);
+  TEST_ASSERT_EQUAL(3, argu->entries[0]->name->length);
 
   delMacroArgument(argu);
   stringDel(str);
@@ -170,15 +170,9 @@ void test_createMacroArguments_given_X_Men_dragon_and_ball__3_argument_should_st
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(argu);
-  TEST_ASSERT_EQUAL_STRING("_X_Men", argu->entries[0]->string);
-  TEST_ASSERT_EQUAL(0, argu->entries[0]->startindex);
-  TEST_ASSERT_EQUAL(strlen(argu->entries[0]->string), argu->entries[0]->length);
-  TEST_ASSERT_EQUAL_STRING("dragon", argu->entries[1]->string);
-  TEST_ASSERT_EQUAL(0, argu->entries[1]->startindex);
-  TEST_ASSERT_EQUAL(strlen(argu->entries[1]->string), argu->entries[1]->length);
-  TEST_ASSERT_EQUAL_STRING("ball_", argu->entries[2]->string);
-  TEST_ASSERT_EQUAL(0, argu->entries[2]->startindex);
-  TEST_ASSERT_EQUAL(strlen(argu->entries[2]->string), argu->entries[2]->length);
+  TEST_ASSERT_EQUAL_STRING("_X_Men", argu->entries[0]->name->string);
+  TEST_ASSERT_EQUAL_STRING("dragon", argu->entries[1]->name->string);
+  TEST_ASSERT_EQUAL_STRING("ball_", argu->entries[2]->name->string);
 
   delMacroArgument(argu);
   stringDel(str);
@@ -217,9 +211,9 @@ void test_createMacroInfo_given_string_contain_macro_argument_should_store_into_
   TEST_ASSERT_EQUAL_STRING("Add", macro->name->string);
   TEST_ASSERT_EQUAL_STRING("a + x", macro->content->string);
   TEST_ASSERT_EQUAL(1, macro->argument->size);
-  TEST_ASSERT_EQUAL_STRING("X", macro->argument->entries[0]->string);
-  TEST_ASSERT_EQUAL(0, macro->argument->entries[0]->startindex);
-  TEST_ASSERT_EQUAL(1, macro->argument->entries[0]->length);
+  TEST_ASSERT_EQUAL_STRING("X", macro->argument->entries[0]->name->string);
+  TEST_ASSERT_EQUAL(0, macro->argument->entries[0]->name->startindex);
+  TEST_ASSERT_EQUAL(1, macro->argument->entries[0]->name->length);
 
   //free all malloc memory in tree
   delMacroNameAndContent(macro);
@@ -241,10 +235,10 @@ void test_createMacroInfo_given_random_argument_should_store_all_if_it_is_identi
   TEST_ASSERT_EQUAL_STRING("sum", macro->name->string);
   TEST_ASSERT_EQUAL_STRING("alien +  boy_", macro->content->string);
   TEST_ASSERT_EQUAL(4, macro->argument->size);
-  TEST_ASSERT_EQUAL_STRING("_alien", macro->argument->entries[0]->string);
-  TEST_ASSERT_EQUAL_STRING("boy123_", macro->argument->entries[1]->string);
-  TEST_ASSERT_EQUAL_STRING("_cat123", macro->argument->entries[2]->string);
-  TEST_ASSERT_EQUAL_STRING("dog_78", macro->argument->entries[3]->string);
+  TEST_ASSERT_EQUAL_STRING("_alien", macro->argument->entries[0]->name->string);
+  TEST_ASSERT_EQUAL_STRING("boy123_", macro->argument->entries[1]->name->string);
+  TEST_ASSERT_EQUAL_STRING("_cat123", macro->argument->entries[2]->name->string);
+  TEST_ASSERT_EQUAL_STRING("dog_78", macro->argument->entries[3]->name->string);
 
   //free all malloc memory in tree
   delMacroNameAndContent(macro);
@@ -309,9 +303,9 @@ void test_createNonIdentifierArgumentsInString_given_nonIdentifier_arguments_sho
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(argu);
-  TEST_ASSERT_EQUAL_STRING("50", argu->entries[0]->string);
-  TEST_ASSERT_EQUAL(0, argu->entries[0]->startindex);
-  TEST_ASSERT_EQUAL(2, argu->entries[0]->length);
+  TEST_ASSERT_EQUAL_STRING("50", argu->entries[0]->name->string);
+  TEST_ASSERT_EQUAL(0, argu->entries[0]->name->startindex);
+  TEST_ASSERT_EQUAL(2, argu->entries[0]->name->length);
   TEST_ASSERT_EQUAL(7, str->startindex);
   TEST_ASSERT_EQUAL(1, str->length);
 
@@ -516,15 +510,15 @@ void Xtest_createNonIdentifierArgumentsInString_given_multiple_nonIdentifier_arg
   argu = createNonIdentifierArgumentsInString(str, alphaNumericSetWithSymbolWithoutBracket);
   printf("------------------------------------------------------------\n");
   TEST_ASSERT_NOT_NULL(argu);
-  TEST_ASSERT_EQUAL_STRING("#$%^", argu->entries[0]->string);
-  TEST_ASSERT_EQUAL(0, argu->entries[0]->startindex);
-  TEST_ASSERT_EQUAL(4, argu->entries[0]->length);
-  TEST_ASSERT_EQUAL_STRING("ABC @!!", argu->entries[1]->string);
-  TEST_ASSERT_EQUAL(0, argu->entries[1]->startindex);
-  TEST_ASSERT_EQUAL(6, argu->entries[1]->length);
-  TEST_ASSERT_EQUAL_STRING("code_{++}", argu->entries[2]->string);
-  TEST_ASSERT_EQUAL(0, argu->entries[2]->startindex);
-  TEST_ASSERT_EQUAL(9, argu->entries[2]->length);
+  TEST_ASSERT_EQUAL_STRING("#$%^", argu->entries[0]->name->string);
+  TEST_ASSERT_EQUAL(0, argu->entries[0]->name->startindex);
+  TEST_ASSERT_EQUAL(4, argu->entries[0]->name->length);
+  TEST_ASSERT_EQUAL_STRING("ABC @!!", argu->entries[1]->name->string);
+  TEST_ASSERT_EQUAL(0, argu->entries[1]->name->startindex);
+  TEST_ASSERT_EQUAL(6, argu->entries[1]->name->length);
+  TEST_ASSERT_EQUAL_STRING("code_{++}", argu->entries[2]->name->string);
+  TEST_ASSERT_EQUAL(0, argu->entries[2]->name->startindex);
+  TEST_ASSERT_EQUAL(9, argu->entries[2]->name->length);
   TEST_ASSERT_EQUAL(34, str->startindex);
   TEST_ASSERT_EQUAL(1, str->length);
 

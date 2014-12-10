@@ -32,20 +32,10 @@ Argument *newMacroArgument(int size)  {
   argu->size = size;
   argu->entries[size];
   for(i; i<size ; i++)
-    argu->entries[i] = NULL;
-  return argu;
-}
-
-Argu *newMacroArgu(int size)  {
-  int i = 0;
-  Argu *argu = malloc(sizeof(Argu) + (sizeof(List*) * size));
-
-  argu->size = size;
-  argu->entries[size];
-  for(i; i<size ; i++)
     argu->entries[i] = malloc(sizeof(List));
   return argu;
 }
+
 /** Free the malloc memory in MacroArgument
  * input :
  *			*argu is a pointer pointing macroArgument
@@ -57,8 +47,10 @@ void delMacroArgument(Argument *argu)  {
 
   if(argu != NULL)  {
     for(i ; i< argu->size ; i++)  {
-      if(argu->entries[i] != NULL)
-        free(argu->entries[i]->string);
+      if(argu->entries[i] != NULL)  {
+        free(argu->entries[i]->name);
+        free(argu->entries[i]->value);
+      }
       free(argu->entries[i]);
     }
     free(argu);

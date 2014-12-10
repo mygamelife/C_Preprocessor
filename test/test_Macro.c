@@ -28,7 +28,7 @@ void test_newMacro_given_name_A_and_content_123(void)
 
   //Argument
   TEST_ASSERT_EQUAL(1, macro->argument->size);
-  TEST_ASSERT_NULL(macro->argument->entries[0]);
+  TEST_ASSERT_NOT_NULL(macro->argument->entries);
 
   //free malloc
   delMacro(macro);
@@ -40,37 +40,10 @@ void test_newMacroArgument_given_arguments_size_3(void)
 {
   Argument *argu = newMacroArgument(3);
 
+  TEST_ASSERT_NOT_NULL(argu);
   TEST_ASSERT_EQUAL(3, argu->size);
-  TEST_ASSERT_NULL(argu->entries[0]);
+  TEST_ASSERT_NOT_NULL(argu->entries);
 
   //free malloc
   delMacroArgument(argu);
-}
-
-/* test newMacroArgument given arguments size
- */
-void test_newMacroArgumentx_given_arguments_size_3(void)
-{
-  Argu *argu = newMacroArgu(3);
-
-  TEST_ASSERT_EQUAL(3, argu->size);
-  argu->entries[0]->name = stringNew("hello");
-
-  printf("name %s\n", argu->entries[0]->name->string);
-  printf("start %d\n", argu->entries[0]->name->startindex);
-  printf("length %d\n", argu->entries[0]->name->length);
-
-  argu->entries[1]->name = stringNew("Night");
-
-  printf("name %s\n", argu->entries[1]->name->string);
-  printf("start %d\n", argu->entries[1]->name->startindex);
-  printf("length %d\n", argu->entries[1]->name->length);
-
-    argu->entries[1]->value = stringNew("Morning");
-
-  printf("name %s\n", argu->entries[1]->value->string);
-  printf("start %d\n", argu->entries[1]->value->startindex);
-  printf("length %d\n", argu->entries[1]->value->length);
-  //free malloc
-  // delMacroArgument(argu);
 }

@@ -7,7 +7,6 @@
 typedef struct Macro Macro;
 typedef struct Argument Argument;
 typedef struct List List;
-typedef struct Argu Argu;
 
 struct Macro  {
 	String *name;
@@ -23,18 +22,11 @@ struct List  {
 struct Argument  {
 	int withArgument;
 	int size;
-	String *entries[0];
-};
-
-struct Argu  {
-	int withArgument;
-	int size;
 	List *entries[0];
 };
 
 Macro *newMacro(char *macroName, char *macroContent, Argument *arguList);
 Argument *newMacroArgument(int size);
-Argu *newMacroArgu(int size);
 void delMacroArgument(Argument *argu);
 void delMacro(Macro *macro);
 void delMacroNameAndContent(Macro *macro);
