@@ -270,7 +270,7 @@ void test_createMacroInfo_given_random_argument_but_missing_closed_bracket_shoul
 
 /** test macroPositionInString() given sum(5) should get this macro position in it inside the tree
  **/
-void Xtest_macroPositionInString_given_string_sum_bracket_5_should_get_macro_position(void)
+void test_macroPositionInString_given_string_sum_bracket_5_should_get_macro_position(void)
 {
 	String *str = stringNew("#define sum(X) 10+X\n"
                            "sum(5)\n");
@@ -292,7 +292,7 @@ void Xtest_macroPositionInString_given_string_sum_bracket_5_should_get_macro_pos
 
 /** test createMacroArguments() given stringStatement contain macro function with nonIdentifier arguments
  **/
-void Xtest_createNonIdentifierArgumentsInString_given_nonIdentifier_arguments_should_store_into_macroInfo(void)
+void test_createNonIdentifierArgumentsInString_given_nonIdentifier_arguments_should_store_into_macroInfo(void)
 {
   String *str = stringNew("sum(50)\n");
   Argument *argu;
@@ -314,7 +314,7 @@ void Xtest_createNonIdentifierArgumentsInString_given_nonIdentifier_arguments_sh
   stringDel(str);
 }
 
-void Xtest_createMacroInfo_given_string_contain_space_between_name_and_argument_shouldnt_get_any_argument(void)
+void test_createMacroInfo_given_string_contain_space_between_name_and_argument_shouldnt_get_any_argument(void)
 {
   String *str = stringNew("min_max (high ,  low) abc\n");
   Macro *macro;
@@ -334,7 +334,7 @@ void Xtest_createMacroInfo_given_string_contain_space_between_name_and_argument_
 
 /** test verifyRedifineArguments() given redefined macro arguments should return 1
  **/
-void Xtest_verifyRedifineArguments_given_redefined_macro_argument_should_return_1(void)
+void test_verifyRedifineArguments_given_redefined_macro_argument_should_return_1(void)
 {
   String *str = stringNew("dota2(creep, creep) GGWP\n");
   Macro *macro = NULL;
@@ -353,7 +353,7 @@ void Xtest_verifyRedifineArguments_given_redefined_macro_argument_should_return_
 
 /** test verifyRedifineArguments() given redefined macro arguments should return 1
  **/
-void Xtest_verifyRedifineArguments_given_multiple_arguments_should_able_verify_redefined_macro_and_return_1(void)
+void test_verifyRedifineArguments_given_multiple_arguments_should_able_verify_redefined_macro_and_return_1(void)
 {
   String *str = stringNew("hero(cm, ta, dk, ta, golem) GGWP\n");
   Macro *macro = NULL;
@@ -372,7 +372,7 @@ void Xtest_verifyRedifineArguments_given_multiple_arguments_should_able_verify_r
 
 /** test verifyRedifineArguments() given each unique macro arguments should return 0
  **/
-void Xtest_verifyRedifineArguments_given_each_unique_arguments_should_return_0(void)
+void test_verifyRedifineArguments_given_each_unique_arguments_should_return_0(void)
 {
   String *str = stringNew("Alphabets(X, Y, Z, A) alpha\n");
   Macro *macro = NULL;
@@ -391,7 +391,7 @@ void Xtest_verifyRedifineArguments_given_each_unique_arguments_should_return_0(v
 
 /** test directiveDefine() redefined macro arguments
  **/
-void Xtest_addAllMacroIntoTree_given_redefined_macro_argument_should_throw_error(void)
+void test_addAllMacroIntoTree_given_redefined_macro_argument_should_throw_error(void)
 {
   String *str;
 	Node *root = NULL;
@@ -416,7 +416,7 @@ void Xtest_addAllMacroIntoTree_given_redefined_macro_argument_should_throw_error
 
 /** test createMacroInfo() given macroName with argument size zero
  **/
-void Xtest_createMacroInfo_given_string_contain_macro_argument_size_zero_should_store_into_macroInfo(void)
+void test_createMacroInfo_given_string_contain_macro_argument_size_zero_should_store_into_macroInfo(void)
 {
   String *str = stringNew("Hungry() eat\n");
   Macro *macro;
@@ -435,7 +435,7 @@ void Xtest_createMacroInfo_given_string_contain_macro_argument_size_zero_should_
   stringDel(str);
 }
 
-void Xtest_macroPositionInString_given_macroName_with_arguments_size_zero(void)
+void test_macroPositionInString_given_macroName_with_arguments_size_zero(void)
 {
 	String *str;
   String *subString;
@@ -460,7 +460,7 @@ void Xtest_macroPositionInString_given_macroName_with_arguments_size_zero(void)
   stringDel(str);
 }
 
-void Xtest_macroPositionInString_given_statement_with_argument_should_get_the_position(void)
+void test_macroPositionInString_given_statement_with_argument_should_get_the_position(void)
 {
 	String *str = stringNew("#define mult(A, B) A*B\n"
                           "Ans = mult(A, B)");

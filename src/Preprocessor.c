@@ -326,7 +326,7 @@ int verifyRedifineArguments(Macro *macro) {
       for(i ; i < macro->argument->size ; i++)  {
         for(j ; j < (macro->argument->size - i - 1); j++)  {
           if(!strcmp(macro->argument->entries[i]->name->string, macro->argument->entries[j+i+1]->name->string))  {
-            printf("Warning redefine argument %s\n", macro->argument->entries[j]->name);
+            printf("Warning redefine argument %s\n", macro->argument->entries[j]->name->string);
             return 1;
           }
         }
