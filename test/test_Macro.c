@@ -28,8 +28,6 @@ void test_newMacro_given_name_A_and_content_123(void)
 
   //Argument
   TEST_ASSERT_EQUAL(1, macro->argument->size);
-  TEST_ASSERT_NOT_NULL(macro->argument->entries[0]->name);
-  TEST_ASSERT_NOT_NULL(macro->argument->entries[0]->value);
 
   //free malloc
   delMacro(macro);
@@ -44,8 +42,7 @@ void test_newMacroArgument_given_arguments_size_3(void)
 
   TEST_ASSERT_NOT_NULL(argu);
   TEST_ASSERT_EQUAL(3, argu->size);
-  TEST_ASSERT_NOT_NULL(argu->entries[0]->name);
-  TEST_ASSERT_NOT_NULL(argu->entries[0]->value);
+  TEST_ASSERT_NOT_NULL(argu->entries[0]);
 
   //free malloc
   for(i ; i< argu->size ; i++)
