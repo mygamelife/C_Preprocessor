@@ -160,7 +160,7 @@ void test_createMacroArguments_given_argument_ABC_should_store_ABC(void)
 
 /** test createMacroInfo() given argument list ( _X_Men, dragon, ball_ ) should get 3 arguments info
  **/
-void Xtest_createMacroArguments_given_X_Men_dragon_and_ball__3_argument_should_store_these_3_arguments(void)
+void test_createMacroArguments_given_X_Men_dragon_and_ball__3_argument_should_store_these_3_arguments(void)
 {
 	String *str = stringNew("( _X_Men, dragon, ball_ )");
   Argument *argu;
