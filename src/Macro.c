@@ -36,6 +36,16 @@ Argument *newMacroArgument(int size)  {
   return argu;
 }
 
+Argu *newMacroArgu(int size)  {
+  int i = 0;
+  Argu *argu = malloc(sizeof(Argu) + (sizeof(List*) * size));
+
+  argu->size = size;
+  argu->entries[size];
+  for(i; i<size ; i++)
+    argu->entries[i] = malloc(sizeof(List));
+  return argu;
+}
 /** Free the malloc memory in MacroArgument
  * input :
  *			*argu is a pointer pointing macroArgument

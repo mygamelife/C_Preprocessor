@@ -245,7 +245,7 @@ void test_createMacroInfo_given_empty_info_should_return_NULL(void)
 /** test createMacroInfo() given macro name but empty content
  *  should return NULL
  **/
-void Xtest_createMacroInfo_given_macro_name_but_empty_info_should_return_NULL(void)
+void test_createMacroInfo_given_macro_name_but_empty_info_should_return_NULL(void)
 {
 	String *str = stringNew("EmptyContent\n");
   Macro *macro;
@@ -264,7 +264,7 @@ void Xtest_createMacroInfo_given_macro_name_but_empty_info_should_return_NULL(vo
 
 /** test createMacroInfo() given string contain backslash '\' after macro content
  **/
-void Xtest_createMacroInfo_given_string_contain_backslash_should_remove_backslash_can_get_macro_name(void)
+void test_createMacroInfo_given_string_contain_backslash_should_remove_backslash_can_get_macro_name(void)
 {
 	String *str = stringNew("\\"
                            "ABC");
@@ -284,7 +284,7 @@ void Xtest_createMacroInfo_given_string_contain_backslash_should_remove_backslas
 
 /** test createMacroInfo() given string contain backslash '\' behind macro content
  **/
-void Xtest_createMacroInfo_given_string_contain_backslash_behind_macroContent_should_remove_backslash_can_get_macro_content(void)
+void test_createMacroInfo_given_string_contain_backslash_behind_macroContent_should_remove_backslash_can_get_macro_content(void)
 {
 	String *str = stringNew("Clash Of \\\nClan\n"
                                  "X = AB");
@@ -305,7 +305,7 @@ void Xtest_createMacroInfo_given_string_contain_backslash_behind_macroContent_sh
 
 /** test createMacroInfo() given string contain backslash '\' behind macro name
  **/
-void Xtest_createMacroInfo_given_string_contain_backslash_behind_macroName_should_remove_backslash_can_get_macro_content(void)
+void test_createMacroInfo_given_string_contain_backslash_behind_macroName_should_remove_backslash_can_get_macro_content(void)
 {
 	String *str = stringNew("Android\\\n"
                           "COC\n"
