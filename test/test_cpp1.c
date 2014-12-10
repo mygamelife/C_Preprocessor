@@ -174,7 +174,7 @@ void test_createMacroArguments_given_X_Men_dragon_and_ball__3_argument_should_st
   TEST_ASSERT_EQUAL_STRING("dragon", argu->entries[1]->name->string);
   TEST_ASSERT_EQUAL_STRING("ball_", argu->entries[2]->name->string);
 
-  // delMacroArgument(argu);
+  delMacroArgument(argu);
   stringDel(str);
 }
 

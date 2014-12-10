@@ -187,6 +187,7 @@ Argument *createMacroArguments(String *str, char *containSet) {
         arguments = stringRemoveWordContaining(str, containSet); /**need free**/
         macroArgument = stringSubStringInChars(arguments , arguments->length);
         argu->entries[i]->name = stringNew(macroArgument);
+        argu->entries[i]->value = NULL;
         stringDel(arguments);
       }
 
@@ -251,6 +252,7 @@ Argument *createNonIdentifierArgumentsInString(String *str, char *containSet) {
         arguments = stringRemoveWordContaining(str, containSet); /**need free**/
         macroArgument = stringSubStringInChars(arguments , arguments->length);
         argu->entries[i]->name = stringNew(macroArgument);
+        argu->entries[i]->value = NULL;
         stringDel(arguments);
       }
       /* string position after done with the argument */
