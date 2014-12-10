@@ -180,7 +180,7 @@ void test_createMacroArguments_given_X_Men_dragon_and_ball__3_argument_should_st
 
 /** test createMacroArguments() given argument list 0 should return NULL
  **/
-void Xtest_createMacroArguments_given_zero_argument_should_return_NULL(void)
+void test_createMacroArguments_given_zero_argument_should_return_NULL(void)
 {
 	String *str = stringNew("()");
   Argument *argu = NULL;
@@ -198,7 +198,7 @@ void Xtest_createMacroArguments_given_zero_argument_should_return_NULL(void)
 
 /** test createMacroInfo() given macroName with argument should store into macroInfo
  **/
-void Xtest_createMacroInfo_given_string_contain_macro_argument_should_store_into_macroInfo(void)
+void test_createMacroInfo_given_string_contain_macro_argument_should_store_into_macroInfo(void)
 {
   String *str = stringNew("Add(X) a + x\n");
   Macro *macro;
@@ -222,7 +222,7 @@ void Xtest_createMacroInfo_given_string_contain_macro_argument_should_store_into
 
 /** test createMacroInfo() given random identifier argument should store all inside macroInfo
  **/
-void Xtest_createMacroInfo_given_random_argument_should_store_all_if_it_is_identifier(void)
+void test_createMacroInfo_given_random_argument_should_store_all_if_it_is_identifier(void)
 {
   String *str = stringNew("sum( _alien, boy123_ , _cat123 , dog_78)    alien +  boy_\n");
   Macro *macro;
@@ -247,7 +247,7 @@ void Xtest_createMacroInfo_given_random_argument_should_store_all_if_it_is_ident
 
 /** test createMacroInfo() given random identifier argument but missing closed bracket should throw an error
  **/
-void Xtest_createMacroInfo_given_random_argument_but_missing_closed_bracket_should_throw_an_error(void)
+void test_createMacroInfo_given_random_argument_but_missing_closed_bracket_should_throw_an_error(void)
 {
   String *str;
   Macro *macro;
