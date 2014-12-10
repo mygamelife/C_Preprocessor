@@ -40,6 +40,7 @@ void test_newMacro_given_name_A_and_content_123(void)
 void test_newMacroArgument_given_arguments_size_3(void)
 {
   Argument *argu = newMacroArgument(3);
+  int i = 0;
 
   TEST_ASSERT_NOT_NULL(argu);
   TEST_ASSERT_EQUAL(3, argu->size);
@@ -47,5 +48,7 @@ void test_newMacroArgument_given_arguments_size_3(void)
   TEST_ASSERT_NOT_NULL(argu->entries[0]->value);
 
   //free malloc
-  delMacroArgument(argu);
+  for(i ; i< argu->size ; i++)
+    free(argu->entries[i]);
+  free(argu);
 }
