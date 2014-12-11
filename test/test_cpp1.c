@@ -412,42 +412,20 @@ void test_modifyMacroPositionWithArguments_given_string_sum_bracket_5_should_get
   stringDel(str);
 }
 
-void Xtest_getMacroPositionInString_given_macroName_with_arguments_size_zero(void)
+void test_modifyMacroPositionWithArguments_given_statement_with_argument_should_get_the_position(void)
 {
-	String *str;
-  String *subString;
-  Node *root;
-  CEXCEPTION_T err;
+	String *str = stringNew("#define mult(A, B) A*B\n");
+  String *str2 = stringNew("Ans = mult(A, B)\n");
 
-  printf("Start test_getMacroPositionInString_given_macroName_with_arguments_size_zero\n");
-  Try {
-    str = stringNew("#define XYZ() X + W\n"
-                           "HELLO *(XYZ)\n");
-    root = addAllMacroIntoTree(str, "define");
-    subString = getMacroPositionInString(str, root);
-    TEST_FAIL_MESSAGE("Should throw ERR_EXPECT_ARGUMENT exception");
-  }
-  Catch(err)  {
-    TEST_ASSERT_EQUAL_MESSAGE(ERR_EXPECT_ARGUMENT, err, "Expect ERR_EXPECT_ARGUMENT exception");
-  }
-  printf("------------------------------------------------------------\n");
-
-  destroyAllMacroInTree(root);
-  stringDel(str);
-}
-
-void Xtest_getMacroPositionInString_given_statement_with_argument_should_get_the_position(void)
-{
-	String *str = stringNew("#define mult(A, B) A*B\n"
-                          "Ans = mult(A, B)");
-
-  printf("Start test_getMacroPositionInString_given_statement_with_argument_should_get_the_position\n");
+  printf("Start test_modifyMacroPositionWithArguments_given_statement_with_argument_should_get_the_position\n");
   Node *root = addAllMacroIntoTree(str, "define");
-  String *subString = getMacroPositionInString(str, root);
+  Macro *foundMacro = findMacroInTree(root, "mult");
+  String *subString = getMacroPositionInString(str2, root);
+  modifyMacroPositionWithArguments(subString, foundMacro);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(subString);
-  TEST_ASSERT_EQUAL(29, subString->startindex);
+  TEST_ASSERT_EQUAL(6, subString->startindex);
   TEST_ASSERT_EQUAL(10, subString->length);
 
   destroyAllMacroInTree(root);
@@ -472,7 +450,7 @@ void test_storeArgumentsInString_given_macroName_with_arguments_but_statement_do
     root = addAllMacroIntoTree(str, "define");
     foundMacro = findMacroInTree(root, "random");
     macroSubString = getMacroPositionInString(str2, root);
-    storeArgumentsInString(macroSubString, foundMacro);
+    storeArgumentsInString(str2, foundMacro);
     TEST_FAIL_MESSAGE("Should throw ERR_EXPECT_ARGUMENT exception");
   }
   Catch(err)  {
@@ -502,7 +480,7 @@ void test_storeArgumentsInString_given_macroName_without_arguments_but_statement
     root = addAllMacroIntoTree(str, "define");
     foundMacro = findMacroInTree(root, "PoweRanger");
     macroSubString = getMacroPositionInString(str2, root);
-    storeArgumentsInString(macroSubString, foundMacro);
+    storeArgumentsInString(str2, foundMacro);
     TEST_FAIL_MESSAGE("Should throw ERR_EXPECT_NO_ARGUMENT exception");
   }
   Catch(err)  {
@@ -516,7 +494,7 @@ void test_storeArgumentsInString_given_macroName_without_arguments_but_statement
   stringDel(str2);
 }
 
-void test_storeArgumentsInString_given_statement_with_argument_should_store_into_argument_value(void)
+void Xtest_storeArgumentsInString_given_statement_with_argument_should_store_into_argument_value(void)
 {
 	String *str = stringNew("#define max(A , B) A + B\n");
   String *str2 = stringNew("max(100, 2000)");
@@ -541,7 +519,7 @@ void test_storeArgumentsInString_given_statement_with_argument_should_store_into
   stringDel(str2);
 }
 
-void test_storeArgumentsInString_given_statement_with_mismatch_argument_size_should_throw_an_error(void)
+void Xtest_storeArgumentsInString_given_statement_with_mismatch_argument_size_should_throw_an_error(void)
 {
 	String *str;
   String *str2;
@@ -571,7 +549,7 @@ void test_storeArgumentsInString_given_statement_with_mismatch_argument_size_sho
   stringDel(str2);
 }
 
-void test_storeArgumentsInString_given_statement_with_closed_bracket_inside_argument_should_store_into_argument_value(void)
+void Xtest_storeArgumentsInString_given_statement_with_closed_bracket_inside_argument_should_store_into_argument_value(void)
 {
 	String *str = stringNew("#define kanji(Oracle, ohaiyo) orange\n");
   String *str2 = stringNew("kanji(&_&,^_^))+432");
@@ -598,7 +576,7 @@ void test_storeArgumentsInString_given_statement_with_closed_bracket_inside_argu
 
 /** test storeArgumentsInString() given arguments with spaces
  **/
-void test_storeArgumentsInString_given_arguments_with_spaces(void)
+void Xtest_storeArgumentsInString_given_arguments_with_spaces(void)
 {
   String *str = stringNew("#define foooool(So, Ra, Aoi)");
   String *str2 = stringNew("foooool(  #$%^, ABC @!!  , code_{++} \t)\n");
@@ -630,12 +608,21 @@ void test_storeArgumentsInString_given_arguments_with_spaces(void)
 
 void Xtest_directiveDefine_given_statement_and_macro_with_argument(void)
 {
-	String *str = stringNew("#define divide(A) A/123\n"
-                          "total = divide(5)");
+	String *str;
   String *result;
+  CEXCEPTION_T err;
 
   printf("Start test_directiveDefine_given_statement_and_macro_with_argument\n");
-  result = directiveDefine(str, "define");
+
+  Try {
+    str = stringNew("#define divide(A) A/123\n"
+                          "total = divide(5)");
+    result = directiveDefine(str, "define");
+    TEST_FAIL_MESSAGE("Should throw ERR_MISMATCH_ARGUMENT_SIZE exception");
+  }
+  Catch(err)  {
+    TEST_ASSERT_EQUAL_MESSAGE(ERR_MISMATCH_ARGUMENT_SIZE, err, "Expect ERR_MISMATCH_ARGUMENT_SIZE exception");
+  }
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(result);

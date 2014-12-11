@@ -388,8 +388,8 @@ void modifyMacroPositionWithArguments(String *macroSubString, Macro *foundMacro)
   String *arguList;
 
   start = macroSubString->startindex;
-  stringSkip(macroSubString, foundMacro->name->length);
-
+  macroSubString->startindex = macroSubString->startindex + foundMacro->name->length;
+  printf("subString start %d, name length %d\n", macroSubString->startindex, foundMacro->name->length);
   if(foundMacro->argument->withArgument == 1 && macroSubString->string[macroSubString->startindex] != '(')
     Throw(ERR_EXPECT_ARGUMENT);
   else if(foundMacro->argument->size != 0 && macroSubString->string[macroSubString->startindex] == '(') {
@@ -455,10 +455,6 @@ void storeArgumentsInString(String *str, Macro *macro) {
 
   if(macro->argument != NULL) {
     if(macro->argument->withArgument == 1)  {
-      stringSkip(str , macro->name->length);
-      start = str->startindex;
-      length = str->length;
-
       if(str->string[str->startindex] == '(') {
         str->startindex++;
         sizeOfArgu = getSizeOfArguInString(str, alphaNumericSetWithSymbolWithoutBracket);
@@ -479,13 +475,13 @@ void storeArgumentsInString(String *str, Macro *macro) {
       }
       else Throw(ERR_EXPECT_ARGUMENT);
     }
-    // printf("withArgument %d", macro->argument->withArgument);
     else  {
-      if(str->string[str->startindex + macro->name->length] == '(')
+      if(str->string[str->startindex] == '(')
         Throw(ERR_EXPECT_NO_ARGUMENT);
     }
   }
 }
+
 /** String *directiveDefine(String *str, char *directiveName)
  * This function is
  *
@@ -519,7 +515,13 @@ String *directiveDefine(String *str, char *directiveName) {
     // printf("foundMacro name %s, content %s\n", foundMacro->name->string, foundMacro->content->string);
     if(foundMacro != NULL)  {//get size of replace macro string
       size = strlen(latestString->string) - (foundMacro->name->length) + (foundMacro->content->length);
-
+      if(foundMacro->argument->withArgument)  {
+        printf("Enter\n");
+        modifyMacroPositionWithArguments(macroSubString, foundMacro);
+        printf("macroSubString start %d, length %d\n", macroSubString->startindex, macroSubString->length);
+        printf("latestString start %d, length %d\n", latestString->startindex, latestString->length);
+      }
+      storeArgumentsInString(latestString, foundMacro);
       cyclic = findList(&head, foundMacro->name->string);
       // printf("cyclic %d\n", cyclic);
       if(cyclic)  {
