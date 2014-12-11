@@ -268,52 +268,6 @@ void test_createMacroInfo_given_random_argument_but_missing_closed_bracket_shoul
   stringDel(str);
 }
 
-/** test macroPositionInString() given sum(5) should get this macro position in it inside the tree
- **/
-void test_macroPositionInString_given_string_sum_bracket_5_should_get_macro_position(void)
-{
-	String *str = stringNew("#define sum(X) 10+X\n"
-                           "sum(5)\n");
-  String *subString;
-  LinkedList *head = NULL;
-
-  printf("Start test_macroPositionInString_given_string_sum_bracket_5_should_get_macro_position\n");
-  Node *root = addAllMacroIntoTree(str, "define");
-  subString = macroPositionInString(str, root);
-  printf("------------------------------------------------------------\n");
-
-  TEST_ASSERT_NOT_NULL(subString);
-  TEST_ASSERT_EQUAL(20, subString->startindex);
-  TEST_ASSERT_EQUAL(6, subString->length);
-
-  destroyAllMacroInTree(root);
-  stringDel(str);
-}
-
-/** test createMacroArguments() given stringStatement contain macro function with nonIdentifier arguments
- **/
-void test_createNonIdentifierArgumentsInString_given_nonIdentifier_arguments_should_store_into_macroInfo(void)
-{
-  String *str = stringNew("sum(50)\n");
-  Argument *argu;
-
-  printf("Start test_createNonIdentifierArgumentsInString_given_nonIdentifier_arguments_should_store_into_macroInfo\n");
-  stringSkip(str , 3);
-  argu = createNonIdentifierArgumentsInString(str, alphaNumericSetWithSymbolWithoutBracket);
-  printf("------------------------------------------------------------\n");
-
-  TEST_ASSERT_NOT_NULL(argu);
-  TEST_ASSERT_EQUAL_STRING("50", argu->entries[0]->name->string);
-  TEST_ASSERT_EQUAL(0, argu->entries[0]->name->startindex);
-  TEST_ASSERT_EQUAL(2, argu->entries[0]->name->length);
-  TEST_ASSERT_EQUAL(7, str->startindex);
-  TEST_ASSERT_EQUAL(1, str->length);
-
-  //free all malloc memory in tree
-  delMacroArgument(argu);
-  stringDel(str);
-}
-
 void test_createMacroInfo_given_string_contain_space_between_name_and_argument_shouldnt_get_any_argument(void)
 {
   String *str = stringNew("min_max (high ,  low) abc\n");
@@ -435,20 +389,42 @@ void test_createMacroInfo_given_string_contain_macro_argument_size_zero_should_s
   stringDel(str);
 }
 
-void test_macroPositionInString_given_macroName_with_arguments_size_zero(void)
+/** test modifyMacroPositionWithArguments() given sum(5) should get this macro position in it inside the tree
+ **/
+void test_modifyMacroPositionWithArguments_given_string_sum_bracket_5_should_get_macro_position(void)
+{
+	String *str = stringNew("#define sum(X) 10+X\n");
+  String *str2 = stringNew("sum(5)\n");
+
+  printf("Start test_modifyMacroPositionWithArguments_given_string_sum_bracket_5_should_get_macro_position\n");
+  Node *root = addAllMacroIntoTree(str, "define");
+  Macro *foundMacro = findMacroInTree(root, "sum");
+  String *subString = getMacroPositionInString(str2, root);
+  modifyMacroPositionWithArguments(subString, foundMacro);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(subString);
+  TEST_ASSERT_EQUAL(0, subString->startindex);
+  TEST_ASSERT_EQUAL(6, subString->length);
+
+  destroyAllMacroInTree(root);
+  stringDel(subString);
+  stringDel(str);
+}
+
+void Xtest_getMacroPositionInString_given_macroName_with_arguments_size_zero(void)
 {
 	String *str;
   String *subString;
   Node *root;
-  LinkedList *head = NULL;
   CEXCEPTION_T err;
 
-  printf("Start test_macroPositionInString_given_macroName_with_arguments_size_zero\n");
+  printf("Start test_getMacroPositionInString_given_macroName_with_arguments_size_zero\n");
   Try {
     str = stringNew("#define XYZ() X + W\n"
                            "HELLO *(XYZ)\n");
     root = addAllMacroIntoTree(str, "define");
-    subString = macroPositionInString(str, root);
+    subString = getMacroPositionInString(str, root);
     TEST_FAIL_MESSAGE("Should throw ERR_EXPECT_ARGUMENT exception");
   }
   Catch(err)  {
@@ -460,14 +436,14 @@ void test_macroPositionInString_given_macroName_with_arguments_size_zero(void)
   stringDel(str);
 }
 
-void test_macroPositionInString_given_statement_with_argument_should_get_the_position(void)
+void Xtest_getMacroPositionInString_given_statement_with_argument_should_get_the_position(void)
 {
 	String *str = stringNew("#define mult(A, B) A*B\n"
                           "Ans = mult(A, B)");
 
-  printf("Start test_macroPositionInString_given_statement_with_argument_should_get_the_position\n");
+  printf("Start test_getMacroPositionInString_given_statement_with_argument_should_get_the_position\n");
   Node *root = addAllMacroIntoTree(str, "define");
-  String *subString = macroPositionInString(str, root);
+  String *subString = getMacroPositionInString(str, root);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(subString);
@@ -476,6 +452,68 @@ void test_macroPositionInString_given_statement_with_argument_should_get_the_pos
 
   destroyAllMacroInTree(root);
   stringDel(str);
+}
+
+/*  Given macroName with argument but string statement don't have argument should throw an error
+ */
+void test_storeArgumentsInString_given_macroName_with_arguments_but_statement_dont_have_argument_should_throw_an_error(void)
+{
+  String *str;
+  String *str2;
+  String *macroSubString;
+  Macro *foundMacro;
+  Node *root;
+  CEXCEPTION_T err;
+
+  printf("Start test_storeArgumentsInString_given_macroName_with_arguments_but_statement_dont_have_argument_should_throw_an_error\n");
+  Try {
+    str = stringNew("#define random()\n");
+    str2 = stringNew("random % 88");
+    root = addAllMacroIntoTree(str, "define");
+    foundMacro = findMacroInTree(root, "random");
+    macroSubString = getMacroPositionInString(str2, root);
+    storeArgumentsInString(macroSubString, foundMacro);
+    TEST_FAIL_MESSAGE("Should throw ERR_EXPECT_ARGUMENT exception");
+  }
+  Catch(err)  {
+    TEST_ASSERT_EQUAL_MESSAGE(ERR_EXPECT_ARGUMENT, err, "Expect ERR_EXPECT_ARGUMENT exception");
+  }
+  printf("------------------------------------------------------------\n");
+
+  destroyAllMacroInTree(root);
+  stringDel(macroSubString);
+  stringDel(str);
+  stringDel(str2);
+}
+
+void test_storeArgumentsInString_given_macroName_without_arguments_but_statement_with_argument_should_throw_an_error(void)
+{
+  String *str;
+  String *str2;
+  String *macroSubString;
+  Macro *foundMacro;
+  Node *root;
+  CEXCEPTION_T err;
+
+  printf("Start test_storeArgumentsInString_given_macroName_without_arguments_but_statement_with_argument_should_throw_an_error\n");
+  Try {
+    str = stringNew("#define PoweRanger\n");
+    str2 = stringNew("random * PoweRanger()");
+    root = addAllMacroIntoTree(str, "define");
+    foundMacro = findMacroInTree(root, "PoweRanger");
+    macroSubString = getMacroPositionInString(str2, root);
+    storeArgumentsInString(macroSubString, foundMacro);
+    TEST_FAIL_MESSAGE("Should throw ERR_EXPECT_NO_ARGUMENT exception");
+  }
+  Catch(err)  {
+    TEST_ASSERT_EQUAL_MESSAGE(ERR_EXPECT_NO_ARGUMENT, err, "Expect ERR_EXPECT_NO_ARGUMENT exception");
+  }
+  printf("------------------------------------------------------------\n");
+
+  destroyAllMacroInTree(root);
+  stringDel(macroSubString);
+  stringDel(str);
+  stringDel(str2);
 }
 
 void test_storeArgumentsInString_given_statement_with_argument_should_store_into_argument_value(void)
@@ -488,7 +526,7 @@ void test_storeArgumentsInString_given_statement_with_argument_should_store_into
   printf("Start test_storeArgumentsInString_given_statement_with_argument_should_store_into_argument_value\n");
   Node *root = addAllMacroIntoTree(str, "define");
   foundMacro = findMacroInTree(root, "max");
-  macroSubString = macroPositionInString(str2, root);
+  macroSubString = getMacroPositionInString(str2, root);
   storeArgumentsInString(macroSubString, foundMacro);
   printf("------------------------------------------------------------\n");
 
@@ -518,7 +556,7 @@ void test_storeArgumentsInString_given_statement_with_mismatch_argument_size_sho
     str2 = stringNew("test(#24, ^7&, *88%, @#$, ())");
     root = addAllMacroIntoTree(str, "define");
     foundMacro = findMacroInTree(root, "test");
-    macroSubString = macroPositionInString(str2, root);
+    macroSubString = getMacroPositionInString(str2, root);
     storeArgumentsInString(macroSubString, foundMacro);
     TEST_FAIL_MESSAGE("Should throw ERR_MISMATCH_ARGUMENT_SIZE exception");
   }
@@ -543,7 +581,7 @@ void test_storeArgumentsInString_given_statement_with_closed_bracket_inside_argu
   printf("Start test_storeArgumentsInString_given_statement_with_closed_bracket_inside_argument_should_store_into_argument_value\n");
   Node *root = addAllMacroIntoTree(str, "define");
   foundMacro = findMacroInTree(root, "kanji");
-  macroSubString = macroPositionInString(str2, root);
+  macroSubString = getMacroPositionInString(str2, root);
   storeArgumentsInString(macroSubString, foundMacro);
   printf("------------------------------------------------------------\n");
 
@@ -551,6 +589,38 @@ void test_storeArgumentsInString_given_statement_with_closed_bracket_inside_argu
   TEST_ASSERT_EQUAL(2, foundMacro->argument->size);
   TEST_ASSERT_EQUAL_STRING("&_&", foundMacro->argument->entries[0]->value->string);
   TEST_ASSERT_EQUAL_STRING("^_^", foundMacro->argument->entries[1]->value->string);
+
+  destroyAllMacroInTree(root);
+  stringDel(macroSubString);
+  stringDel(str);
+  stringDel(str2);
+}
+
+/** test storeArgumentsInString() given arguments with spaces
+ **/
+void test_storeArgumentsInString_given_arguments_with_spaces(void)
+{
+  String *str = stringNew("#define foooool(So, Ra, Aoi)");
+  String *str2 = stringNew("foooool(  #$%^, ABC @!!  , code_{++} \t)\n");
+  String *macroSubString;
+  Macro *foundMacro;
+  Node *root;
+  CEXCEPTION_T err;
+
+  printf("Start test_storeArgumentsInString_given_statement_with_closed_bracket_inside_argument_should_store_into_argument_value\n");
+  Try {
+    str = stringNew("#define foooool(So, Ra, Aoi)");
+    str2 = stringNew("foooool(  #$%^, ABC @!!  , code_{++} \t)\n");
+    root = addAllMacroIntoTree(str, "define");
+    foundMacro = findMacroInTree(root, "foooool");
+    macroSubString = getMacroPositionInString(str2, root);
+    storeArgumentsInString(macroSubString, foundMacro);
+    TEST_FAIL_MESSAGE("Should throw ERR_MISMATCH_ARGUMENT_SIZE exception");
+  }
+  Catch(err)  {
+    TEST_ASSERT_EQUAL_MESSAGE(ERR_MISMATCH_ARGUMENT_SIZE, err, "Expect ERR_MISMATCH_ARGUMENT_SIZE exception");
+  }
+  printf("------------------------------------------------------------\n");
 
   destroyAllMacroInTree(root);
   stringDel(macroSubString);
@@ -575,34 +645,5 @@ void Xtest_directiveDefine_given_statement_and_macro_with_argument(void)
 
   subStringDel(result->string);
   stringDel(result);
-  stringDel(str);
-}
-
-/** test createMacroArguments() given stringStatement contain macro function with multiple random non-Identifier arguments
- **/
-void Xtest_createNonIdentifierArgumentsInString_given_multiple_nonIdentifier_arguments_should_store_into_macroInfo(void)
-{
-  String *str = stringNew("foooool(  #$%^, ABC @!!  , code_{++} \t)\n");
-  Argument *argu;
-  char a = 'a';
-  printf("Start test_createNonIdentifierArgumentsInString_given_multiple_nonIdentifier_arguments_should_store_into_macroInfo\n");
-  stringSkip(str , 7);
-  argu = createNonIdentifierArgumentsInString(str, alphaNumericSetWithSymbolWithoutBracket);
-  printf("------------------------------------------------------------\n");
-  TEST_ASSERT_NOT_NULL(argu);
-  TEST_ASSERT_EQUAL_STRING("#$%^", argu->entries[0]->name->string);
-  TEST_ASSERT_EQUAL(0, argu->entries[0]->name->startindex);
-  TEST_ASSERT_EQUAL(4, argu->entries[0]->name->length);
-  TEST_ASSERT_EQUAL_STRING("ABC @!!", argu->entries[1]->name->string);
-  TEST_ASSERT_EQUAL(0, argu->entries[1]->name->startindex);
-  TEST_ASSERT_EQUAL(6, argu->entries[1]->name->length);
-  TEST_ASSERT_EQUAL_STRING("code_{++}", argu->entries[2]->name->string);
-  TEST_ASSERT_EQUAL(0, argu->entries[2]->name->startindex);
-  TEST_ASSERT_EQUAL(9, argu->entries[2]->name->length);
-  TEST_ASSERT_EQUAL(34, str->startindex);
-  TEST_ASSERT_EQUAL(1, str->length);
-
-  //free all malloc memory in tree
-  delMacroArgument(argu);
   stringDel(str);
 }

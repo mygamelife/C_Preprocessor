@@ -520,23 +520,23 @@ void test_findMacroInTree_given_added_macroNode_tree_and_find_findSomethingDoesn
   stringDel(str);
 }
 
-/** test macroPositionInString():
+/** test getMacroPositionInString():
  ** macro :
  *          #define search Macro
  *
  ** String :
  *          X trying to search Macro;
  **/
-void test_macroPositionInString_given_string_X_trying_to_search_Macro_should_get_search_macroInfo(void) // <----- Problem
+void test_getMacroPositionInString_given_string_X_trying_to_search_Macro_should_get_search_macroInfo(void) // <----- Problem
 {
 	String *str = stringNew("#define search Macro\n"
                            "X trying to search Macro\n");
   String *subString;
   LinkedList *head = NULL;
 
-  printf("Start test_macroPositionInString_given_string_X_trying_to_search_Macro_should_get_search_macroInfo\n");
+  printf("Start test_getMacroPositionInString_given_string_X_trying_to_search_Macro_should_get_search_macroInfo\n");
   Node *root = addAllMacroIntoTree(str, "define");
-  subString = macroPositionInString(str, root);
+  subString = getMacroPositionInString(str, root);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(subString);
@@ -547,23 +547,23 @@ void test_macroPositionInString_given_string_X_trying_to_search_Macro_should_get
   stringDel(str);
 }
 
-/** test macroPositionInString():
+/** test getMacroPositionInString():
  ** macro :
  *          #define Doesnt Exist
  *
  ** String :
  *          Search Something
  **/
-void test_macroPositionInString_given_Search_Something_should_return_NULL_pointer(void) // <----- Problem
+void test_getMacroPositionInString_given_Search_Something_should_return_NULL_pointer(void) // <----- Problem
 {
 	String *str = stringNew("#define Doesnt Exist\n"
                            "Search Something\n");
   String *subString;
   LinkedList *head = NULL;
 
-  printf("Start test_macroPositionInString_given_string_X_trying_to_search_Macro_should_get_search_macroInfo\n");
+  printf("Start test_getMacroPositionInString_given_string_X_trying_to_search_Macro_should_get_search_macroInfo\n");
   Node *root = addAllMacroIntoTree(str, "define");
-  subString = macroPositionInString(str, root);
+  subString = getMacroPositionInString(str, root);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(subString);
@@ -574,23 +574,23 @@ void test_macroPositionInString_given_Search_Something_should_return_NULL_pointe
   stringDel(str);
 }
 
-/** test macroPositionInString():
+/** test getMacroPositionInString():
  ** macro :
  *          #define Empty
  *
  ** String :
  *          Looking for Empty Macro
  **/
-void test_macroPositionInString_given_Looking_for_Empty_Macro_should_macro_pointer(void) // <----- Problem
+void test_getMacroPositionInString_given_Looking_for_Empty_Macro_should_macro_pointer(void) // <----- Problem
 {
 	String *str = stringNew("#define Empty        \n"
                            "Looking for Empty Macro\n");
   String *subString;
   LinkedList *head = NULL;
 
-  printf("Start test_macroPositionInString_given_Looking_for_Empty_Macro_should_macro_pointer\n");
+  printf("Start test_getMacroPositionInString_given_Looking_for_Empty_Macro_should_macro_pointer\n");
   Node *root = addAllMacroIntoTree(str, "define");
-  subString = macroPositionInString(str, root);
+  subString = getMacroPositionInString(str, root);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(subString);
@@ -1015,14 +1015,17 @@ void test_createMacroInfo_given_backslash_btwn_name_and_content_should_able_crea
   TEST_ASSERT_NOT_NULL(macro);
   TEST_ASSERT_EQUAL_STRING("random", macro->name->string);
   TEST_ASSERT_EQUAL_STRING("(max)%100", macro->content->string);
-  TEST_ASSERT_NULL(macro->argument);
+  TEST_ASSERT_NOT_NULL(macro->argument);
+  TEST_ASSERT_EQUAL(0, macro->argument->withArgument);
+  TEST_ASSERT_EQUAL(0, macro->argument->size);
   delMacroNameAndContent(macro);
 
   macro = createMacroInfo(str);
   TEST_ASSERT_NOT_NULL(macro);
   TEST_ASSERT_EQUAL_STRING("maximum", macro->name->string);
   TEST_ASSERT_EQUAL_STRING("nothing * something", macro->content->string);
-  TEST_ASSERT_NULL(macro->argument);
+  TEST_ASSERT_EQUAL(0, macro->argument->withArgument);
+  TEST_ASSERT_EQUAL(0, macro->argument->size);
   delMacroNameAndContent(macro);
   printf("------------------------------------------------------------\n");
 
@@ -1044,14 +1047,18 @@ void test_createMacroInfo_given_content_with_quotation_marks_and_apostrophes(voi
   TEST_ASSERT_NOT_NULL(macro);
   TEST_ASSERT_EQUAL_STRING("Human", macro->name->string);
   TEST_ASSERT_EQUAL_STRING("\"hello\"+4", macro->content->string);
-  TEST_ASSERT_NULL(macro->argument);
+  TEST_ASSERT_NOT_NULL(macro->argument);
+  TEST_ASSERT_EQUAL(0, macro->argument->withArgument);
+  TEST_ASSERT_EQUAL(0, macro->argument->size);
   delMacroNameAndContent(macro);
 
   macro = createMacroInfo(str);
   TEST_ASSERT_NOT_NULL(macro);
   TEST_ASSERT_EQUAL_STRING("Rich", macro->name->string);
   TEST_ASSERT_EQUAL_STRING("\'isGood\'+ABC", macro->content->string);
-  TEST_ASSERT_NULL(macro->argument);
+  TEST_ASSERT_NOT_NULL(macro->argument);
+  TEST_ASSERT_EQUAL(0, macro->argument->withArgument);
+  TEST_ASSERT_EQUAL(0, macro->argument->size);
   delMacroNameAndContent(macro);
   printf("------------------------------------------------------------\n");
 
