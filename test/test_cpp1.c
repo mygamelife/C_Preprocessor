@@ -415,7 +415,7 @@ void test_modifyMacroPositionWithArguments_given_string_sum_bracket_5_should_get
 void test_modifyMacroPositionWithArguments_given_statement_with_argument_should_get_the_position(void)
 {
 	String *str = stringNew("#define mult(A, B) A*B\n");
-  String *str2 = stringNew("Ans = mult(A, B)\n");
+  String *str2 = stringNew("Ans = mult(A, B) + 4\n");
 
   printf("Start test_modifyMacroPositionWithArguments_given_statement_with_argument_should_get_the_position\n");
   Node *root = addAllMacroIntoTree(str, "define");
@@ -494,7 +494,7 @@ void test_storeArgumentsInString_given_macroName_without_arguments_but_statement
   stringDel(str2);
 }
 
-void Xtest_storeArgumentsInString_given_statement_with_argument_should_store_into_argument_value(void)
+void test_storeArgumentsInString_given_statement_with_argument_should_store_into_argument_value(void)
 {
 	String *str = stringNew("#define max(A , B) A + B\n");
   String *str2 = stringNew("max(100, 2000)");
@@ -505,7 +505,7 @@ void Xtest_storeArgumentsInString_given_statement_with_argument_should_store_int
   Node *root = addAllMacroIntoTree(str, "define");
   foundMacro = findMacroInTree(root, "max");
   macroSubString = getMacroPositionInString(str2, root);
-  storeArgumentsInString(macroSubString, foundMacro);
+  storeArgumentsInString(str2, foundMacro);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(foundMacro);
@@ -519,7 +519,7 @@ void Xtest_storeArgumentsInString_given_statement_with_argument_should_store_int
   stringDel(str2);
 }
 
-void Xtest_storeArgumentsInString_given_statement_with_mismatch_argument_size_should_throw_an_error(void)
+void test_storeArgumentsInString_given_statement_with_mismatch_argument_size_should_throw_an_error(void)
 {
 	String *str;
   String *str2;
@@ -535,7 +535,7 @@ void Xtest_storeArgumentsInString_given_statement_with_mismatch_argument_size_sh
     root = addAllMacroIntoTree(str, "define");
     foundMacro = findMacroInTree(root, "test");
     macroSubString = getMacroPositionInString(str2, root);
-    storeArgumentsInString(macroSubString, foundMacro);
+    storeArgumentsInString(str2, foundMacro);
     TEST_FAIL_MESSAGE("Should throw ERR_MISMATCH_ARGUMENT_SIZE exception");
   }
   Catch(err)  {
@@ -549,7 +549,7 @@ void Xtest_storeArgumentsInString_given_statement_with_mismatch_argument_size_sh
   stringDel(str2);
 }
 
-void Xtest_storeArgumentsInString_given_statement_with_closed_bracket_inside_argument_should_store_into_argument_value(void)
+void test_storeArgumentsInString_given_statement_with_closed_bracket_inside_argument_should_store_into_argument_value(void)
 {
 	String *str = stringNew("#define kanji(Oracle, ohaiyo) orange\n");
   String *str2 = stringNew("kanji(&_&,^_^))+432");
@@ -560,7 +560,7 @@ void Xtest_storeArgumentsInString_given_statement_with_closed_bracket_inside_arg
   Node *root = addAllMacroIntoTree(str, "define");
   foundMacro = findMacroInTree(root, "kanji");
   macroSubString = getMacroPositionInString(str2, root);
-  storeArgumentsInString(macroSubString, foundMacro);
+  storeArgumentsInString(str2, foundMacro);
   printf("------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(foundMacro);
@@ -576,7 +576,7 @@ void Xtest_storeArgumentsInString_given_statement_with_closed_bracket_inside_arg
 
 /** test storeArgumentsInString() given arguments with spaces
  **/
-void Xtest_storeArgumentsInString_given_arguments_with_spaces(void)
+void test_storeArgumentsInString_given_arguments_with_spaces(void)
 {
   String *str = stringNew("#define foooool(So, Ra, Aoi)");
   String *str2 = stringNew("foooool(  #$%^, ABC @!!  , code_{++} \t)\n");
@@ -592,7 +592,7 @@ void Xtest_storeArgumentsInString_given_arguments_with_spaces(void)
     root = addAllMacroIntoTree(str, "define");
     foundMacro = findMacroInTree(root, "foooool");
     macroSubString = getMacroPositionInString(str2, root);
-    storeArgumentsInString(macroSubString, foundMacro);
+    storeArgumentsInString(str2, foundMacro);
     TEST_FAIL_MESSAGE("Should throw ERR_MISMATCH_ARGUMENT_SIZE exception");
   }
   Catch(err)  {
@@ -606,31 +606,80 @@ void Xtest_storeArgumentsInString_given_arguments_with_spaces(void)
   stringDel(str2);
 }
 
-void Xtest_directiveDefine_given_statement_and_macro_with_argument(void)
+void test_replaceMacroInString_given_statement_and_macro_with_argument(void)
 {
-	String *str;
-  String *result;
-  CEXCEPTION_T err;
+	String *str = stringNew("#define divide(A) A/123\n");
+  String *latestString = stringNew("total = divide(5) && OMG");
+  char *replacedMacroString;
+  int size;
 
-  printf("Start test_directiveDefine_given_statement_and_macro_with_argument\n");
-
-  Try {
-    str = stringNew("#define divide(A) A/123\n"
-                          "total = divide(5)");
-    result = directiveDefine(str, "define");
-    TEST_FAIL_MESSAGE("Should throw ERR_MISMATCH_ARGUMENT_SIZE exception");
-  }
-  Catch(err)  {
-    TEST_ASSERT_EQUAL_MESSAGE(ERR_MISMATCH_ARGUMENT_SIZE, err, "Expect ERR_MISMATCH_ARGUMENT_SIZE exception");
-  }
+  printf("Start test_replaceMacroInString_given_statement_and_macro_with_argument\n");
+  Node *root = addAllMacroIntoTree(str, "define");
+  Macro *foundMacro = findMacroInTree(root, "divide");
+  String *macroSubString = getMacroPositionInString(latestString, root);
+  modifyMacroPositionWithArguments(macroSubString, foundMacro);
+  size = strlen(latestString->string) - macroSubString->length + (foundMacro->content->length);
+  storeArgumentsInString(latestString, foundMacro);
+  replacedMacroString = replaceMacroInString(latestString, macroSubString, foundMacro, size);
   printf("------------------------------------------------------------\n");
 
-  TEST_ASSERT_NOT_NULL(result);
-  TEST_ASSERT_EQUAL_STRING("i _Sing", result->string);
-  TEST_ASSERT_EQUAL(0, result->startindex);
-  TEST_ASSERT_EQUAL(7, result->length);
+  TEST_ASSERT_NOT_NULL(replacedMacroString);
+  TEST_ASSERT_EQUAL_STRING("total = A/123 && OMG", replacedMacroString);
 
-  subStringDel(result->string);
-  stringDel(result);
+  subStringDel(replacedMacroString);
+  stringDel(latestString);
+  stringDel(str);
+}
+
+void test_replaceMacroInString_given_statement_with_multiple_arguments(void)
+{
+	String *str = stringNew("#define getRandom(Apples, _Dog, XMEN, _Spiderman, _DragonClaw, _Pudge_X, Fire_in_, The_hol3) \\\n"
+                          "_Spiderman, XMEN and _Pudge_X eating Apples\n");
+  String *latestString = stringNew("Just getRandom(A%%, B^B, C*, $D, E*@, Code, Fun, AsAlways) for Fun");
+  char *replacedMacroString;
+  int size;
+
+  printf("Start test_replaceMacroInString_given_statement_with_multiple_arguments\n");
+  Node *root = addAllMacroIntoTree(str, "define");
+  Macro *foundMacro = findMacroInTree(root, "getRandom");
+  String *macroSubString = getMacroPositionInString(latestString, root);
+  modifyMacroPositionWithArguments(macroSubString, foundMacro);
+  size = strlen(latestString->string) - macroSubString->length + (foundMacro->content->length);
+  storeArgumentsInString(latestString, foundMacro);
+  replacedMacroString = replaceMacroInString(latestString, macroSubString, foundMacro, size);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(replacedMacroString);
+  TEST_ASSERT_EQUAL_STRING("Just _Spiderman, XMEN and _Pudge_X eating Apples for Fun", replacedMacroString);
+
+  subStringDel(replacedMacroString);
+  stringDel(latestString);
+  stringDel(str);
+}
+
+void test_searchAndReplaceArgumentsInString_given_statement_with_multiple_arguments_should_replace_all_the_arguments(void)
+{
+	String *str = stringNew("#define getMax(first, second) \\\n"
+                          "first * second\n");
+  String *latestString = stringNew("getMax(40$, 60)");
+  char *replacedMacroString, *finalResult = NULL;
+  int size;
+
+  printf("Start test_searchAndReplaceArgumentsInString_given_statement_with_multiple_arguments_should_replace_all_the_arguments\n");
+  Node *root = addAllMacroIntoTree(str, "define");
+  Macro *foundMacro = findMacroInTree(root, "getMax");
+  String *macroSubString = getMacroPositionInString(latestString, root);
+  modifyMacroPositionWithArguments(macroSubString, foundMacro);
+  size = strlen(latestString->string) - macroSubString->length + (foundMacro->content->length);
+  storeArgumentsInString(latestString, foundMacro);
+  replacedMacroString = replaceMacroInString(latestString, macroSubString, foundMacro, size);
+  finalResult = searchAndReplaceArgumentsInString(replacedMacroString, foundMacro);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(finalResult);
+  TEST_ASSERT_EQUAL_STRING("40$ * 60", finalResult);
+
+  subStringDel(replacedMacroString);
+  stringDel(latestString);
   stringDel(str);
 }

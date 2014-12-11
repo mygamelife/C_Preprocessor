@@ -18,6 +18,7 @@ Macro *createMacroInfo(String *str);
 Node *addAllMacroIntoTree(String *string, char *directiveName);
 Macro *findMacroInTree(Node *root, char *targetMacro);
 char *replaceMacroInString(String *latestString, String *macroSubString, Macro *foundMacro, int size);
+char *replaceArgumentsInString(String *latestString, String *argumentSubString, Macro *foundMacro, int size);
 String *getMacroPositionInString(String *str, Node *root);
 String *directiveDefine(String *str, char *directiveName);
 int getSizeOfArgu(String *str, char *containSet);
@@ -26,4 +27,5 @@ int verifyRedifineArguments(Macro *macro);
 Argument *createMacroArguments(String *str, char *containSet);
 void storeArgumentsInString(String *str, Macro *macro);
 void modifyMacroPositionWithArguments(String *macroSubString, Macro *foundMacro);
+char *searchAndReplaceArgumentsInString(char *replacedMacroString, Macro *foundMacro);
 #endif // Preprocessor_H
