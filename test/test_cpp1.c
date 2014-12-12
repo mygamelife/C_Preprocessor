@@ -696,7 +696,7 @@ void test_replaceArgumentsInString_given_statement_with_arguments_should_replace
   destroyAllMacroInTree(root);
 }
 
-void Xtest_searchAndReplaceArgumentsInString_given_statement_with_multiple_arguments_should_replace_all_the_arguments(void)
+void test_searchAndReplaceArgumentsInString_given_statement_with_multiple_arguments_should_replace_all_the_arguments(void)
 {
 	String *str = stringNew("#define getMax(first, second) \\\n"
                           "first * second\n");
