@@ -791,7 +791,7 @@ void test_getArgumentPositionInString_given_total_with_argument_should_get_argum
   stringDel(str);
 }
 
-void Xtest_directiveDefine_given_sumAB_with_arguments(void)
+void test_directiveDefine_given_sumAB_with_arguments(void)
 {
 	String *str = stringNew("#define sumAB(A, B) A + B\n"
                           "SumTotal = A + B");
@@ -811,7 +811,7 @@ void Xtest_directiveDefine_given_sumAB_with_arguments(void)
   stringDel(str);
 }
 
-void Xtest_directiveDefine_given_addRandom_with_arguments(void)
+void test_directiveDefine_given_addRandom_with_arguments(void)
 {
 	String *str = stringNew("#define addRandom(One, Two) 100 + One + Two\n"
                           "Total = addRandom(1000, 800)");
@@ -831,7 +831,7 @@ void Xtest_directiveDefine_given_addRandom_with_arguments(void)
   stringDel(str);
 }
 
-void Xtest_directiveDefine_given_addRandom_with_random_arguments(void)
+void test_directiveDefine_given_addRandom_with_random_arguments(void)
 {
 	String *str = stringNew("#define randomTest(_arg1, _arg2, _arg3, _arg4) WOW$ + (_arg1 + (_arg2 /_arg3)) % _arg4\n"
                           "Total = randomTest(k_pop, hyuna_123, kamsamida!!@, @_@) + _arg1");
@@ -851,7 +851,7 @@ void Xtest_directiveDefine_given_addRandom_with_random_arguments(void)
   stringDel(str);
 }
 
-void Xtest_directiveDefine_given_multiple_define_macro_should_expand_all(void)
+void test_directiveDefine_given_multiple_define_macro_should_expand_all(void)
 {
 	String *str = stringNew("#define _Oppa(Sarang, hea) Korea_ Sarang!@#\n"
                           "_Oppa(Kawaii, ^_<)\n");
