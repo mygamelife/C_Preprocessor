@@ -661,7 +661,7 @@ void test_replaceMacroInString_given_statement_with_multiple_arguments(void)
   destroyAllMacroInTree(root);
 }
 
-void Xtest_replaceArgumentsInString_given_statement_with_arguments_should_replace_the_argument(void)
+void test_replaceArgumentsInString_given_statement_with_arguments_should_replace_the_argument(void)
 {
 	String *str = stringNew("#define divide(A) A/123\n");
   String *latestString = stringNew("total = divide(99) && OMG");
