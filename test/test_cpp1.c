@@ -657,6 +657,39 @@ void test_replaceMacroInString_given_statement_with_multiple_arguments(void)
   stringDel(str);
 }
 
+void test_replaceArgumentsInString_given_statement_with_arguments_should_replace_the_argument(void)
+{
+	String *str = stringNew("#define divide(A) A/123\n");
+  String *latestString = stringNew("total = divide(99) && OMG");
+  char *replacedArgumentsString, *replacedMacroString;
+  int size;
+
+  printf("Start test_replaceArgumentsInString_given_statement_with_arguments_should_replace_the_argument\n");
+  Node *root = addAllMacroIntoTree(str, "define");
+  Macro *foundMacro = findMacroInTree(root, "divide");
+  String *macroSubString = getMacroPositionInString(latestString, root);
+  storeArgumentsInString(latestString, foundMacro);
+  modifyMacroPositionWithArguments(macroSubString, foundMacro);
+  size = strlen(latestString->string) - macroSubString->length + (foundMacro->content->length);
+  replacedMacroString = replaceMacroInString(latestString, macroSubString, foundMacro, size);
+  String *str2 = stringNew(replacedMacroString);
+  String *argumentSubString = stringRemoveWordContaining(str2 , foundMacro->argument->entries[0]->name->string);
+  // total = A/123 && OMG
+  size = strlen(str2->string) - argumentSubString->length + foundMacro->argument->entries[0]->value->length;
+  replacedArgumentsString = replaceArgumentsInString(str2, argumentSubString, foundMacro->argument->entries[0]->value->string, size);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(replacedArgumentsString);
+  TEST_ASSERT_EQUAL_STRING("total = 99/123 && OMG", replacedArgumentsString);
+
+  subStringDel(replacedMacroString);
+  subStringDel(replacedArgumentsString);
+  stringDel(argumentSubString);
+  stringDel(latestString);
+  stringDel(str2);
+  stringDel(str);
+}
+
 void test_searchAndReplaceArgumentsInString_given_statement_with_multiple_arguments_should_replace_all_the_arguments(void)
 {
 	String *str = stringNew("#define getMax(first, second) \\\n"

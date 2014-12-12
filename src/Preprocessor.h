@@ -18,7 +18,7 @@ Macro *createMacroInfo(String *str);
 Node *addAllMacroIntoTree(String *string, char *directiveName);
 Macro *findMacroInTree(Node *root, char *targetMacro);
 char *replaceMacroInString(String *latestString, String *macroSubString, Macro *foundMacro, int size);
-char *replaceArgumentsInString(String *latestString, String *argumentSubString, Macro *foundMacro, int size);
+char *replaceArgumentsInString(String *str, String *argumentSubString, char *argumentValue, int size);
 String *getMacroPositionInString(String *str, Node *root);
 String *directiveDefine(String *str, char *directiveName);
 int getSizeOfArgu(String *str, char *containSet);
