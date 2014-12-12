@@ -718,10 +718,12 @@ void test_searchAndReplaceArgumentsInString_given_statement_with_multiple_argume
   TEST_ASSERT_NOT_NULL(finalResult);
   TEST_ASSERT_EQUAL_STRING("40$ * 60", finalResult);
 
-  subStringDel(replacedMacroString);
+  // subStringDel(replacedMacroString);
   subStringDel(finalResult);
+  stringDel(macroSubString);
   stringDel(latestString);
   stringDel(str);
+  destroyAllMacroInTree(root);
 }
 
 void Xtest_getArgumentPositionInString_given_string_with_argument_should_return_the_argument_position(void) // <----- Problem
