@@ -686,12 +686,14 @@ void Xtest_replaceArgumentsInString_given_statement_with_arguments_should_replac
   TEST_ASSERT_NOT_NULL(replacedArgumentsString);
   TEST_ASSERT_EQUAL_STRING("total = 99/123 && OMG", replacedArgumentsString);
 
-  subStringDel(replacedMacroString);
   subStringDel(replacedArgumentsString);
+  subStringDel(replacedMacroString);
   stringDel(argumentSubString);
+  stringDel(macroSubString);
   stringDel(latestString);
   stringDel(str2);
   stringDel(str);
+  destroyAllMacroInTree(root);
 }
 
 void Xtest_searchAndReplaceArgumentsInString_given_statement_with_multiple_arguments_should_replace_all_the_arguments(void)
