@@ -606,7 +606,7 @@ void test_storeArgumentsInString_given_arguments_with_spaces(void)
   stringDel(str2);
 }
 
-void test_replaceMacroInString_given_statement_and_macro_with_argument(void)
+void Xtest_replaceMacroInString_given_statement_and_macro_with_argument(void)
 {
 	String *str = stringNew("#define divide(A) A/123\n");
   String *latestString = stringNew("total = divide(5) && OMG");
@@ -631,7 +631,7 @@ void test_replaceMacroInString_given_statement_and_macro_with_argument(void)
   stringDel(str);
 }
 
-void test_replaceMacroInString_given_statement_with_multiple_arguments(void)
+void Xtest_replaceMacroInString_given_statement_with_multiple_arguments(void)
 {
 	String *str = stringNew("#define getRandom(Apples, _Dog, XMEN, _Spiderman, _DragonClaw, _Pudge_X, Fire_in_, The_hol3) \\\n"
                           "_Spiderman, XMEN and _Pudge_X eating Apples\n");
@@ -657,7 +657,7 @@ void test_replaceMacroInString_given_statement_with_multiple_arguments(void)
   stringDel(str);
 }
 
-void test_replaceArgumentsInString_given_statement_with_arguments_should_replace_the_argument(void)
+void Xtest_replaceArgumentsInString_given_statement_with_arguments_should_replace_the_argument(void)
 {
 	String *str = stringNew("#define divide(A) A/123\n");
   String *latestString = stringNew("total = divide(99) && OMG");
@@ -690,7 +690,7 @@ void test_replaceArgumentsInString_given_statement_with_arguments_should_replace
   stringDel(str);
 }
 
-void test_searchAndReplaceArgumentsInString_given_statement_with_multiple_arguments_should_replace_all_the_arguments(void)
+void Xtest_searchAndReplaceArgumentsInString_given_statement_with_multiple_arguments_should_replace_all_the_arguments(void)
 {
 	String *str = stringNew("#define getMax(first, second) \\\n"
                           "first * second\n");
@@ -718,7 +718,7 @@ void test_searchAndReplaceArgumentsInString_given_statement_with_multiple_argume
   stringDel(str);
 }
 
-void test_getArgumentPositionInString_given_string_with_argument_should_return_the_argument_position(void) // <----- Problem
+void Xtest_getArgumentPositionInString_given_string_with_argument_should_return_the_argument_position(void) // <----- Problem
 {
 	String *str = stringNew("#define Zzz(B, C) 123\n");
   String *str2 = stringNew("Boy + B\n");
