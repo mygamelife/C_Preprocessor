@@ -551,19 +551,13 @@ char *searchAndReplaceArgumentsInString(char *replacedMacroString, Macro *foundM
 
   if(foundMacro != NULL)  {
     if(foundMacro->argument->withArgument == 0)
-      return replacedMacroString;
-    
+      return replacedMacroString;  
     else if(foundMacro->argument->size != 0 && foundMacro->argument->withArgument != 0)  {
       str = stringNew(replacedMacroString);
       argumentSubString = getArgumentPositionInString(str , foundMacro->argument->entries[k]->name->string);
       while(argumentSubString->length != 0) {
-        printf("start %d, position %d\n", argumentSubString->startindex, argumentSubString->length);
         size = strlen(str->string) - argumentSubString->length + foundMacro->argument->entries[k]->value->length;
         argumentValue = foundMacro->argument->entries[k]->value->string;
-        // printf("size %d\n", size);
-        // printf("argumentSubstring start %d, length %d\n", argumentSubString->startindex, argumentSubString->length);
-        // printf("argumentValue %s\n", argumentValue);
-        // printf("str->string %s\n", str->string);
         replacedArgumentsString = replaceArgumentsInString(str, argumentSubString, argumentValue, size);
         if(k == foundMacro->argument->size - 1) break;
         
@@ -573,11 +567,8 @@ char *searchAndReplaceArgumentsInString(char *replacedMacroString, Macro *foundM
         stringDel(argumentSubString);
         argumentSubString = NULL;
         k++;
-        // printf("str start %d, length %d\n", str->startindex, str->length);
-        // printf("name %s\n", foundMacro->argument->entries[k]->name->string);
       
         argumentSubString = getArgumentPositionInString(str ,foundMacro->argument->entries[k]->name->string);
-        // printf("argumentSubstring start %d, length %d\n", argumentSubString->startindex, argumentSubString->length);
       }
       stringDel(str);
       stringDel(argumentSubString);

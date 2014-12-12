@@ -718,7 +718,6 @@ void test_searchAndReplaceArgumentsInString_given_statement_with_multiple_argume
   TEST_ASSERT_NOT_NULL(finalResult);
   TEST_ASSERT_EQUAL_STRING("40$ * 60", finalResult);
 
-  // subStringDel(replacedMacroString);
   subStringDel(finalResult);
   stringDel(macroSubString);
   stringDel(latestString);
@@ -726,7 +725,7 @@ void test_searchAndReplaceArgumentsInString_given_statement_with_multiple_argume
   destroyAllMacroInTree(root);
 }
 
-void Xtest_getArgumentPositionInString_given_string_with_argument_should_return_the_argument_position(void) // <----- Problem
+void test_getArgumentPositionInString_given_string_with_argument_should_return_the_argument_position(void) // <----- Problem
 {
 	String *str = stringNew("#define Zzz(B, C) 123\n");
   String *str2 = stringNew("Boy + B\n");
@@ -741,9 +740,9 @@ void Xtest_getArgumentPositionInString_given_string_with_argument_should_return_
   TEST_ASSERT_NOT_NULL(subString);
   TEST_ASSERT_EQUAL(6, subString->startindex);
   TEST_ASSERT_EQUAL(1, subString->length);
-
-  destroyAllMacroInTree(root);
+  
   stringDel(subString);
+  destroyAllMacroInTree(root);
   stringDel(str2);
   stringDel(str);
 }
