@@ -230,7 +230,7 @@ Macro *createMacroInfo(String *str) {
     Throw(ERR_EMPTY_MACRO_NAME);
 
   macroName = stringSubStringInChars(name , name->length);
-  printf("str after removed name, start %d, length %d\n", str->startindex, str->length);
+  // printf("str after removed name, start %d, length %d\n", str->startindex, str->length);
   macroArguments = createMacroArguments(str, alphaNumericSet);
 
   /*------------------------------------------------------------------------------*/
@@ -358,15 +358,31 @@ String *getMacroPositionInString(String *str, Node *root) {
   Macro *foundMacro = NULL;
 
   subString = stringRemoveWordContaining(str, alphaNumericSet);
-  printf("subString start %d, length %d\n", subString->startindex, subString->length);
+  // printf("subString start %d, length %d\n", subString->startindex, subString->length);
   while(subString->length != 0)  {
-
     token = stringSubStringInChars(subString, subString->length); /**need free**/
     foundMacro = findMacroInTree(root, token);
     free(token);
     if(foundMacro != NULL)  {
       break;
     }
+    free(subString);
+    subString = stringRemoveWordContaining(str, alphaNumericSet);
+  }
+  return subString;
+}
+
+String *getArgumentPositionInString(String *str, char *argumentName) {
+  char *token;
+  
+  String *subString = stringRemoveWordContaining(str, alphaNumericSet);
+  while(subString->length != 0)  {
+    token = stringSubStringInChars(subString, subString->length);
+    if(!strcmp(token, argumentName))  {
+      free(token);
+      return subString;
+    }
+    free(token);
     free(subString);
     subString = stringRemoveWordContaining(str, alphaNumericSet);
   }
@@ -389,8 +405,10 @@ void modifyMacroPositionWithArguments(String *macroSubString, Macro *foundMacro)
   start = macroSubString->startindex;
   macroSubString->startindex = macroSubString->startindex + foundMacro->name->length;
   printf("subString start %d, name length %d\n", macroSubString->startindex, foundMacro->name->length);
-  if(foundMacro->argument->withArgument == 1 && macroSubString->string[macroSubString->startindex] != '(')
+  if(foundMacro->argument->withArgument == 1 && macroSubString->string[macroSubString->startindex] != '(')  {
+    printf("error here?\n");
     Throw(ERR_EXPECT_ARGUMENT);
+  }
   else if(foundMacro->argument->size != 0 && macroSubString->string[macroSubString->startindex] == '(') {
     do  {
       arguLength++;
@@ -433,7 +451,7 @@ char *replaceMacroInString(String *latestString, String *macroSubString, Macro *
       replacedMacroInString[i] = latestString->string[start++];
     replacedMacroInString[i] = '\0';
   }
-  printf("replacedMacroInString %s\n", replacedMacroInString);
+  // printf("replacedMacroInString %s\n", replacedMacroInString);
   return replacedMacroInString;
 }
 
@@ -494,8 +512,8 @@ char *replaceArgumentsInString(String *str, String *argumentSubString, char *arg
   int i = 0, j = 0, valueLength, start = 0;
   char *replacedArgumentsString = malloc(sizeof(char) * size + 1);
   
-  printf("size %d\n", size);
-  printf("argumentValue %s\n", argumentValue);
+  // printf("size %d\n", size);
+  // printf("argumentValue %s\n", argumentValue);
   valueLength = strlen(argumentValue);
 
   for(i; i< size ; i++) {
@@ -510,7 +528,7 @@ char *replaceArgumentsInString(String *str, String *argumentSubString, char *arg
     replacedArgumentsString[i] = str->string[start++];
         // printf("str->string[start++] %c\n", str->string[start++]);
   }
-  printf("i %d\n", i);
+  // printf("i %d\n", i);
   replacedArgumentsString[i] = '\0';
   puts(replacedArgumentsString);
   return replacedArgumentsString;
@@ -531,33 +549,41 @@ char *searchAndReplaceArgumentsInString(char *replacedMacroString, Macro *foundM
   int size, valueLength, start = 0, i = 0, j = 0, k = 0;
   char *replacedArgumentsString, *argumentValue = NULL;
 
-  if(foundMacro->argument->size)  {
-    str = stringNew(replacedMacroString);
-    argumentSubString = stringRemoveWordContaining(str , foundMacro->argument->entries[k]->name->string);
-    while(k != foundMacro->argument->size) {
-      // printf("start %d, position %d\n", argumentSubString->startindex, argumentSubString->length);
-      size = strlen(str->string) - argumentSubString->length + foundMacro->argument->entries[k]->value->length;
-      argumentValue = foundMacro->argument->entries[k]->value->string;
-      printf("size %d\n", size);
-      printf("argumentSubstring start %d, length %d\n", argumentSubString->startindex, argumentSubString->length);
-      printf("argumentValue %s\n", argumentValue);
-      printf("str->string %s\n", str->string);
-
-      replacedArgumentsString = replaceArgumentsInString(str, argumentSubString, argumentValue, size);
-      if(k == foundMacro->argument->size - 1) break;
+  if(foundMacro != NULL)  {
+    if(foundMacro->argument->withArgument == 0)
+      return replacedMacroString;
+    
+    else if(foundMacro->argument->size != 0 && foundMacro->argument->withArgument != 0)  {
+      str = stringNew(replacedMacroString);
+      argumentSubString = getArgumentPositionInString(str , foundMacro->argument->entries[k]->name->string);
+      while(argumentSubString->length != 0) {
+        printf("start %d, position %d\n", argumentSubString->startindex, argumentSubString->length);
+        size = strlen(str->string) - argumentSubString->length + foundMacro->argument->entries[k]->value->length;
+        argumentValue = foundMacro->argument->entries[k]->value->string;
+        // printf("size %d\n", size);
+        // printf("argumentSubstring start %d, length %d\n", argumentSubString->startindex, argumentSubString->length);
+        // printf("argumentValue %s\n", argumentValue);
+        // printf("str->string %s\n", str->string);
+        replacedArgumentsString = replaceArgumentsInString(str, argumentSubString, argumentValue, size);
+        if(k == foundMacro->argument->size - 1) break;
         
-      subStringDel(str->string);
+        subStringDel(str->string);
+        stringDel(str);
+        str = stringNew(replacedArgumentsString);
+        stringDel(argumentSubString);
+        argumentSubString = NULL;
+        k++;
+        // printf("str start %d, length %d\n", str->startindex, str->length);
+        // printf("name %s\n", foundMacro->argument->entries[k]->name->string);
+      
+        argumentSubString = getArgumentPositionInString(str ,foundMacro->argument->entries[k]->name->string);
+        // printf("argumentSubstring start %d, length %d\n", argumentSubString->startindex, argumentSubString->length);
+      }
       stringDel(str);
-      str = stringNew(replacedArgumentsString);
       stringDel(argumentSubString);
-      k++;
-      argumentSubString = stringRemoveWordContaining(str , foundMacro->argument->entries[k]->name->string);
+      return  replacedArgumentsString;
     }
-    stringDel(str);
-    stringDel(argumentSubString);
-    return  replacedArgumentsString;
   }
-  else return replacedMacroString;
 }
 
 /** String *directiveDefine(String *str, char *directiveName)
@@ -568,7 +594,7 @@ char *searchAndReplaceArgumentsInString(char *replacedMacroString, Macro *foundM
  **/
 String *directiveDefine(String *str, char *directiveName) {
   int size, count = 0, cyclic = 0, nextToCyclic = 0;
-  char *macroToken, *stringStatement, *replacedMacroString = NULL;
+  char *macroToken, *stringStatement, *replacedMacroString = NULL, *finalString = NULL;
   String *macroSubString, *latestString;
   Macro *foundMacro;
   LinkedList *head = NULL, *newList = NULL;
@@ -579,11 +605,10 @@ String *directiveDefine(String *str, char *directiveName) {
   // printf("stringStatement %p\n", stringStatement);
   // printf("stringStatement %s\n", stringStatement);
   latestString = stringNew(stringStatement);
-  // printf("latestString %p\n", latestString);
   // printf("latestString string %s, start %d, length %d\n", latestString->string, latestString->startindex, latestString->length);
-  // printf("latestString %p\n", latestString);
   macroSubString = getMacroPositionInString(latestString, root);
   // printf("macroSubString start %d, length %d\n", macroSubString->startindex, macroSubString->length);
+  
   /*******************************************************************************************/
   while(macroSubString->length != 0) {
     macroToken = stringSubStringInChars(macroSubString, macroSubString->length);
@@ -595,8 +620,10 @@ String *directiveDefine(String *str, char *directiveName) {
       if(foundMacro->argument->withArgument)  {
         modifyMacroPositionWithArguments(macroSubString, foundMacro);
         size = strlen(latestString->string) - macroSubString->length + (foundMacro->content->length);
+        storeArgumentsInString(latestString, foundMacro);
+        // printf("macroSubString start %d, length %d\n", macroSubString->startindex, macroSubString->length);
       }
-      storeArgumentsInString(latestString, foundMacro);
+        
       cyclic = findList(&head, foundMacro->name->string);
       // printf("cyclic %d\n", cyclic);
       if(cyclic)  {
@@ -612,16 +639,18 @@ String *directiveDefine(String *str, char *directiveName) {
       }
     }
     else  size = strlen(latestString->string);
-
    // printf("size %d\n", size);
    // printf("latestString string %s, start %d, length %d\n", latestString->string, latestString->startindex, latestString->length);
    // printf("macroSubString start %d, length %d\n", macroSubString->startindex, macroSubString->length);
    if(!cyclic)  {
       replacedMacroString = replaceMacroInString(latestString, macroSubString, foundMacro, size);
+      finalString = searchAndReplaceArgumentsInString(replacedMacroString, foundMacro);
+      // printf("finalString %s\n", finalString);
+      // printf("finalString %s\n", finalString);
       /* free before re-use latestString */
       subStringDel(latestString->string);
       stringDel(latestString);
-      latestString = stringNew(replacedMacroString);
+      latestString = stringNew(finalString);
    }
    if(nextToCyclic)  //always start at next to cyclic happen
     latestString->startindex = nextToCyclic;

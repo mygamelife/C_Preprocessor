@@ -713,6 +713,154 @@ void test_searchAndReplaceArgumentsInString_given_statement_with_multiple_argume
   TEST_ASSERT_EQUAL_STRING("40$ * 60", finalResult);
 
   subStringDel(replacedMacroString);
+  subStringDel(finalResult);
   stringDel(latestString);
+  stringDel(str);
+}
+
+void test_getArgumentPositionInString_given_string_with_argument_should_return_the_argument_position(void) // <----- Problem
+{
+	String *str = stringNew("#define Zzz(B, C) 123\n");
+  String *str2 = stringNew("Boy + B\n");
+  String *subString;
+
+  printf("Start test_getArgumentPositionInString_given_string_with_argument_should_return_the_argument_position\n");
+  Node *root = addAllMacroIntoTree(str, "define");
+  Macro *foundMacro = findMacroInTree(root, "Zzz");
+  subString = getArgumentPositionInString(str2, foundMacro->argument->entries[0]->name->string);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(subString);
+  TEST_ASSERT_EQUAL(6, subString->startindex);
+  TEST_ASSERT_EQUAL(1, subString->length);
+
+  destroyAllMacroInTree(root);
+  stringDel(subString);
+  stringDel(str2);
+  stringDel(str);
+}
+
+void test_getArgumentPositionInString_given_string_with_argument_not_inside_MacroInfo(void) // <----- Problem
+{
+	String *str = stringNew("#define Love(My, Girl)\n");
+  String *str2 = stringNew("You are my Lady\n");
+  String *subString;
+
+  printf("Start test_getArgumentPositionInString_given_string_with_argument_not_inside_MacroInfo\n");
+  Node *root = addAllMacroIntoTree(str, "define");
+  Macro *foundMacro = findMacroInTree(root, "Love");
+  subString = getArgumentPositionInString(str2, foundMacro->argument->entries[0]->name->string);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(subString);
+  TEST_ASSERT_EQUAL(0, subString->startindex);
+  TEST_ASSERT_EQUAL(0, subString->length);
+
+  destroyAllMacroInTree(root);
+  stringDel(subString);
+  stringDel(str2);
+  stringDel(str);
+}
+
+void test_getArgumentPositionInString_given_total_with_argument_should_get_argument_position(void) // <----- Problem
+{
+	String *str = stringNew("#define total(Total, Two)\n");
+  String *str2 = stringNew("total Two\n");
+  String *subString;
+
+  printf("Start test_getArgumentPositionInString_given_total_with_argument_should_get_argument_position\n");
+  Node *root = addAllMacroIntoTree(str, "define");
+  Macro *foundMacro = findMacroInTree(root, "total");
+  subString = getArgumentPositionInString(str2, foundMacro->argument->entries[1]->name->string);
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(subString);
+  TEST_ASSERT_EQUAL(6, subString->startindex);
+  TEST_ASSERT_EQUAL(3, subString->length);
+
+  destroyAllMacroInTree(root);
+  stringDel(subString);
+  stringDel(str2);
+  stringDel(str);
+}
+
+void test_directiveDefine_given_sumAB_with_arguments(void)
+{
+	String *str = stringNew("#define sumAB(A, B) A + B\n"
+                          "SumTotal = A + B");
+  String *result;
+
+  printf("Start test_directiveDefine_given_sumAB_with_arguments\n");
+  result = directiveDefine(str, "define");
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(result);
+  TEST_ASSERT_EQUAL_STRING("SumTotal = A + B", result->string);
+  TEST_ASSERT_EQUAL(0, result->startindex);
+  TEST_ASSERT_EQUAL(16, result->length);
+
+  subStringDel(result->string);
+  stringDel(result);
+  stringDel(str);
+}
+
+void test_directiveDefine_given_addRandom_with_arguments(void)
+{
+	String *str = stringNew("#define addRandom(One, Two) 100 + One + Two\n"
+                          "Total = addRandom(1000, 800)");
+  String *result;
+
+  printf("Start test_directiveDefine_given_addRandom_with_arguments\n");
+  result = directiveDefine(str, "define");
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(result);
+  TEST_ASSERT_EQUAL_STRING("Total = 100 + 1000 + 800", result->string);
+  TEST_ASSERT_EQUAL(0, result->startindex);
+  TEST_ASSERT_EQUAL(24, result->length);
+
+  subStringDel(result->string);
+  stringDel(result);
+  stringDel(str);
+}
+
+void test_directiveDefine_given_addRandom_with_random_arguments(void)
+{
+	String *str = stringNew("#define randomTest(_arg1, _arg2, _arg3, _arg4) WOW$ + (_arg1 + (_arg2 /_arg3)) % _arg4\n"
+                          "Total = randomTest(k_pop, hyuna_123, kamsamida!!@, @_@) + _arg1");
+  String *result;
+
+  printf("Start test_directiveDefine_given_addRandom_with_random_arguments\n");
+  result = directiveDefine(str, "define");
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(result);
+  TEST_ASSERT_EQUAL_STRING("Total = WOW$ + (k_pop + (hyuna_123 /kamsamida!!@)) % @_@ + _arg1", result->string);
+  TEST_ASSERT_EQUAL(0, result->startindex);
+  TEST_ASSERT_EQUAL(64, result->length);
+
+  subStringDel(result->string);
+  stringDel(result);
+  stringDel(str);
+}
+
+void test_directiveDefine_given_multiple_define_macro_should_expand_all(void)
+{
+	String *str = stringNew("#define _Oppa(Sarang, hea) Korea_ Sarang!@#\n"
+                          "_Oppa(Kawaii, ^_<)\n");
+  String *result;
+  CEXCEPTION_T err;
+
+  printf("Start test_directiveDefine_given_multiple_define_macro_should_expand_all\n");
+  result = directiveDefine(str, "define");
+  printf("------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(result);
+  TEST_ASSERT_EQUAL_STRING("Korea_ Kawaii!@#", result->string);
+  TEST_ASSERT_EQUAL(0, result->startindex);
+  TEST_ASSERT_EQUAL(16, result->length);
+
+  subStringDel(result->string);
+  stringDel(result);
   stringDel(str);
 }

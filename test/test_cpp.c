@@ -1067,7 +1067,7 @@ void test_createMacroInfo_given_content_with_quotation_marks_and_apostrophes(voi
 
 /** test directiveDefine() given string with backslash:
  **/
-void Xtest_directiveDefine_given_string_contain_backslash(void)
+void test_directiveDefine_given_string_contain_backslash(void)
 {
 	String *str = stringNew("#define min_123\\\n"
                           "max_321 + 4\n"

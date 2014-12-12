@@ -20,6 +20,7 @@ Macro *findMacroInTree(Node *root, char *targetMacro);
 char *replaceMacroInString(String *latestString, String *macroSubString, Macro *foundMacro, int size);
 char *replaceArgumentsInString(String *str, String *argumentSubString, char *argumentValue, int size);
 String *getMacroPositionInString(String *str, Node *root);
+String *getArgumentPositionInString(String *str, char *argumentName);
 String *directiveDefine(String *str, char *directiveName);
 int getSizeOfArgu(String *str, char *containSet);
 int getSizeOfArguInString(String *str, char *containSet);
