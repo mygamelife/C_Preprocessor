@@ -633,7 +633,7 @@ void test_replaceMacroInString_given_statement_and_macro_with_argument(void)
   destroyAllMacroInTree(root);
 }
 
-void Xtest_replaceMacroInString_given_statement_with_multiple_arguments(void)
+void test_replaceMacroInString_given_statement_with_multiple_arguments(void)
 {
 	String *str = stringNew("#define getRandom(Apples, _Dog, XMEN, _Spiderman, _DragonClaw, _Pudge_X, Fire_in_, The_hol3) \\\n"
                           "_Spiderman, XMEN and _Pudge_X eating Apples\n");
@@ -655,8 +655,10 @@ void Xtest_replaceMacroInString_given_statement_with_multiple_arguments(void)
   TEST_ASSERT_EQUAL_STRING("Just _Spiderman, XMEN and _Pudge_X eating Apples for Fun", replacedMacroString);
 
   subStringDel(replacedMacroString);
+  stringDel(macroSubString);
   stringDel(latestString);
   stringDel(str);
+  destroyAllMacroInTree(root);
 }
 
 void Xtest_replaceArgumentsInString_given_statement_with_arguments_should_replace_the_argument(void)
