@@ -740,7 +740,7 @@ void test_getArgumentPositionInString_given_string_with_argument_should_return_t
   TEST_ASSERT_NOT_NULL(subString);
   TEST_ASSERT_EQUAL(6, subString->startindex);
   TEST_ASSERT_EQUAL(1, subString->length);
-  
+
   stringDel(subString);
   destroyAllMacroInTree(root);
   stringDel(str2);
@@ -856,7 +856,6 @@ void test_directiveDefine_given_multiple_define_macro_should_expand_all(void)
 	String *str = stringNew("#define _Oppa(Sarang, hea) Korea_ Sarang!@#\n"
                           "_Oppa(Kawaii, ^_<)\n");
   String *result;
-  CEXCEPTION_T err;
 
   printf("Start test_directiveDefine_given_multiple_define_macro_should_expand_all\n");
   result = directiveDefine(str, "define");
@@ -869,5 +868,26 @@ void test_directiveDefine_given_multiple_define_macro_should_expand_all(void)
 
   subStringDel(result->string);
   stringDel(result);
+  stringDel(str);
+}
+
+void test_directiveDefine_given_non_identifier_in_argument_should_throw_error(void)
+{
+	String *str;
+  String *result;
+  CEXCEPTION_T err;
+
+  printf("Start test_directiveDefine_given_non_identifier_in_argument_should_throw_error\n");
+  Try {
+    str = stringNew("#define Done($@(*&#(*MIni) Project\n"
+                          "Done(!@&$#%*#$%)\n");
+    result = directiveDefine(str, "define");
+    TEST_FAIL_MESSAGE("Should throw ERR_INVALID_IDENTIFIER exception");
+  }
+  Catch(err)  {
+    TEST_ASSERT_EQUAL_MESSAGE(ERR_INVALID_IDENTIFIER, err, "Expect ERR_INVALID_IDENTIFIER exception");
+  }
+  printf("------------------------------------------------------------\n");
+
   stringDel(str);
 }

@@ -93,6 +93,7 @@ int getSizeOfArgu(String *str, char *containSet) {
 
   do  {
     arguments = stringRemoveWordContaining(str, containSet); /**need free**/
+    // printf("argument %c\n", arguments->string[arguments->startindex]);
     // printf("argument start %d, length %d\n", arguments->startindex, arguments->length);
     // printf("str start %d, length %d\n", str->startindex, str->length);
     if(arguments->length == 0)  {
@@ -126,7 +127,7 @@ int getSizeOfArguInString(String *str, char *containSet) {
   do  {
     stringTrim(str);
     arguments = stringRemoveWordContaining(str, containSet);
-    printf("argument start %d, length %d\n", arguments->startindex, arguments->length);
+    // printf("argument start %d, length %d\n", arguments->startindex, arguments->length);
     // printf("str start %d, length %d\n", str->startindex, str->length);
     if(arguments->length == 0)  {
       stringDel(arguments);
@@ -231,7 +232,7 @@ Macro *createMacroInfo(String *str) {
 
   macroName = stringSubStringInChars(name , name->length);
   // printf("str after removed name, start %d, length %d\n", str->startindex, str->length);
-  macroArguments = createMacroArguments(str, alphaNumericSet);
+  macroArguments = createMacroArguments(str, alphaNumericSetWithSymbolWithoutBracket);
 
   /*------------------------------------------------------------------------------*/
   stringTrimUntilEOL(str);
@@ -404,9 +405,9 @@ void modifyMacroPositionWithArguments(String *macroSubString, Macro *foundMacro)
 
   start = macroSubString->startindex;
   macroSubString->startindex = macroSubString->startindex + foundMacro->name->length;
-  printf("subString start %d, name length %d\n", macroSubString->startindex, foundMacro->name->length);
+  // printf("subString start %d, name length %d\n", macroSubString->startindex, foundMacro->name->length);
   if(foundMacro->argument->withArgument == 1 && macroSubString->string[macroSubString->startindex] != '(')  {
-    printf("error here?\n");
+    // printf("error here?\n");
     Throw(ERR_EXPECT_ARGUMENT);
   }
   else if(foundMacro->argument->size != 0 && macroSubString->string[macroSubString->startindex] == '(') {
@@ -530,7 +531,7 @@ char *replaceArgumentsInString(String *str, String *argumentSubString, char *arg
   }
   // printf("i %d\n", i);
   replacedArgumentsString[i] = '\0';
-  puts(replacedArgumentsString);
+  // puts(replacedArgumentsString);
   return replacedArgumentsString;
 }
 
@@ -578,10 +579,12 @@ char *searchAndReplaceArgumentsInString(char *replacedMacroString, Macro *foundM
 }
 
 /** String *directiveDefine(String *str, char *directiveName)
- * This function is
- *
+ * This function is use to replace all the predefined macro and macro argument
  ** input :
+ *          str is the given string
+ *          directiveName is the cpp valid directive name
  ** output :
+ *          return string with completed replace all the macros and arguments
  **/
 String *directiveDefine(String *str, char *directiveName) {
   int size, count = 0, cyclic = 0, nextToCyclic = 0;
