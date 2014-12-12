@@ -606,7 +606,7 @@ void test_storeArgumentsInString_given_arguments_with_spaces(void)
   stringDel(str2);
 }
 
-void Xtest_replaceMacroInString_given_statement_and_macro_with_argument(void)
+void test_replaceMacroInString_given_statement_and_macro_with_argument(void)
 {
 	String *str = stringNew("#define divide(A) A/123\n");
   String *latestString = stringNew("total = divide(5) && OMG");
@@ -627,8 +627,10 @@ void Xtest_replaceMacroInString_given_statement_and_macro_with_argument(void)
   TEST_ASSERT_EQUAL_STRING("total = A/123 && OMG", replacedMacroString);
 
   subStringDel(replacedMacroString);
+  stringDel(macroSubString);
   stringDel(latestString);
   stringDel(str);
+  destroyAllMacroInTree(root);
 }
 
 void Xtest_replaceMacroInString_given_statement_with_multiple_arguments(void)
