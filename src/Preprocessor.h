@@ -13,7 +13,7 @@
 
 int isDirective(String *string, char *directiveName);
 int isHashTag(String *string);
-int isIdentifier(String *string);
+int isIdentifier(String *str);
 Macro *createMacroInfo(String *str);
 Node *addAllMacroIntoTree(String *string, char *directiveName);
 Macro *findMacroInTree(Node *root, char *targetMacro);
@@ -30,3 +30,4 @@ void storeArgumentsInString(String *str, Macro *macro);
 void modifyMacroPositionWithArguments(String *macroSubString, Macro *foundMacro);
 char *searchAndReplaceArgumentsInString(char *replacedMacroString, Macro *foundMacro);
 #endif // Preprocessor_H
+

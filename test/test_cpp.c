@@ -128,6 +128,27 @@ void test_isIdentifier_given_123MAX_should_return_0(void)
   stringDel(str);
 }
 
+/** test isIdentifier given "MAX!@#123" should throw an error **/
+void test_isIdentifier_given_symbol_inside_the_identifier_should_throw_an_error(void)
+{
+  int result = 0;
+  String *str;
+  CEXCEPTION_T err;
+
+  printf("Start test_isIdentifier_given_symbol_inside_the_identifier_should_throw_an_error\n");
+  Try {
+    str = stringNew("MAX!@#123");
+    result = isIdentifier(str);
+    printf("-----------------------------------------------------------------------------\n");
+    TEST_FAIL_MESSAGE("Should throw ERR_INVALID_IDENTIFIER exception");
+  }
+  Catch(err) {
+    TEST_ASSERT_EQUAL_MESSAGE(ERR_INVALID_IDENTIFIER, err, "Expect ERR_INVALID_IDENTIFIER exception");
+  }
+  
+  stringDel(str);
+}
+
 /** test createMacroInfo() given 1 info
  *  name = "MAX"
  *  content = "100"

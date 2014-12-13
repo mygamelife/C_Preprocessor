@@ -92,6 +92,30 @@ void test_getSizeOfArgu_given_nonIdentifier_arguments_should_throw_an_error(void
   stringDel(str);
 }
 
+/** test_getSizeOfArgu_given_nonIdentifier_arguments_with_symbol_should_throw_an_error
+ **/
+void test_getSizeOfArgu_given_nonIdentifier_arguments_with_symbol_should_throw_an_error(void)
+{
+	String *str;
+  int sizeOfArgu = 0;
+  CEXCEPTION_T err;
+
+  printf("Start test_getSizeOfArgu_given_nonIdentifier_arguments_with_symbol_should_throw_an_error\n");
+
+  Try {
+    str = stringNew("max!@abc");
+    sizeOfArgu = getSizeOfArgu(str, alphaNumericSetWithSymbolWithoutBracket);
+    TEST_FAIL_MESSAGE("Should throw ERR_INVALID_IDENTIFIER exception");
+  }
+  Catch(err) {
+    TEST_ASSERT_EQUAL_MESSAGE(ERR_INVALID_IDENTIFIER, err, "Expect ERR_INVALID_IDENTIFIER exception");
+  }
+
+  printf("------------------------------------------------------------\n");
+
+  stringDel(str);
+}
+
 /** test getSizeOfArgu() given spaces between arugments should able to get the size
  **/
 void test_getSizeOfArgu_given_spaces_between_arguments_should_able_to_get_the_size_of_argu(void)
@@ -871,6 +895,27 @@ void test_directiveDefine_given_multiple_define_macro_should_expand_all(void)
   stringDel(str);
 }
 
+void test_createMacroInfo_given_argument_with_symbol_should_throw_an_error(void)
+{
+  String *str;
+  Macro *macro;
+  CEXCEPTION_T err;
+
+  printf("Start test_createMacroInfo_given_argument_with_symbol_should_throw_an_error\n");
+  Try {
+    str = stringNew("sum(b@@!M)\n");
+    macro = createMacroInfo(str);
+    TEST_FAIL_MESSAGE("Should throw ERR_INVALID_IDENTIFIER exception");
+  }
+  Catch(err) {
+    TEST_ASSERT_EQUAL_MESSAGE(ERR_INVALID_IDENTIFIER, err, "Expect ERR_INVALID_IDENTIFIER exception");
+  }
+  printf("------------------------------------------------------------\n");
+
+  //free all malloc memory in tree
+  stringDel(str);
+}
+
 void test_directiveDefine_given_non_identifier_in_argument_should_throw_error(void)
 {
 	String *str;
@@ -879,7 +924,7 @@ void test_directiveDefine_given_non_identifier_in_argument_should_throw_error(vo
 
   printf("Start test_directiveDefine_given_non_identifier_in_argument_should_throw_error\n");
   Try {
-    str = stringNew("#define Done($@(*&#(*MIni) Project\n"
+    str = stringNew("#define Done(m*^&#n) Project\n"
                           "Done(!@&$#%*#$%)\n");
     result = directiveDefine(str, "define");
     TEST_FAIL_MESSAGE("Should throw ERR_INVALID_IDENTIFIER exception");

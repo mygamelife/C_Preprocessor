@@ -18,3 +18,4 @@ typedef enum {
 } ErrorCode;
 
 #endif //ErrorCode_H
+

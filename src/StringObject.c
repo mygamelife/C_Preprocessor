@@ -8,6 +8,7 @@ char *numSet = "0123456789";
 char *opSet = "(~!@#$%^&*_-+{}=|;:)\'<,.>/?";
 char *alphaNumericSet = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 char *alphaNumericSetWithBracket = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789()";
+char *alphaNumericSetWithOpenBracket = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789(";
 char *alphaNumericSetWithSymbol = " _abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~!@#$%^&*\"_-+{}=|;:()\'<.>/?,";
 char *alphaNumericSetWithSymbolWithoutBracket = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~!@#$%^&*_-+{}=|;:\'<.>/?";
 char *alphaSet = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";

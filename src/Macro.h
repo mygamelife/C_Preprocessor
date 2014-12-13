@@ -35,3 +35,4 @@ void delMacroNode(Node *node);
 void destroyAllMacroInTree(Node *root);
 void delTestMacro(Macro *macro);
 #endif // Macro_H
+

@@ -8,3 +8,4 @@
 void assertNode(Node *left, Node *right, char color, Node *actualNode, int lineNumber);
 
 #endif // __CustomAssertions_H__
+

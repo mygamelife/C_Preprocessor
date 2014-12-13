@@ -70,7 +70,6 @@ int compareChar(void *dataInCollection, void *targetData)  {
   char *data1 = (char*)dataInCollection;
   char *data2 = (char*)targetData;
 
-  // puts(data1);
   //data1 is equal with data2
   if(strcmp(data1, data2) == 0)
     return 1;

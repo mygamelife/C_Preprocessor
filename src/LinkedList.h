@@ -17,3 +17,5 @@ void destroyAllLinkedLists(LinkedList *firstList);
 int compareChar(void *dataInCollection, void *targetData);
 int findLinkedList(LinkedList **listPtr, void *data, int(*compareChar)(void *dataInCollection, void *data));
 #endif // LinkedList_H
+
+

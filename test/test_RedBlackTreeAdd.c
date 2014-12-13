@@ -338,15 +338,14 @@ void test_addRedBlackTree_add_30_to_tree_with_root_8_and_left_child_5_right_chil
 	TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'r', &node30);
 }
 
-/* 4-node case
- *
- * Root->  	20(b)              		    20(b)  <-Root                         20(b)
- *         /	\        add 7        /	  \					     flip color         /    \
- *      10(b)  22(b)   ---->	    10(b)   22(b)         ---->         10(r)      22(b)
- *     /  \                      /   \                               /   \
- *  5(r)   15(r)               5(r)   15(r)                   		 5(b)   15(b)
- *                               \                                   \
- *                                7(r)                                7(r)
+/*  4-node case
+ *  Root->  20(b)                   20(b) <-Root                     20(b)
+ *        /     \       add 7       /     \         flip color     /     \
+ *      10(b)   22(b)   ---->     10(b)   22(b)       ---->     10(r)   22(b)
+ *     /    \                     /   \                        /    \
+ *  5(r)  15(r)                 5(r)   15(r)               5(b)    15(b)
+ *                                \                           \
+ *                                7(r)                        7(r)
  */
 void test_addRedBlackTree_add_7_to_tree_with_root_20_and_left_child_10_right_child_22(void)	{
 	setNode(&node7, NULL, NULL, 'r');
@@ -371,19 +370,19 @@ void test_addRedBlackTree_add_7_to_tree_with_root_20_and_left_child_10_right_chi
 	TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node22);
 }
 
-/* 4-node case
- *            Root                                  Root
- *             |                                     |
- *             v                                     v
- *            20(b)                                20(b)                                          20(b)
- *           /	   \                             /      \                                       /       \
- *       4(r)       40(r)         add 7       4(r)        40(r)         flip color           4(b)         40(b)
- *     /   \        /   \         ---->      /   \       /    \           ---->             /   \        /   \
- *  1(b)    10(b) 30(b)  60(b)            1(b)    10(b) 30(b)  60(b)                     1(b)    10(r) 30(b)  60(b)
- *         /   \                                 /   \                                         /   \
- *       5(r)   15(r)                          5(r)   15(r)                                 5(b)    15(b)
- *                                               \                                             \
- *                                                7(r)                                          7(r)
+/*  4-node case
+ *            Root                              Root                            Root
+ *             |                                 |                               |
+ *             v                                v                                v
+ *            20(b)                           20(b)                           20(b)
+ *          /       \                       /     \                         /     \
+ *       4(r)       40(r)     add 7       4(r)    40(r)     flip color    4(b)    40(b)
+ *      /   \       /    \    --->      /    \    /   \       --->      /   \     /   \
+ *  1(b)    10(b) 30(b) 60(b)         1(b)  10(b)30(b)60(b)         1(b)   10(r)30(b)  60(b)
+ *          /   \                     /   \                       /    \
+ *        5(r)  15(r)              5(r)   15(r)                5(b)   15(b)
+ *                                            \                          \
+ *                                           7(r)                        7(r)
  */
 void test_addRedBlackTree_add_7_to_tree_with_root_20_and_left_child_4_right_child_40(void)	{
 	setNode(&node7, NULL, NULL, 'r');
